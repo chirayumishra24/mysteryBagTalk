@@ -55,7 +55,6 @@ export default function MysteryBag({ onClick, isOpened = false }) {
           position={[0, 0, 1.3]}
           fontSize={1.8}
           color="#ffffff"
-          font="https://fonts.gstatic.com/s/fredokaone/v8/ut7f967v886S6rG1e4W_aw.woff"
           anchorX="center"
           anchorY="middle"
         >

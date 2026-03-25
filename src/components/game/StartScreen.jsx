@@ -76,8 +76,7 @@ export default function StartScreen() {
         {/* Small Picker Grid */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {AVATARS.map((avatar) => {
-             const config = AVATAR_CONFIGS[avatar.name] || AVATAR_CONFIGS.Wizard;
-             const isSel = chosenAvatar === avatar;
+             const isSel = chosenAvatar?.name === avatar.name;
              return (
               <motion.button
                 key={avatar.name}
@@ -87,22 +86,14 @@ export default function StartScreen() {
                   playClick();
                   setChosenAvatar(avatar);
                 }}
-                className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden relative border-4 ${
+                className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden relative border-4 shadow-sm ${
                   isSel
-                    ? "border-secondary shadow-lg scale-110 z-10 bg-white"
+                    ? "border-secondary bg-white scale-110 z-10 shadow-lg"
                     : "border-slate-100 bg-white/50 hover:border-slate-200"
                 }`}
                 title={avatar.name}
               >
-                  <div className="absolute inset-0 opacity-80">
-                     <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
-                       <ambientLight intensity={0.6} />
-                       <directionalLight position={[2, 5, 2]} intensity={1} />
-                       <Suspense fallback={null}>
-                         <Avatar3D name={avatar.name} isSelected={false} />
-                       </Suspense>
-                     </Canvas>
-                  </div>
+                <span className="text-4xl filter drop-shadow-sm">{avatar.emoji}</span>
               </motion.button>
              );
           })}

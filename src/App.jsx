@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Scene from "./components/3d/Scene";
 import ParticleBackground from "./components/ui/ParticleBackground";
 import ProgressBar from "./components/ui/ProgressBar";
@@ -47,7 +47,7 @@ function App() {
   };
 
   return (
-    <motion.div
+    <div
       className={`w-full h-screen bg-gradient-to-br ${bgGradient} text-white overflow-hidden relative font-body selection:bg-pink-500/50 transition-all duration-1000`}
     >
       <ParticleBackground />
@@ -62,7 +62,7 @@ function App() {
       <GameFlow />
       <Mascot />
       <TeacherDashboard />
-    </motion.div>
+    </div>
   );
 }
 

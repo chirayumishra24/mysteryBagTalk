@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 export default function FullscreenButton() {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -28,11 +27,9 @@ export default function FullscreenButton() {
   };
 
   return (
-    <motion.button
+    <button
       onClick={toggleFullscreen}
-      className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg transition-colors"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-white shadow-lg transition-colors hover:scale-105 active:scale-95"
       aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
       title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
     >
@@ -65,6 +62,6 @@ export default function FullscreenButton() {
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
         </svg>
       )}
-    </motion.button>
+    </button>
   );
 }

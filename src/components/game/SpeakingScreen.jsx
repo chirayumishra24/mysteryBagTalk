@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../ui/Button";
 import SentenceBuilder from "../ui/SentenceBuilder";
@@ -9,7 +8,6 @@ import useGameStore from "../../store/useGameStore";
 import useSpeechRecognition from "../../hooks/useSpeechRecognition";
 import useAudioRecorder from "../../hooks/useAudioRecorder";
 import { playClick, playChime } from "../../hooks/useAudio";
-import Avatar3D from "../3d/Avatar3D";
 import { analyzeVoice } from "../../services/api";
 
 export default function SpeakingScreen() {
@@ -123,14 +121,8 @@ export default function SpeakingScreen() {
           {/* Avatar badge */}
           {selectedAvatar && (
             <span className="inline-flex items-center justify-center gap-3 py-2 pr-6 pl-2 rounded-full bg-white border-4 border-secondary text-secondary font-display text-sm font-black tracking-widest uppercase mb-6 shadow-lg transform -rotate-1">
-              <div className="w-10 h-10 rounded-full bg-sky-100 overflow-hidden relative border-2 border-secondary shadow-inner">
-                 <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
-                    <ambientLight intensity={0.8} />
-                    <directionalLight position={[2, 5, 2]} intensity={1.5} />
-                    <Suspense fallback={null}>
-                      <Avatar3D name={selectedAvatar.name} isSelected={false} />
-                    </Suspense>
-                 </Canvas>
+              <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center border-2 border-secondary shadow-inner">
+                <span className="text-2xl">{selectedAvatar.emoji}</span>
               </div>
               MYSTERY SPEAKER TURN
             </span>

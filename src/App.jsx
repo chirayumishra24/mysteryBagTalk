@@ -12,14 +12,14 @@ import useTeacherMode from "./hooks/useTeacherMode";
 
 // Phase-based background gradients for emotional pacing
 const PHASE_BACKGROUNDS = {
-  start: "from-[#4c1d95] via-[#7c3aed] to-[#312e81]",
-  content: "from-[#1e1b4b] via-[#312e81] to-[#4c1d95]",
-  mysteryBag: "from-[#4c1d95] via-[#6d28d9] to-[#1e1b4b]",
-  think: "from-[#831843] via-[#6b21a8] to-[#1e1b4b]",
-  speaking: "from-[#134e4a] via-[#1e3a5f] to-[#312e81]",
-  guessing: "from-[#7f1d1d] via-[#9a3412] to-[#78350f]",
-  reveal: "from-[#4c1d95] via-[#7e22ce] to-[#a21caf]",
-  reward: "from-[#854d0e] via-[#a16207] to-[#ca8a04]",
+  start: "from-sky-200 via-sky-300 to-amber-100",
+  content: "from-blue-200 via-white to-green-100",
+  mysteryBag: "from-sky-300 via-blue-200 to-amber-50",
+  think: "from-yellow-100 via-amber-200 to-white",
+  speaking: "from-green-100 via-emerald-200 to-sky-100",
+  guessing: "from-orange-100 via-amber-200 to-white",
+  reveal: "from-purple-100 via-pink-100 to-sky-100",
+  reward: "from-yellow-200 via-amber-300 to-green-200",
 };
 
 function App() {

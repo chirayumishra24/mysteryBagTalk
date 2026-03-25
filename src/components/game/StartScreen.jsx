@@ -3,8 +3,10 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
-import useGameStore, { AVATARS } from "../../store/useGameStore";
-import { gameContent } from "../../data/gameContent";
+import useGameStore from "../../store/useGameStore";
+import Button from "../ui/Button";
+import Logo from "../ui/Logo";
+import mascotHappy from "../../assets/mascot_happy.png"; // Placeholder path
 import { resumeAudio, playChime, playClick } from "../../hooks/useAudio";
 import Avatar3D, { AVATAR_CONFIGS } from "../3d/Avatar3D";
 
@@ -29,20 +31,17 @@ export default function StartScreen() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[80vh] text-center z-20 relative"
     >
+      {/* Hero Section */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
-        className="mb-6"
+        className="text-center space-y-8 mb-6"
       >
-        <span className="inline-block py-1 px-4 rounded-full glass-light text-purple-300 font-display text-sm font-semibold tracking-wider mb-4">
-          {gameContent.subtitle}
-        </span>
-        <h1 className="text-5xl md:text-7xl font-display font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-purple-200 to-indigo-400 mb-4 drop-shadow-2xl text-glow pb-2">
-          {gameContent.title}
-        </h1>
-        <p className="text-lg md:text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed font-body">
-          {gameContent.objective}
+        <Logo />
+        
+        <p className="text-xl md:text-2xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed font-body">
+          Step into the classroom of curiosity! Can you guess what's hidden inside the mystery bag?
         </p>
       </motion.div>
 

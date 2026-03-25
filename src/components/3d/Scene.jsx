@@ -26,13 +26,13 @@ export default function Scene({ onBagClick, isBagOpened }) {
         gl={{ preserveDrawingBuffer: true, antialias: true }}
       >
       {/* Transparent background is handled by canvas alpha naturally */}
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.7} />
         <spotLight
           position={[10, 10, 10]}
           angle={0.15}
           penumbra={1}
-          intensity={1.5}
-          color="#a78bfa"
+          intensity={2}
+          color="#fffbeb"
           castShadow
         />
         <spotLight
@@ -40,28 +40,19 @@ export default function Scene({ onBagClick, isBagOpened }) {
           angle={0.15}
           penumbra={1}
           intensity={1}
-          color="#f472b6"
+          color="#fef3c7"
         />
 
         <Suspense fallback={null}>
           <MysteryBag onClick={onBagClick} isOpened={isBagOpened} />
-          <Environment preset="city" />
+          <Environment preset="apartment" />
           <ContactShadows
             position={[0, -2, 0]}
-            opacity={0.7}
+            opacity={0.4}
             scale={20}
             blur={2}
             far={4.5}
-            color="#5b21b6"
-          />
-          <Stars
-            radius={50}
-            depth={50}
-            count={2000}
-            factor={4}
-            saturation={0}
-            fade
-            speed={1}
+            color="#92400e"
           />
         </Suspense>
 

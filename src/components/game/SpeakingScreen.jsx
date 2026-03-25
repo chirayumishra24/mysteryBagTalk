@@ -94,7 +94,7 @@ export default function SpeakingScreen() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="w-full max-w-4xl mx-auto z-20 relative px-4 py-8 flex flex-col items-center min-h-[80vh]"
     >
-      <div className="text-center mb-8 w-full">
+      <div className="text-center mb-10 w-full relative z-30">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -102,33 +102,33 @@ export default function SpeakingScreen() {
         >
           {/* Avatar badge */}
           {selectedAvatar && (
-            <span className="inline-flex items-center justify-center gap-3 py-1.5 pr-5 pl-2 rounded-full glass bg-purple-900/40 text-purple-300 font-display text-xs font-bold tracking-widest uppercase mb-4 border border-purple-500/30">
-              <div className="w-8 h-8 rounded-full bg-black/20 overflow-hidden relative shadow-inner">
+            <span className="inline-flex items-center justify-center gap-3 py-2 pr-6 pl-2 rounded-full bg-white border-4 border-secondary text-secondary font-display text-sm font-black tracking-widest uppercase mb-6 shadow-lg transform -rotate-1">
+              <div className="w-10 h-10 rounded-full bg-sky-100 overflow-hidden relative border-2 border-secondary shadow-inner">
                  <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
-                    <ambientLight intensity={0.6} />
-                    <directionalLight position={[2, 5, 2]} intensity={1} />
+                    <ambientLight intensity={0.8} />
+                    <directionalLight position={[2, 5, 2]} intensity={1.5} />
                     <Suspense fallback={null}>
                       <Avatar3D name={selectedAvatar.name} isSelected={false} />
                     </Suspense>
                  </Canvas>
               </div>
-              Mystery Speaker Turn
+              MYSTERY SPEAKER TURN
             </span>
           )}
           {!selectedAvatar && (
-            <span className="inline-block py-1 px-4 rounded-full glass bg-purple-900/40 text-purple-300 font-display text-xs font-bold tracking-widest uppercase mb-4 border border-purple-500/30">
-              Mystery Speaker Turn
+            <span className="inline-block py-2 px-6 rounded-full bg-white border-4 border-secondary text-secondary font-display text-sm font-black tracking-widest uppercase mb-6 shadow-lg transform -rotate-1">
+              MYSTERY SPEAKER TURN
             </span>
           )}
-          <h2 className="text-4xl md:text-5xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200 mb-4">
-            Describe Your Object
+          <h2 className="text-5xl md:text-7xl font-display font-black text-secondary text-outline-blue mb-4 uppercase tracking-tighter">
+            Describe It!
           </h2>
-          <p className="text-lg text-purple-200/80 font-body max-w-2xl mx-auto">
+          <p className="text-xl text-slate-600 font-display font-bold max-w-2xl mx-auto bg-white/50 px-4 py-2 rounded-full inline-block">
             {phase === "fill"
-              ? "Fill in the blanks, then record yourself speaking!"
+              ? "Fill in the blanks, then record your voice! 🎤"
               : phase === "record"
-              ? "Speak clearly into the microphone..."
-              : "Here's your Speech Report Card!"}
+              ? "Speak clearly into the microphone... 📢"
+              : "Check out your speech results! ✨"}
           </p>
         </motion.div>
       </div>
@@ -152,30 +152,31 @@ export default function SpeakingScreen() {
 
             <div className="flex flex-col items-center gap-4 mt-auto">
               {/* Timer Badge */}
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-display font-semibold ${
+              <div className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-display font-black shadow-md border-4 ${
                 elapsed <= 15
-                  ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                  : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                  ? "bg-accent text-white border-white"
+                  : "bg-white text-secondary border-secondary"
               }`}>
                 <span>⏱️</span>
-                <span>{elapsed}s</span>
+                <span>{elapsed}S</span>
                 {elapsed <= 15 && isComplete && (
-                  <span className="text-green-400 animate-pulse ml-1">⚡ Speed Bonus!</span>
+                  <span className="text-white animate-bounce ml-2 text-xs bg-black/20 px-2 py-0.5 rounded-full">SPEED BONUS! ⚡</span>
                 )}
               </div>
 
               <Button
-                size="lg"
+                size="xl"
+                variant={isComplete ? "primary" : "ghost"}
                 onClick={handleStartRecording}
                 disabled={!isComplete}
                 icon="🎙️"
-                className={isComplete ? "animate-pulse-glow" : ""}
+                className={isComplete ? "animate-bounce" : ""}
               >
-                Record My Speech
+                RECORD NOW!
               </Button>
               {!isComplete && (
-                <span className="text-sm text-purple-400/60 font-body italic">
-                  Fill in all blanks to unlock recording
+                <span className="text-sm text-slate-500 font-display font-bold uppercase tracking-widest mt-2">
+                  Finish the sentences first! 👇
                 </span>
               )}
             </div>
@@ -192,19 +193,19 @@ export default function SpeakingScreen() {
             className="w-full max-w-lg flex flex-col items-center"
           >
             {/* Your sentences to say */}
-            <div className="glass p-5 rounded-2xl border border-purple-500/20 w-full mb-8">
-              <div className="text-xs font-display font-bold text-purple-400 uppercase tracking-wider mb-3">
-                Say This Out Loud
+            <div className="card-playful-yellow p-6 w-full mb-8 relative">
+              <div className="absolute -top-4 -left-4 bg-primary text-secondary font-display font-black px-4 py-1 rounded-full border-4 border-white shadow-md uppercase text-xs">
+                SAY THIS! 📣
               </div>
-              <div className="space-y-2">
-                <p className="text-purple-100 font-body text-lg">
-                  "This is a <span className="text-pink-300 font-semibold">{sentences.name}</span>."
+              <div className="space-y-4 pt-2">
+                <p className="text-slate-800 font-display font-bold text-2xl">
+                  "This is a <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.name}</span>."
                 </p>
-                <p className="text-purple-100 font-body text-lg">
-                  "It is <span className="text-pink-300 font-semibold">{sentences.colour}</span> in colour."
+                <p className="text-slate-800 font-display font-bold text-2xl">
+                  "It is <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.colour}</span> in colour."
                 </p>
-                <p className="text-purple-100 font-body text-lg">
-                  "We use it to <span className="text-pink-300 font-semibold">{sentences.use}</span>."
+                <p className="text-slate-800 font-display font-bold text-2xl">
+                  "We use it to <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.use}</span>."
                 </p>
               </div>
             </div>

@@ -35,7 +35,7 @@ export default function GuessPanel() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="w-full max-w-5xl mx-auto z-20 relative px-4 flex flex-col items-center justify-center min-h-[90vh]"
+      className="w-full max-w-6xl mx-auto z-20 relative px-4 flex flex-col items-center justify-center min-h-[90vh]"
     >
       {/* Urgent Vignette Overlay */}
       <AnimatePresence>
@@ -46,21 +46,23 @@ export default function GuessPanel() {
             exit={{ opacity: 0 }}
             transition={{ duration: 1, repeat: Infinity }}
             className="fixed inset-0 pointer-events-none z-0"
-            style={{ background: "radial-gradient(circle, transparent 40%, rgba(220,38,38,0.3) 100%)" }}
+            style={{ background: "radial-gradient(circle, transparent 40%, rgba(245,158,11,0.3) 100%)" }}
           />
         )}
       </AnimatePresence>
 
-      <div className="text-center w-full absolute top-10">
-        <h2 className={`text-4xl md:text-5xl font-display font-black text-transparent bg-clip-text mb-4 ${isUrgent ? 'bg-gradient-to-r from-red-400 to-orange-500 animate-pulse' : 'bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500'}`}>
-          Class Guessing Time!
+      <div className="text-center w-full absolute top-10 z-30">
+        <h2 className={`text-5xl md:text-7xl font-display font-black uppercase tracking-tighter mb-4 ${isUrgent ? 'text-red-500 animate-bounce' : 'text-secondary text-outline-blue'}`}>
+          GUESSING TIME!
         </h2>
-        <p className="text-xl text-purple-100 font-body">
-          Listen carefully and shout out your answers!
-        </p>
+        <div className="bg-white/50 backdrop-blur-sm px-8 py-3 rounded-full border-4 border-white shadow-lg inline-block transform rotate-1">
+          <p className="text-2xl text-slate-700 font-display font-black">
+            LISTEN CAREFULLY! 👂
+          </p>
+        </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center relative w-full h-[60vh] mt-20">
+      <div className="flex-1 flex items-center justify-center relative w-full h-[60vh] mt-24">
         
         {/* Animated Guess Bubbles */}
         <AnimatePresence>
@@ -70,23 +72,24 @@ export default function GuessPanel() {
               initial={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
               animate={{
                 opacity: [0, 1, 1, 0],
-                scale: [0.8, 1, 1, 0.9],
+                scale: [0.8, 1.1, 1.1, 0.9],
                 x: guess.x,
                 y: guess.y,
+                rotate: i % 2 === 0 ? 5 : -5
               }}
               transition={{
                 delay: guess.delay,
                 duration: 6,
                 times: [0, 0.1, 0.8, 1],
-                ease: "easeOut",
+                ease: "backOut",
               }}
               className="absolute z-10 pointer-events-none"
             >
-              <div className="flex items-end gap-3 glass-light bg-black/40 backdrop-blur-xl p-4 rounded-3xl rounded-bl-sm border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl bg-gradient-to-br ${guess.color} shadow-lg shrink-0`}>
+              <div className="flex items-center gap-4 bg-white p-5 rounded-[2rem] rounded-bl-sm border-8 border-primary shadow-2xl">
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center text-3xl bg-gradient-to-br ${guess.color} border-4 border-white shadow-md shrink-0`}>
                   {guess.avatar}
                 </div>
-                <div className="font-display font-medium text-xl text-white tracking-wide pr-2">
+                <div className="font-display font-black text-2xl text-slate-800 tracking-tight pr-4">
                   {guess.text}
                 </div>
               </div>
@@ -101,8 +104,8 @@ export default function GuessPanel() {
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
           className="relative z-30"
         >
-          <div className="absolute inset-0 bg-blue-500/10 blur-[100px] scale-[3] rounded-full" />
-          <div className="glass p-6 rounded-full border border-purple-400/30 shadow-[0_0_50px_rgba(139,92,246,0.2)] bg-black/50">
+          <div className="absolute inset-0 bg-primary/20 blur-[100px] scale-[3] rounded-full" />
+          <div className="bg-white p-8 rounded-full border-8 border-secondary shadow-2xl">
              <Timer initialSeconds={30} onComplete={handleReveal} />
           </div>
         </motion.div>
@@ -114,12 +117,12 @@ export default function GuessPanel() {
         transition={{ delay: 1 }}
         className="absolute bottom-10 w-full flex justify-center z-40"
       >
-        <div className="w-full max-w-md glass p-6 rounded-3xl border border-purple-500/30 text-center bg-purple-900/30 backdrop-blur-xl shadow-2xl">
-          <p className="font-display font-medium text-purple-100/80 mb-5 text-lg">
-             Did someone guess it correctly?
+        <div className="w-full max-w-md bg-white p-8 rounded-[2.5rem] border-8 border-secondary text-center shadow-2xl transform -rotate-1">
+          <p className="font-display font-black text-slate-800 mb-6 text-xl uppercase tracking-tight">
+             Correct Guess? 🏆
           </p>
-          <Button size="lg" variant="primary" onClick={handleReveal} className="w-full text-white shadow-xl shadow-purple-500/20">
-            Reveal Answer 🎬
+          <Button size="xl" variant="primary" onClick={handleReveal} className="w-full">
+            REVEAL BAG! 🎒
           </Button>
         </div>
       </motion.div>

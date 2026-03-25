@@ -78,13 +78,13 @@ function ScoreRow({ icon, label, score, maxStars = 3, detail, delay = 0 }) {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.4 }}
-      className="flex items-center gap-4 bg-purple-900/30 p-4 rounded-xl border border-purple-500/10"
+      className="flex items-center gap-4 bg-white p-5 rounded-2xl border-4 border-sky-50 shadow-sm"
     >
       <span className="text-2xl flex-shrink-0">{icon}</span>
       <div className="flex-1 min-w-0">
-        <div className="text-purple-100 font-display font-semibold text-sm">{label}</div>
+        <div className="text-slate-800 font-display font-black text-sm uppercase tracking-tight">{label}</div>
         {detail && (
-          <div className="text-purple-300/60 text-xs font-body mt-0.5 truncate">{detail}</div>
+          <div className="text-slate-400 text-xs font-display font-bold mt-0.5 truncate uppercase">{detail}</div>
         )}
       </div>
       <StarRating score={score} maxStars={maxStars} />
@@ -129,21 +129,22 @@ export default function SpeechReportCard({
       initial={{ opacity: 0, scale: 0.9, y: 30 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, type: "spring", damping: 20 }}
-      className="w-full max-w-lg mx-auto glass p-6 rounded-2xl border border-purple-500/20 shadow-[0_0_40px_rgba(139,92,246,0.2)]"
+      className="w-full max-w-lg mx-auto bg-white p-8 rounded-[3rem] border-8 border-secondary shadow-2xl relative overflow-hidden"
     >
+      <div className="absolute top-0 left-0 right-0 h-4 bg-secondary/10" />
       {/* Header */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-8">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="text-4xl mb-2"
+          className="text-5xl mb-3"
         >
-          📊
+          📜
         </motion.div>
-        <h3 className="text-xl font-display font-bold text-white">Speech Report Card</h3>
-        <p className="text-purple-300/60 text-xs font-body mt-1">
-          Here's how you did on this round!
+        <h3 className="text-3xl font-display font-black text-secondary uppercase tracking-tighter">SPEECH REPORT</h3>
+        <p className="text-slate-400 text-sm font-display font-black uppercase mt-1">
+          HERE IS YOUR PERFORMANCE!
         </p>
       </div>
 
@@ -188,26 +189,27 @@ export default function SpeechReportCard({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="text-center mb-6 py-4 bg-gradient-to-r from-purple-600/20 via-pink-500/20 to-purple-600/20 rounded-xl border border-purple-400/20"
+        className="text-center mb-8 py-6 bg-sky-50 rounded-[2rem] border-4 border-sky-100 shadow-inner"
       >
-        <div className="text-sm font-display font-bold text-purple-300 uppercase tracking-wider mb-2">
-          Overall Score
+        <div className="text-xs font-display font-black text-secondary uppercase tracking-widest mb-3">
+          OVERALL SCORE
         </div>
-        <div className="flex justify-center gap-1">
+        <div className="flex justify-center gap-2 mb-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <motion.span
               key={i}
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.8 + i * 0.15, type: "spring", stiffness: 300 }}
-              className={`text-2xl ${i < overallStars ? "" : "opacity-20"}`}
+              className={`text-3xl ${i < overallStars ? "" : "opacity-20 grayscale"}`}
+              style={{ filter: i < overallStars ? "drop-shadow(0 4px 0 #ca8a04)" : "none" }}
             >
               ⭐
             </motion.span>
           ))}
         </div>
-        <div className="text-purple-200/60 text-xs font-body mt-1">
-          {overallStars >= 4 ? "🎉 Amazing Speaker!" : overallStars >= 2 ? "👏 Great Job!" : "💪 Keep Practicing!"}
+        <div className="text-slate-600 font-display font-black text-sm uppercase tracking-tight">
+          {overallStars >= 4 ? "🎉 AMAZING SPEAKER!" : overallStars >= 2 ? "👏 GREAT JOB!" : "💪 KEEP PRACTICING!"}
         </div>
       </motion.div>
 
@@ -217,12 +219,12 @@ export default function SpeechReportCard({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
-          className="bg-purple-900/30 rounded-xl p-4 border border-purple-500/10 mb-4"
+          className="bg-white rounded-2xl p-5 border-4 border-sky-50 mb-6"
         >
-          <div className="text-xs font-display font-bold text-purple-400 uppercase tracking-wider mb-2">
-            What You Said
+          <div className="text-xs font-display font-black text-slate-400 uppercase tracking-widest mb-2">
+            WHAT YOU SAID
           </div>
-          <p className="text-purple-100 font-body text-sm italic leading-relaxed">
+          <p className="text-slate-700 font-display font-bold text-base italic leading-relaxed">
             "{transcript}"
           </p>
         </motion.div>
@@ -253,19 +255,19 @@ export default function SpeechReportCard({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
-        className="flex gap-3"
+        className="flex gap-4"
       >
         <button
           onClick={onRetry}
-          className="flex-1 py-3 rounded-xl border border-purple-500/30 text-purple-300 font-display font-semibold text-sm hover:bg-purple-500/10 transition-colors cursor-pointer"
+          className="flex-1 py-4 rounded-[1.5rem] border-4 border-slate-100 text-slate-400 font-display font-black text-sm hover:bg-slate-50 transition-all cursor-pointer uppercase tracking-widest"
         >
-          🔄 Try Again
+          🔄 RETRY
         </button>
         <button
           onClick={() => onContinue(overallStars)}
-          className="flex-1 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-display font-semibold text-sm shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-colors cursor-pointer"
+          className="flex-1 py-4 rounded-[1.5rem] bg-secondary hover:bg-blue-400 text-white font-display font-black text-sm shadow-lg transition-all cursor-pointer uppercase tracking-widest active:translate-y-1"
         >
-          ✅ Continue
+          ✅ NEXT
         </button>
       </motion.div>
     </motion.div>

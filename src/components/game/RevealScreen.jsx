@@ -38,12 +38,12 @@ export default function RevealScreen() {
     const frame = () => {
       confetti({
         particleCount: 5, angle: 60, spread: 80, origin: { x: 0 },
-        colors: ["#7c3aed", "#f472b6", "#3b82f6", "#fde047", "#ffffff"],
+        colors: ["#fde047", "#3b82f6", "#22c55e", "#fb923c", "#ffffff"],
         zIndex: 100,
       });
       confetti({
         particleCount: 5, angle: 120, spread: 80, origin: { x: 1 },
-        colors: ["#7c3aed", "#f472b6", "#3b82f6", "#fde047", "#ffffff"],
+        colors: ["#fde047", "#3b82f6", "#22c55e", "#fb923c", "#ffffff"],
         zIndex: 100,
       });
       if (Date.now() < end) requestAnimationFrame(frame);
@@ -62,7 +62,7 @@ export default function RevealScreen() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, filter: "brightness(0)" }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-sky-200/90 backdrop-blur-3xl overflow-hidden"
     >
       {/* Emoji Rain */}
       {emojiRain.map((e) => (
@@ -100,9 +100,9 @@ export default function RevealScreen() {
           initial={{ opacity: 0, y: -50, letterSpacing: "1em" }}
           animate={{ opacity: 1, y: 0, letterSpacing: "0.2em" }}
           transition={{ duration: 1.5, delay: 0.5, ease: "backOut" }}
-          className="text-purple-300/80 font-display font-bold text-xl uppercase mb-8"
+          className="text-secondary font-display font-black text-2xl uppercase mb-10 bg-white/50 px-8 py-2 rounded-full border-4 border-white shadow-md transform -rotate-2"
         >
-          It was a...
+          IT WAS A...
         </motion.span>
 
         {/* Centerpiece: Holographic Platform */}
@@ -111,22 +111,20 @@ export default function RevealScreen() {
            <motion.div
              animate={{ rotate: 360, scale: [1, 1.05, 1] }}
              transition={{ rotate: { duration: 15, repeat: Infinity, ease: "linear" }, scale: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-             className="absolute w-96 h-96 border border-purple-500/30 rounded-full"
+             className="absolute w-96 h-96 border-4 border-white rounded-full bg-primary/20"
            />
            <motion.div
              animate={{ rotate: -360, scale: [1, 1.1, 1] }}
              transition={{ rotate: { duration: 20, repeat: Infinity, ease: "linear" }, scale: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
-             className="absolute w-[450px] h-[450px] border border-dashed border-pink-500/20 rounded-full"
+             className="absolute w-[450px] h-[450px] border-4 border-dashed border-secondary/30 rounded-full"
            />
 
-           <Card animate={false} variant="highlight" className="w-80 h-80 flex items-center justify-center rounded-[40px] shadow-[0_0_80px_rgba(139,92,246,0.3)] bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-md z-10 border-2 border-purple-400/50 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-50 mixes-blend-overlay" />
+           <Card animate={false} variant="yellow" className="w-80 h-80 flex items-center justify-center rounded-[3rem] shadow-2xl z-10 border-8 border-white relative overflow-hidden group">
               <motion.span
                 initial={{ scale: 0, rotateY: 180 }}
                 animate={{ scale: [0, 1.4, 1], rotateY: [180, -20, 0] }}
                 transition={{ duration: 1.5, type: "spring", bounce: 0.5, delay: 0.2 }}
-                className="text-[12rem] drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] relative z-20 group-hover:scale-110 transition-transform duration-500"
-                style={{ filter: "drop-shadow(0px 20px 40px rgba(0,0,0,0.8))" }}
+                className="text-[12rem] drop-shadow-2xl relative z-20 group-hover:scale-110 transition-transform duration-500"
               >
                 {selectedObject.emoji}
               </motion.span>
@@ -137,7 +135,7 @@ export default function RevealScreen() {
           initial={{ opacity: 0, y: 50, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 1, type: "spring", bounce: 0.4 }}
-          className="text-6xl md:text-8xl font-display font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-purple-200 to-indigo-500 mt-12 tracking-tight drop-shadow-2xl"
+          className="text-6xl md:text-8xl font-display font-black text-secondary text-outline-blue mt-12 tracking-tight uppercase"
         >
           {selectedObject.name}
         </motion.h2>
@@ -151,11 +149,12 @@ export default function RevealScreen() {
       >
         <Button
           size="xl"
+          variant="primary"
           onClick={() => setStep("reward")}
           icon="⭐"
-          className="shadow-[0_0_50px_rgba(244,114,182,0.4)] px-16 py-6 text-2xl"
+          className="px-20 py-8 text-3xl shadow-2xl"
         >
-          Collect Rewards
+          COLLECT STARS!
         </Button>
       </motion.div>
     </motion.div>

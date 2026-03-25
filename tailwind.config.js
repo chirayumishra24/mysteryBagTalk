@@ -8,26 +8,33 @@ export default {
     extend: {
       colors: {
         surface: {
-          light: '#1e1446',
-          DEFAULT: '#0f0a28',
+          light: '#ffffff',
+          DEFAULT: '#f8fafc',
         },
         primary: {
-          light: '#a78bfa',
-          DEFAULT: '#7c3aed',
-          dark: '#5b21b6',
+          light: '#fef08a',
+          DEFAULT: '#facc15',
+          dark: '#ca8a04',
         },
         secondary: {
           light: '#60a5fa',
           DEFAULT: '#3b82f6',
+          dark: '#1d4ed8',
         },
         accent: {
-          light: '#f9a8d4',
-          DEFAULT: '#f472b6',
+          light: '#86efac',
+          DEFAULT: '#4ade80',
+          dark: '#16a34a',
+        },
+        bag: {
+          light: '#d97706',
+          DEFAULT: '#92400e',
+          dark: '#78350f',
         }
       },
       fontFamily: {
-        display: ['Outfit', 'sans-serif'],
-        body: ['Space Grotesk', 'sans-serif'],
+        display: ['Fredoka', 'sans-serif'],
+        body: ['Fredoka', 'sans-serif'],
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',

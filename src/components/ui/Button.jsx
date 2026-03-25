@@ -34,26 +34,26 @@ export default function Button({
   };
 
   const baseClasses =
-    "relative font-display font-semibold rounded-2xl transition-colors duration-300 cursor-pointer select-none overflow-hidden group";
+    "relative font-display font-bold rounded-2xl transition-all duration-200 cursor-pointer select-none overflow-hidden group border-2 border-white/30";
 
   const variants = {
     primary:
-      "bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_30px_rgba(139,92,246,0.3)]",
+      "bg-primary text-secondary-dark hover:bg-yellow-300 shadow-[0_6px_0_#ca8a04] active:shadow-[0_2px_0_#ca8a04] active:translate-y-[4px]",
     secondary:
-      "bg-blue-600 text-white hover:bg-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)]",
+      "bg-secondary text-white hover:bg-blue-400 shadow-[0_6px_0_#1d4ed8] active:shadow-[0_2px_0_#1d4ed8] active:translate-y-[4px]",
     accent:
-      "bg-pink-500 text-white hover:bg-pink-400 shadow-[0_0_30px_rgba(244,114,182,0.3)]",
+      "bg-accent text-white hover:bg-green-300 shadow-[0_6px_0_#166534] active:shadow-[0_2px_0_#166534] active:translate-y-[4px]",
     ghost:
-      "glass text-purple-200 hover:text-white hover:border-purple-400/40",
+      "bg-white/20 text-blue-900 hover:bg-white/40 border-none shadow-sm",
     outline:
-      "border-2 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 shadow-none",
+      "border-4 border-secondary text-secondary hover:bg-secondary/10 shadow-none",
   };
 
   const sizes = {
     sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-base",
-    lg: "px-10 py-4 text-lg",
-    xl: "px-14 py-5 text-xl",
+    md: "px-8 py-4 text-lg",
+    lg: "px-12 py-5 text-xl",
+    xl: "px-16 py-6 text-2xl",
   };
 
   return (
@@ -61,26 +61,14 @@ export default function Button({
       ref={ref}
       onClick={onClick}
       disabled={disabled}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: mouseXSpring, y: mouseYSpring }}
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className} ${disabled ? "opacity-50 cursor-not-allowed grayscale" : ""}`}
-      whileHover={disabled ? {} : { scale: 1.05 }}
-      whileTap={disabled ? {} : { scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      whileHover={disabled ? {} : { scale: 1.02 }}
+      whileTap={disabled ? {} : { scale: 0.98 }}
     >
-      {/* Liquid background glow hover element */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden rounded-2xl pointer-events-none">
-        <motion.div
-           className="absolute w-24 h-24 bg-white/20 blur-xl rounded-full"
-           style={{ 
-             left: useTransform(mouseXSpring, (v) => `calc(50% + ${v * 4}px - 48px)`),
-             top: useTransform(mouseYSpring, (v) => `calc(50% + ${v * 4}px - 48px)`)
-           }}
-        />
-      </div>
+      {/* Glossy Reflection Overlay */}
+      <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 pointer-events-none rounded-t-xl" />
 
-      <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-md">
+      <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-sm uppercase tracking-wider">
         {icon && <span className="text-xl">{icon}</span>}
         {children}
       </span>

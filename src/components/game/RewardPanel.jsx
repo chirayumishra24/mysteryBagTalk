@@ -43,24 +43,25 @@ export default function RewardPanel() {
       exit={{ opacity: 0 }}
       className="w-full max-w-4xl mx-auto z-20 relative px-4 flex flex-col items-center justify-center min-h-[90vh]"
     >
-      <div className="text-center mb-10 w-full relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-64 bg-gradient-to-b from-yellow-500/20 to-pink-500/20 blur-3xl rounded-full" />
+      <div className="text-center mb-12 w-full relative z-30">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-64 bg-primary/20 blur-3xl rounded-full" />
         
         <motion.h2
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-5xl md:text-6xl font-display font-black text-white relative z-10"
+          initial={{ y: -30, opacity: 0, rotate: -2 }}
+          animate={{ y: 0, opacity: 1, rotate: 2 }}
+          transition={{ repeat: Infinity, repeatType: "reverse", duration: 2 }}
+          className="text-6xl md:text-8xl font-display font-black text-secondary text-outline-blue relative z-10 uppercase tracking-tighter"
         >
-          Great Job!
+          YOU DID IT!
         </motion.h2>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 w-full items-stretch justify-center relative z-10">
         
         {/* Left Card: Score Breakdown */}
-        <Card className="flex-1 flex flex-col p-8" delay={0.2}>
-          <h3 className="text-xl font-display font-bold text-purple-300 border-b border-purple-500/20 pb-4 mb-6">
-            Brownie Points Earned
+        <Card variant="light" className="flex-1 flex flex-col p-8 border-4 border-sky-100" delay={0.2}>
+          <h3 className="text-2xl font-display font-black text-secondary border-b-4 border-sky-50 pb-4 mb-6 uppercase tracking-tight">
+            MYSTERY POINTS 🏅
           </h3>
           
           <ul className="space-y-4 flex-1">
@@ -70,13 +71,13 @@ export default function RewardPanel() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.2 }}
-                className="flex items-center justify-between bg-purple-900/40 p-4 rounded-xl border border-purple-500/20"
+                className="flex items-center justify-between"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">✅</span>
-                  <span className="text-purple-100 font-body text-lg">{point.action}</span>
+                <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border-2 border-sky-50 shadow-sm transition-all hover:scale-[1.02]">
+                  <span className="text-2xl bg-sky-50 rounded-full p-1">✅</span>
+                  <span className="text-slate-700 font-display font-bold text-lg">{point.action}</span>
                 </div>
-                <span className="font-display font-bold text-pink-400 text-xl">+{point.points}</span>
+                <span className="font-display font-black text-secondary text-2xl">+{point.points}</span>
               </motion.li>
             ))}
           </ul>
@@ -111,27 +112,26 @@ export default function RewardPanel() {
                 transition={{ type: "spring", bounce: 0.6 }}
                 className="flex flex-col items-center"
               >
-                <div className="relative w-40 h-40 mb-4 flex justify-center items-center">
+                <div className="relative w-48 h-48 mb-6 flex justify-center items-center">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border-4 border-dashed border-yellow-400/50 rounded-full"
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-[-10px] border-4 border-dashed border-primary/50 rounded-full"
                   />
-                  <div className="w-32 h-32 bg-gradient-to-br from-yellow-300 via-orange-400 to-red-500 rounded-full flex items-center justify-center p-1 shadow-[0_0_40px_rgba(250,204,21,0.6)]">
-                    <div className="w-full h-full bg-gray-900 rounded-full flex items-center justify-center relative overflow-hidden">
-                      {/* Shine effect */}
+                  <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center p-2 shadow-2xl border-8 border-primary">
+                    <div className="w-full h-full bg-sky-50 rounded-full flex items-center justify-center relative overflow-hidden border-4 border-white">
                       <motion.div 
                         initial={{ x: "-100%" }}
                         animate={{ x: "200%" }}
                         transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-                        className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12"
+                        className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent transform -skew-x-12"
                       />
-                      <span className="text-6xl group-hover:scale-110 transition-transform">🏆</span>
+                      <span className="text-7xl group-hover:scale-110 transition-transform drop-shadow-md">🏆</span>
                     </div>
                   </div>
                 </div>
                 
-                <h3 className="text-3xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">
+                <h3 className="text-4xl font-display font-black text-secondary text-outline-blue uppercase transform -rotate-2">
                   {gameContent.rewardBadge}
                 </h3>
               </motion.div>
@@ -148,9 +148,9 @@ export default function RewardPanel() {
       >
         {/* Quick Replay - Skip content, go straight to next object */}
         <Button
-          size="lg"
+          size="xl"
+          variant="primary"
           onClick={() => {
-            // Partial reset: keep hasSeenContent true, reset object/sentences/score
             const store = useGameStore.getState();
             store.setSelectedObject(null);
             store.updateSentence("name", "");
@@ -159,10 +159,9 @@ export default function RewardPanel() {
             store.resetTimer();
             store.setStep("think");
           }}
-          icon="⚡"
-          className="shadow-[0_0_30px_rgba(139,92,246,0.3)]"
+          icon="🎒"
         >
-          Quick Play Again
+          PLAY AGAIN!
         </Button>
         
         {/* Full Reset */}
@@ -174,7 +173,7 @@ export default function RewardPanel() {
           }}
           icon="🔄"
         >
-          New Game
+          Main Menu
         </Button>
       </motion.div>
     </motion.div>

@@ -63,10 +63,10 @@ export default function ContentRenderer() {
         {/* Module Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="mb-8 flex items-center gap-4 border-b border-purple-500/20 pb-4"
+          className="mb-8 flex items-center gap-4 border-b-4 border-sky-100 pb-4"
         >
-          <div className="w-2 h-8 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-300 font-display font-bold text-sm tracking-[0.2em] uppercase">
+          <div className="w-3 h-10 bg-gradient-to-b from-primary to-amber-500 rounded-full shadow-sm" />
+          <span className="text-secondary font-display font-black text-sm tracking-[0.2em] uppercase">
             {currentModule.title}
           </span>
         </motion.div>
@@ -83,7 +83,7 @@ export default function ContentRenderer() {
               className="flex-1 overflow-y-auto px-2 custom-scrollbar"
               ref={scrollRef}
             >
-              <motion.h2 variants={itemVariants} className="text-4xl md:text-6xl font-display font-black text-white mb-10 drop-shadow-xl">
+              <motion.h2 variants={itemVariants} className="text-4xl md:text-6xl font-display font-black text-blue-900 mb-10 drop-shadow-sm transform -rotate-1">
                 {currentChapter.title}
               </motion.h2>
 
@@ -93,13 +93,13 @@ export default function ContentRenderer() {
                 {/* Intro / Highlight Tile */}
                 {currentChapter.intro && (
                   <motion.div variants={itemVariants} className="md:col-span-8">
-                    <Card animate={false} className="h-full bg-gradient-to-br from-indigo-900/60 via-purple-900/40 to-black/60 border border-t-white/10 border-l-white/10 backdrop-blur-2xl shadow-2xl relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-[80px] -mr-20 -mt-20 group-hover:bg-purple-400/30 transition-colors duration-1000" />
-                      <div className="flex items-start gap-3">
-                        <p className="text-2xl md:text-3xl leading-relaxed text-purple-50 font-display font-medium relative z-10 italic flex-1">
+                    <Card animate={false} variant="yellow" className="h-full relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -mr-20 -mt-20" />
+                      <div className="flex items-start gap-4">
+                        <p className="text-2xl md:text-3xl leading-relaxed text-yellow-900 font-display font-bold relative z-10 flex-1">
                           {currentChapter.intro}
                         </p>
-                        <ReadAloud text={currentChapter.intro} className="flex-shrink-0 mt-2" />
+                        <ReadAloud text={currentChapter.intro} className="flex-shrink-0 mt-2 bg-white/50 rounded-full p-2" />
                       </div>
                     </Card>
                   </motion.div>
@@ -135,17 +135,17 @@ export default function ContentRenderer() {
                 {/* Questions / Discussion Tile */}
                 {currentChapter.questions && (
                   <motion.div variants={itemVariants} className="md:col-span-6">
-                    <Card animate={false} className="h-full glass-light bg-black/40 hover:bg-black/30 transition-colors duration-500">
-                      <h3 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-orange-300 mb-6 flex items-center gap-3">
-                        <div className="p-2 bg-pink-500/20 rounded-lg text-xl">🤔</div> 
-                        Think About It
+                    <Card animate={false} variant="light" className="h-full border-4 border-secondary/30">
+                      <h3 className="text-3xl font-display font-black text-secondary mb-6 flex items-center gap-3">
+                        <div className="p-3 bg-secondary/10 rounded-2xl text-2xl shadow-inner italic">?</div> 
+                        THINK ABOUT IT
                       </h3>
                       <ul className="space-y-4">
                         {currentChapter.questions.map((q, i) => (
-                          <li key={i} className="flex items-start gap-4 text-purple-100 group/item">
-                            <div className="mt-1.5 w-2 h-2 rounded-full bg-pink-400 group-hover/item:scale-150 group-hover/item:shadow-[0_0_10px_#f472b6] transition-all duration-300" />
-                            <span className="font-body text-xl leading-relaxed flex-1">{q}</span>
-                            <ReadAloud text={q} className="flex-shrink-0 mt-0.5" />
+                          <li key={i} className="flex items-start gap-4 text-slate-700 group/item bg-white/50 p-3 rounded-2xl transition-all hover:translate-x-1 hover:bg-white">
+                            <div className="mt-1.5 w-3 h-3 rounded-full bg-secondary shadow-md" />
+                            <span className="font-display font-medium text-xl leading-relaxed flex-1">{q}</span>
+                            <ReadAloud text={q} className="flex-shrink-0 mt-0.5 opacity-60 hover:opacity-100" />
                           </li>
                         ))}
                       </ul>
@@ -156,16 +156,16 @@ export default function ContentRenderer() {
                 {/* Explanations Tile */}
                 {currentChapter.explain && (
                   <motion.div variants={itemVariants} className="md:col-span-6">
-                    <Card animate={false} className="h-full glass border-blue-500/20 hover:border-blue-400/40 transition-colors duration-500 overflow-hidden relative">
-                      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-[60px]" />
-                      <h4 className="font-display font-bold text-blue-400 mb-4 uppercase tracking-[0.15em] text-sm flex items-center gap-2">
-                        <span className="w-4 h-[1px] bg-blue-400" /> Explanation
+                    <Card animate={false} variant="green" className="h-full overflow-hidden relative">
+                      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-accent/20 rounded-full blur-[60px]" />
+                      <h4 className="font-display font-black text-accent-dark mb-4 uppercase tracking-[0.15em] text-sm flex items-center gap-2">
+                        <span className="w-8 h-[4px] bg-accent rounded-full" /> EXPLANATION
                       </h4>
-                      <div className="flex items-start gap-3">
-                        <p className="text-blue-50 font-body text-xl leading-loose relative z-10 flex-1">
+                      <div className="flex items-start gap-4">
+                        <p className="text-green-900 font-display font-medium text-xl leading-loose relative z-10 flex-1">
                           {currentChapter.explain}
                         </p>
-                        <ReadAloud text={currentChapter.explain} className="flex-shrink-0 mt-1" />
+                        <ReadAloud text={currentChapter.explain} className="flex-shrink-0 mt-1 bg-white/50 rounded-full p-2" />
                       </div>
                     </Card>
                   </motion.div>
@@ -179,16 +179,16 @@ export default function ContentRenderer() {
         {/* Sticky Footer */}
         <motion.div 
            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-           className="mt-4 pt-4 border-t border-purple-500/20 flex justify-end items-center"
+           className="mt-6 pt-6 border-t-4 border-sky-100 flex justify-end items-center"
         >
-          <div className="text-purple-400/50 font-body text-sm mr-auto hidden md:block tracking-widest uppercase">
-            {currentChapterIndex + 1} / {currentModule.chapters.length}
+          <div className="text-slate-400 font-display font-black text-sm mr-auto hidden md:block tracking-widest uppercase bg-sky-50 px-4 py-2 rounded-full border-2 border-sky-100">
+            PAGE {currentChapterIndex + 1} OF {currentModule.chapters.length}
           </div>
-          <Button onClick={handleNext} disabled={isTransitioning} size="lg" className="w-full md:w-auto shadow-[0_10px_40px_rgba(139,92,246,0.3)]">
+          <Button onClick={handleNext} disabled={isTransitioning} size="lg" variant="primary" className="w-full md:w-auto">
             {currentChapterIndex < currentModule.chapters.length - 1 ||
             currentModuleIndex < gameContent.modules.length - 1
-              ? "Continue ➔"
-              : "Let's Play! 🎬"}
+              ? "NEXT CHAPTER ➜"
+              : "LET'S PLAY! 🎬"}
           </Button>
         </motion.div>
       </div>

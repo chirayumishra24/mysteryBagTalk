@@ -9,12 +9,12 @@ export default function Card({
   onClick,
 }) {
   const variants = {
-    default: "glass",
-    light: "glass-light",
-    solid:
-      "bg-gradient-to-br from-purple-900/60 to-indigo-900/60 border border-purple-500/20 rounded-2xl",
-    highlight:
-      "glass border-purple-400/30 glow-purple",
+    default: "card-playful",
+    yellow: "card-playful-yellow",
+    green: "card-playful-green",
+    light: "bg-white/90 backdrop-blur-md rounded-3xl border-2 border-sky-100 shadow-xl",
+    solid: "bg-white rounded-3xl shadow-2xl border-4 border-secondary",
+    highlight: "card-playful border-primary shadow-[0_12px_0_#ca8a04]",
   };
 
   const Component = animate ? motion.div : "div";

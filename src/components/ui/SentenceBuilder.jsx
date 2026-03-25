@@ -19,21 +19,21 @@ export default function SentenceBuilder({ sentences = [] }) {
           transition={{ delay: index * 0.2, duration: 0.5, ease: "easeOut" }}
           className="group"
         >
-          <div className="glass p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 hover:border-purple-400/40 transition-all duration-300">
+          <div className="bg-white p-5 rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center gap-4 border-4 border-sky-100 hover:border-secondary transition-all duration-300 shadow-md">
             {/* Sentence number */}
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-display font-bold text-sm">
+            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-white font-display font-black text-xl shadow-md transform -rotate-3">
               {index + 1}
             </div>
 
             {/* Sentence template with input */}
-            <div className="flex-1 flex flex-wrap items-center gap-2 text-lg font-body">
+            <div className="flex-1 flex flex-wrap items-center gap-2">
               {sentence.template.split("___").map((part, partIndex, arr) => (
                 <span key={partIndex} className="flex items-center gap-2">
-                  <span className="text-purple-100">{part}</span>
+                  <span className="text-slate-700 font-display font-black text-xl">{part}</span>
                   {partIndex < arr.length - 1 && (
                     <motion.div
                       className="relative"
-                      whileFocus={{ scale: 1.02 }}
+                      whileFocus={{ scale: 1.05 }}
                     >
                       <input
                         type="text"
@@ -42,11 +42,7 @@ export default function SentenceBuilder({ sentences = [] }) {
                           updateSentence(keyMap[index], e.target.value)
                         }
                         placeholder={sentence.placeholder}
-                        className="bg-purple-900/30 border-2 border-purple-500/30 rounded-xl px-4 py-2 text-white placeholder-purple-400/40 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all duration-300 min-w-[140px] font-body"
-                      />
-                      {/* Focus glow effect */}
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" 
-                        style={{ boxShadow: "0 0 20px rgba(139,92,246,0.2)" }} 
+                        className="bg-sky-50 border-4 border-sky-100 rounded-2xl px-5 py-3 text-secondary font-display font-black placeholder-slate-300 focus:outline-none focus:border-secondary focus:bg-white transition-all duration-300 min-w-[180px] shadow-inner"
                       />
                     </motion.div>
                   )}

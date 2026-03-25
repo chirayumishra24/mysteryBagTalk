@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function Logo() {
+export const GameLogo = () => {
   return (
     <motion.div 
       initial={{ y: -50, opacity: 0 }}
@@ -11,10 +11,10 @@ export default function Logo() {
         MYSTERY BAG TALK
       </h1>
       <div className="bg-secondary px-6 py-1 rounded-full -mt-2 rotate-1 shadow-lg border-2 border-white">
-        <p className="text-white text-sm md:text-base font-bold tracking-widest uppercase">
+        <p className="text-white text-sm md:text-base font-bold tracking-widest uppercase text-center">
           Build Speaking Confidence & Vocabulary
         </p>
       </div>
     </motion.div>
   );
-}
+};

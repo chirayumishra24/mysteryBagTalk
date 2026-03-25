@@ -4,7 +4,7 @@ import { Environment } from "@react-three/drei";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
 import useGameStore, { AVATARS } from "../../store/useGameStore";
-import Logo from "../ui/Logo";
+import { GameLogo } from "../ui/Logo";
 import { resumeAudio, playChime, playClick } from "../../hooks/useAudio";
 import Avatar3D, { AVATAR_CONFIGS } from "../3d/Avatar3D";
 
@@ -36,7 +36,7 @@ export default function StartScreen() {
         transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
         className="text-center space-y-8 mb-6"
       >
-        <Logo />
+        <GameLogo />
         
         <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-display font-black uppercase tracking-tight">
           Step into the classroom of curiosity! Can you guess what's hidden inside the mystery bag?

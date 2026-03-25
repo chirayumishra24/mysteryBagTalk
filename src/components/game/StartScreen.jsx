@@ -3,15 +3,13 @@ import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
-import useGameStore from "../../store/useGameStore";
-import Button from "../ui/Button";
+import useGameStore, { AVATARS } from "../../store/useGameStore";
 import Logo from "../ui/Logo";
-import mascotHappy from "../../assets/mascot_happy.png"; // Placeholder path
 import { resumeAudio, playChime, playClick } from "../../hooks/useAudio";
 import Avatar3D, { AVATAR_CONFIGS } from "../3d/Avatar3D";
 
 export default function StartScreen() {
-  const { setStep, setAvatar, setPlayerName, selectedAvatar } = useGameStore();
+  const { setStep, setAvatar, setPlayerName } = useGameStore();
   const [name, setName] = useState("");
   const [chosenAvatar, setChosenAvatar] = useState(null);
 
@@ -40,7 +38,7 @@ export default function StartScreen() {
       >
         <Logo />
         
-        <p className="text-xl md:text-2xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed font-body">
+        <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-display font-black uppercase tracking-tight">
           Step into the classroom of curiosity! Can you guess what's hidden inside the mystery bag?
         </p>
       </motion.div>
@@ -52,15 +50,15 @@ export default function StartScreen() {
         transition={{ delay: 0.5 }}
         className="w-full max-w-2xl mb-6"
       >
-        <h3 className="text-sm font-display font-bold text-purple-300 uppercase tracking-wider mb-3">
-          Choose Your 3D Avatar
+        <h3 className="text-sm font-display font-black text-secondary uppercase tracking-widest mb-4">
+          CHOOSE YOUR 3D AVATAR
         </h3>
         
         {/* Large Showcase of the Chosen Avatar */}
-        <div className="w-48 h-48 mx-auto mb-6 relative">
-          <div className="absolute inset-0 bg-purple-500/10 blur-xl rounded-full" />
+        <div className="w-48 h-48 mx-auto mb-8 relative group">
+          <div className="absolute inset-[-10px] bg-secondary/10 blur-2xl rounded-full group-hover:bg-secondary/20 transition-all" />
           {chosenAvatar ? (
-            <Canvas camera={{ position: [0, 0, 3], fov: 45 }} className="rounded-full border-2 border-purple-400/30 glass shadow-[0_0_30px_rgba(139,92,246,0.5)]">
+            <Canvas camera={{ position: [0, 0, 3], fov: 45 }} className="rounded-[3rem] border-4 border-white bg-white/50 shadow-xl overflow-hidden">
                <ambientLight intensity={0.5} />
                <directionalLight position={[5, 5, 5]} intensity={1} />
                <Environment preset="city" />
@@ -69,14 +67,14 @@ export default function StartScreen() {
                </Suspense>
             </Canvas>
           ) : (
-            <div className="w-full h-full rounded-full border-2 border-dashed border-purple-500/30 flex items-center justify-center text-purple-300/50 italic text-sm">
-              Select below
+            <div className="w-full h-full rounded-[3rem] border-4 border-dashed border-slate-200 flex items-center justify-center text-slate-300 font-display font-black uppercase text-xs text-center px-4 leading-tight">
+              PICK AN AVATAR BELOW!
             </div>
           )}
         </div>
 
         {/* Small Picker Grid */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
           {AVATARS.map((avatar) => {
              const config = AVATAR_CONFIGS[avatar.name] || AVATAR_CONFIGS.Wizard;
              const isSel = chosenAvatar === avatar;
@@ -89,18 +87,14 @@ export default function StartScreen() {
                   playClick();
                   setChosenAvatar(avatar);
                 }}
-                className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden relative ${
+                className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden relative border-4 ${
                   isSel
-                    ? "shadow-[0_0_20px_rgba(139,92,246,0.6)] border-2 scale-110 z-10"
-                    : "glass border hover:border-purple-400/50"
+                    ? "border-secondary shadow-lg scale-110 z-10 bg-white"
+                    : "border-slate-100 bg-white/50 hover:border-slate-200"
                 }`}
-                style={{
-                  borderColor: isSel ? config.accentColor : "rgba(139,92,246,0.2)",
-                  background: isSel ? `radial-gradient(circle at center, ${config.accentColor}40, transparent)` : undefined,
-                }}
                 title={avatar.name}
               >
-                  <div className="absolute inset-0 opacity-50">
+                  <div className="absolute inset-0 opacity-80">
                      <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
                        <ambientLight intensity={0.6} />
                        <directionalLight position={[2, 5, 2]} intensity={1} />
@@ -115,13 +109,15 @@ export default function StartScreen() {
         </div>
 
         {/* Player Name */}
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name (optional)"
-          className="w-full max-w-sm mx-auto block bg-purple-900/30 border border-purple-500/20 rounded-xl px-4 py-3 text-center text-purple-100 font-body placeholder:text-purple-400/40 focus:outline-none focus:border-purple-400 transition-colors"
-        />
+        <div className="relative max-w-sm mx-auto">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="ENTER YOUR NAME..."
+            className="w-full bg-white border-4 border-slate-100 rounded-2xl px-6 py-4 text-center text-slate-700 font-display font-black placeholder:text-slate-300 focus:outline-none focus:border-secondary transition-all shadow-inner"
+          />
+        </div>
       </motion.div>
 
       <motion.div
@@ -130,25 +126,26 @@ export default function StartScreen() {
         transition={{ duration: 0.8, delay: 0.8, type: "spring", stiffness: 100 }}
         className="relative"
       >
-        <div className="absolute inset-0 bg-purple-500/20 blur-3xl rounded-full scale-150 animate-pulse-glow" />
+        <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
         <Button
           size="xl"
+          variant="primary"
           onClick={handleStart}
           icon="🎮"
-          className="relative z-10"
+          className="relative z-10 px-20 py-8 text-3xl"
         >
-          Start Game
+          START LEARNING!
         </Button>
       </motion.div>
 
       {/* Floating decorative elements */}
       <motion.div
-        className="absolute top-20 left-10 w-24 h-24 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl blur-xl"
+        className="absolute top-20 left-10 w-24 h-24 bg-primary/10 rounded-[2rem] blur-xl border-4 border-white"
         animate={{ y: [0, -30, 0], rotate: [0, 45, 0], scale: [1, 1.2, 1] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 rounded-full blur-xl"
+        className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl border-4 border-white"
         animate={{ y: [0, 40, 0], x: [0, -20, 0], scale: [1, 1.3, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />

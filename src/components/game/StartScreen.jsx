@@ -1,12 +1,9 @@
-import { useState, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
 import useGameStore, { AVATARS } from "../../store/useGameStore";
 import { GameLogo } from "../ui/Logo";
 import { resumeAudio, playChime, playClick } from "../../hooks/useAudio";
-import Avatar3D, { AVATAR_CONFIGS } from "../3d/Avatar3D";
 
 export default function StartScreen() {
   const { setStep, setAvatar, setPlayerName } = useGameStore();
@@ -58,14 +55,9 @@ export default function StartScreen() {
         <div className="w-48 h-48 mx-auto mb-8 relative group">
           <div className="absolute inset-[-10px] bg-secondary/10 blur-2xl rounded-full group-hover:bg-secondary/20 transition-all" />
           {chosenAvatar ? (
-            <Canvas camera={{ position: [0, 0, 3], fov: 45 }} className="rounded-[3rem] border-4 border-white bg-white/50 shadow-xl overflow-hidden">
-               <ambientLight intensity={0.5} />
-               <directionalLight position={[5, 5, 5]} intensity={1} />
-               <Environment preset="city" />
-               <Suspense fallback={null}>
-                  <Avatar3D name={chosenAvatar.name} isSelected={true} />
-               </Suspense>
-            </Canvas>
+            <div className="w-full h-full rounded-[3rem] border-4 border-white bg-white/50 shadow-xl overflow-hidden flex items-center justify-center text-7xl shadow-inner">
+              {chosenAvatar.emoji}
+            </div>
           ) : (
             <div className="w-full h-full rounded-[3rem] border-4 border-dashed border-slate-200 flex items-center justify-center text-slate-300 font-display font-black uppercase text-xs text-center px-4 leading-tight">
               PICK AN AVATAR BELOW!

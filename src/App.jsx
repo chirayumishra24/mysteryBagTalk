@@ -6,6 +6,7 @@ import ProgressBar from "./components/ui/ProgressBar";
 import Mascot from "./components/ui/Mascot";
 import GameFlow from "./components/game/GameFlow";
 import TeacherDashboard from "./components/game/TeacherDashboard";
+import FullscreenButton from "./components/ui/FullscreenButton";
 import useGameStore from "./store/useGameStore";
 import useTeacherMode from "./hooks/useTeacherMode";
 
@@ -51,6 +52,7 @@ function App() {
     >
       <ParticleBackground />
       <ProgressBar />
+      <FullscreenButton />
 
       <Scene
         onBagClick={handleBagClick}

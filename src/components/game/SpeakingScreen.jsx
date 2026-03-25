@@ -10,13 +10,14 @@ import useSpeechRecognition from "../../hooks/useSpeechRecognition";
 import useAudioRecorder from "../../hooks/useAudioRecorder";
 import { playClick, playChime } from "../../hooks/useAudio";
 import Avatar3D from "../3d/Avatar3D";
+import { analyzeVoice } from "../../services/api";
 
 export default function SpeakingScreen() {
-  const { setStep, sentences, selectedAvatar, addScore } = useGameStore();
+  const { setStep, sentences, selectedAvatar, addScore, selectedObject, setAiReview, setIsAnalyzing, aiReview, isAnalyzing } = useGameStore();
   const { transcript, isListening, isSupported, startListening, stopListening, resetTranscript } =
     useSpeechRecognition();
   const {
-    isRecording, volumeLevel, audioUrl, metrics,
+    isRecording, volumeLevel, audioUrl, audioBlob, metrics,
     startRecording, stopRecording, resetRecording,
   } = useAudioRecorder();
   const [elapsed, setElapsed] = useState(0);
@@ -60,20 +61,39 @@ export default function SpeakingScreen() {
     }, 300);
   };
 
-  // Stop recording + speech recognition together
+  // Stop recording + speech recognition together, then trigger AI analysis
   const handleStopRecording = () => {
     playClick();
-    // Always try to stop both — don't rely on stale isListening/isRecording
     try { stopRecording(); } catch (e) {}
     try { stopListening(); } catch (e) {}
-    // Short delay to let recorder.onstop fire and compute metrics
+    // Show report immediately, analysis happens in background
     setTimeout(() => setPhase("report"), 400);
+
+    // Trigger Gemini analysis in background
+    setTimeout(async () => {
+      setIsAnalyzing(true);
+      try {
+        const review = await analyzeVoice({
+          audioBlob,
+          transcript,
+          sentences,
+          objectName: selectedObject?.name,
+        });
+        setAiReview(review);
+      } catch (err) {
+        console.error("AI analysis failed:", err);
+        setAiReview(null);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    }, 600);
   };
 
   // Retry recording
   const handleRetry = () => {
     resetTranscript();
     resetRecording();
+    setAiReview(null);
     setPhase("fill");
   };
 
@@ -313,6 +333,8 @@ export default function SpeakingScreen() {
               audioUrl={audioUrl}
               metrics={metrics}
               sentences={sentences}
+              aiReview={aiReview}
+              isAnalyzing={isAnalyzing}
               onContinue={handleContinue}
               onRetry={handleRetry}
             />

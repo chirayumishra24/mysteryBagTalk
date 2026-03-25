@@ -10,6 +10,7 @@ export default function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [volumeLevel, setVolumeLevel] = useState(0);
   const [audioUrl, setAudioUrl] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(null);
   const [metrics, setMetrics] = useState(null);
 
   const mediaRecorderRef = useRef(null);
@@ -87,6 +88,7 @@ export default function useAudioRecorder() {
         const blob = new Blob(chunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
+        setAudioBlob(blob);
 
         const samples = volumeSamplesRef.current;
         const avgVolume =
@@ -110,6 +112,7 @@ export default function useAudioRecorder() {
       isRecordingRef.current = true;
       setIsRecording(true);
       setAudioUrl(null);
+      setAudioBlob(null);
       setMetrics(null);
 
       sampleVolume();
@@ -141,6 +144,7 @@ export default function useAudioRecorder() {
   const resetRecording = useCallback(() => {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);
+    setAudioBlob(null);
     setMetrics(null);
     setVolumeLevel(0);
     chunksRef.current = [];
@@ -151,6 +155,7 @@ export default function useAudioRecorder() {
     isRecording,
     volumeLevel,
     audioUrl,
+    audioBlob,
     metrics,
     startRecording,
     stopRecording,

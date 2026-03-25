@@ -58,6 +58,10 @@ const useGameStore = create((set, get) => ({
   stars: 0,
   badges: [],
 
+  // AI Voice Analysis
+  aiReview: null,
+  isAnalyzing: false,
+
   // Content navigation
   currentChapterIndex: 0,
   currentModuleIndex: 0,
@@ -95,6 +99,8 @@ const useGameStore = create((set, get) => ({
       selectedObject: null,
       sentences: { name: "", colour: "", use: "" },
       guesses: [],
+      aiReview: null,
+      isAnalyzing: false,
       isCorrectGuess: false,
       timerSeconds: 30,
       timerActive: false,
@@ -161,6 +167,9 @@ const useGameStore = create((set, get) => ({
     set((state) => ({
       badges: [...state.badges, badge],
     })),
+
+  setAiReview: (review) => set({ aiReview: review }),
+  setIsAnalyzing: (val) => set({ isAnalyzing: val }),
 
   nextChapter: () =>
     set((state) => ({

@@ -97,6 +97,8 @@ export default function SpeechReportCard({
   audioUrl,
   metrics, // { avgVolume, peakVolume, durationMs }
   sentences, // { name, colour, use }
+  aiReview, // Gemini AI review object (or null)
+  isAnalyzing, // boolean
   onContinue,
   onRetry,
 }) {
@@ -249,6 +251,102 @@ export default function SpeechReportCard({
           />
         </motion.div>
       )}
+
+      {/* AI Review Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9 }}
+        className="mb-6"
+      >
+        <div className="text-xs font-display font-black text-secondary uppercase tracking-widest mb-3">
+          🤖 AI TEACHER REVIEW
+        </div>
+
+        {isAnalyzing && (
+          <div className="bg-sky-50 rounded-2xl p-6 border-4 border-sky-100 text-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              className="text-4xl mb-3 inline-block"
+            >
+              🔍
+            </motion.div>
+            <p className="text-slate-500 font-display font-bold text-sm uppercase">
+              Analyzing your speech with AI...
+            </p>
+          </div>
+        )}
+
+        {!isAnalyzing && aiReview && (
+          <div className="space-y-4">
+            {/* AI Feedback Message */}
+            <div className="bg-green-50 rounded-2xl p-5 border-4 border-green-100">
+              <p className="text-slate-700 font-display font-bold text-base leading-relaxed">
+                {aiReview.feedback}
+              </p>
+            </div>
+
+            {/* AI Score Breakdown */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[
+                { label: "Clarity", score: aiReview.clarity, icon: "🗣️" },
+                { label: "Vocabulary", score: aiReview.vocabulary, icon: "📚" },
+                { label: "Sentences", score: aiReview.sentence_structure, icon: "✏️" },
+                { label: "Accuracy", score: aiReview.accuracy, icon: "🎯" },
+                { label: "Confidence", score: aiReview.confidence, icon: "💪" },
+                { label: "Overall", score: aiReview.overall_stars, icon: "⭐" },
+              ].map(({ label, score, icon }) => (
+                <div
+                  key={label}
+                  className="bg-white rounded-2xl p-4 border-4 border-sky-50 text-center shadow-sm"
+                >
+                  <div className="text-2xl mb-1">{icon}</div>
+                  <div className="text-xs font-display font-black text-slate-400 uppercase">{label}</div>
+                  <div className="text-2xl font-display font-black text-secondary">
+                    {score}<span className="text-sm text-slate-300">/5</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Tip */}
+            {aiReview.tip && (
+              <div className="bg-amber-50 rounded-2xl p-5 border-4 border-amber-100">
+                <div className="text-xs font-display font-black text-amber-600 uppercase tracking-widest mb-2">💡 TIP FOR NEXT TIME</div>
+                <p className="text-slate-700 font-display font-bold text-sm">
+                  {aiReview.tip}
+                </p>
+              </div>
+            )}
+
+            {/* Highlighted Words */}
+            {aiReview.highlighted_words?.length > 0 && (
+              <div className="bg-purple-50 rounded-2xl p-5 border-4 border-purple-100">
+                <div className="text-xs font-display font-black text-purple-600 uppercase tracking-widest mb-3">✨ GREAT WORDS YOU USED</div>
+                <div className="flex flex-wrap gap-2">
+                  {aiReview.highlighted_words.map((word, i) => (
+                    <span
+                      key={i}
+                      className="bg-white border-2 border-purple-200 text-purple-700 px-3 py-1 rounded-full font-display font-bold text-sm shadow-sm"
+                    >
+                      {word}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!isAnalyzing && !aiReview && (
+          <div className="bg-slate-50 rounded-2xl p-5 border-4 border-slate-100 text-center">
+            <p className="text-slate-400 font-display font-bold text-sm">
+              AI review unavailable. Check your backend connection.
+            </p>
+          </div>
+        )}
+      </motion.div>
 
       {/* Actions */}
       <motion.div

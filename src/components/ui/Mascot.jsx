@@ -44,13 +44,14 @@ export default function Mascot() {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="relative bg-white/10 backdrop-blur-xl rounded-2xl rounded-bl-sm px-4 py-3 max-w-[220px] border border-white/15 shadow-xl"
+            className="relative bg-white border-4 border-primary rounded-2xl rounded-bl-sm px-5 py-3 max-w-[240px] shadow-lg pointer-events-auto"
           >
-            <p className="text-sm text-white/90 font-body leading-snug">
+            <p className="text-sm text-slate-800 font-display font-black leading-snug">
               {tip.text}
             </p>
             {/* Bubble tail */}
-            <div className="absolute -left-2 bottom-2 w-0 h-0 border-t-8 border-t-transparent border-r-8 border-r-white/10 border-b-8 border-b-transparent" />
+            <div className="absolute -left-[14px] bottom-1 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-primary border-b-[8px] border-b-transparent" />
+            <div className="absolute -left-2 bottom-2 w-0 h-0 border-t-4 border-t-transparent border-r-8 border-r-white border-b-4 border-b-transparent z-10" />
           </motion.div>
         </motion.div>
       </AnimatePresence>

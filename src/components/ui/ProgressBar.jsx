@@ -22,37 +22,37 @@ export default function ProgressBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[80] pointer-events-none">
       {/* Background track */}
-      <div className="h-4 bg-white/50 w-full backdrop-blur-sm border-b-2 border-sky-100 shadow-sm">
+      <div className="h-6 bg-sky-50 w-full border-b-4 border-sky-100 shadow-inner overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-secondary via-blue-400 to-accent rounded-r-full relative"
+          className="h-full bg-secondary rounded-r-full relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
           initial={{ width: "0%" }}
           animate={{ width: `${progress}%` }}
-          transition={{ type: "spring", damping: 20, stiffness: 100 }}
+          transition={{ type: "spring", damping: 25, stiffness: 120 }}
         >
-          {/* Tip highlight */}
-          <div className="absolute right-0 top-0 bottom-0 w-2 bg-white/40" />
+          {/* Glossy overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
         </motion.div>
       </div>
 
       {/* Step indicators (only on larger screens) */}
-      <div className="hidden md:flex justify-between px-8 py-3 max-w-4xl mx-auto">
+      <div className="hidden md:flex justify-between px-8 py-4 max-w-5xl mx-auto">
         {GAME_STEPS.map((step, i) => (
           <motion.div
             key={step}
             animate={{
-              scale: currentStep === step ? 1.25 : 1,
-              opacity: i <= stepIndex ? 1 : 0.4,
-              y: currentStep === step ? -2 : 0
+              scale: currentStep === step ? 1.2 : 1,
+              opacity: i <= stepIndex ? 1 : 0.6,
+              y: currentStep === step ? -3 : 0
             }}
-            className={`flex items-center gap-1.5 text-xs font-display font-black transition-all duration-300 px-3 py-1 rounded-full ${
+            className={`flex items-center gap-2 text-xs font-display font-black transition-all duration-300 px-4 py-2 rounded-2xl border-4 ${
               currentStep === step
-                ? "bg-secondary text-white shadow-md border-2 border-white"
+                ? "bg-secondary border-white text-white shadow-lg"
                 : i < stepIndex
-                ? "bg-blue-100 text-secondary"
-                : "bg-white/30 text-slate-400"
+                ? "bg-white border-sky-100 text-secondary"
+                : "bg-white border-slate-50 text-slate-300"
             }`}
           >
-            <span className="text-sm">{STEP_LABELS[step]}</span>
+            <span className="text-xl leading-none">{STEP_LABELS[step]}</span>
           </motion.div>
         ))}
       </div>

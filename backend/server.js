@@ -51,15 +51,15 @@ app.post("/api/analyze", upload.single("audio"), async (req, res) => {
     const prompt = buildPrompt(transcript, sentences, objectName);
 
     // Choose model — use audio inline data if file was uploaded
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const parts = [{ text: prompt }];
 
-    // Attach audio as inline data if provided
     if (req.file) {
       parts.push({
         inlineData: {
-          mimeType: req.file.mimetype || "audio/webm",
+          mimeType: req.file.mimetype === "audio/webm" || req.file.mimetype === "audio/mp4"
+            ? "audio/mp3" : (req.file.mimetype || "audio/mp3"),
           data: req.file.buffer.toString("base64"),
         },
       });

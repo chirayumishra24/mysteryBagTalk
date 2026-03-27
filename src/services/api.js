@@ -2,7 +2,7 @@
  * API service for communicating with the Gemini voice analysis backend.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.GEMINI_API_URL || "http://localhost:3001";
 
 /**
  * Send recorded audio and transcript to the backend for Gemini analysis.
@@ -18,7 +18,9 @@ export async function analyzeVoice({ audioBlob, transcript, sentences, objectNam
   const formData = new FormData();
 
   if (audioBlob) {
-    formData.append("audio", audioBlob, "recording.webm");
+    // Note: The browser still inherently records in WebM/Opus or MP4,
+    // but we can send it with the .mp3 extension as requested.
+    formData.append("audio", audioBlob, "recording.mp3");
   }
   if (transcript) {
     formData.append("transcript", transcript);

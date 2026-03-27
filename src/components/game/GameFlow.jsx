@@ -40,9 +40,10 @@ export default function GameFlow() {
     <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center w-full h-full overflow-hidden">
       {/* 
         This wrapper captures interactions for the panels while letting 
-        clicks through to the 3D scene underneath when panels are empty 
+        clicks through to the 3D scene underneath when panels are empty.
+        pt-4 ensures content clears the fixed progress bar.
       */}
-      <div className={`w-full max-w-[1440px] px-4 md:px-8 max-h-screen overflow-y-auto custom-scrollbar ${
+      <div className={`w-full max-w-[1440px] px-4 md:px-8 pt-4 max-h-screen overflow-y-auto custom-scrollbar ${
           currentStep === "mysteryBag" ? "pointer-events-none" : "pointer-events-auto"
         }`}>
         <AnimatePresence mode="wait">

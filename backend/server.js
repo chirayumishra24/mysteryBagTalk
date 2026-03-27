@@ -155,7 +155,12 @@ function parseGeminiResponse(text) {
   }
 }
 
-// --- Start ---
-app.listen(PORT, () => {
-  console.log(`🎒 Mystery Bag Talk API running on http://localhost:${PORT}`);
-});
+// --- Start (local dev only — Vercel uses the export below) ---
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`🎒 Mystery Bag Talk API running on http://localhost:${PORT}`);
+  });
+}
+
+// Export for Vercel serverless deployment
+export default app;

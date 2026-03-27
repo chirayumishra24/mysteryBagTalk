@@ -1,7 +1,8 @@
 /**
  * ProgressBar - A glowing step indicator at the top of the screen.
+ * Step indicators are hidden on the start screen to prevent overlapping with the title.
  */
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import useGameStore, { GAME_STEPS } from "../../store/useGameStore";
 
 const STEP_LABELS = {
@@ -18,11 +19,12 @@ const STEP_LABELS = {
 export default function ProgressBar() {
   const { currentStep, stepIndex } = useGameStore();
   const progress = ((stepIndex + 1) / GAME_STEPS.length) * 100;
+  const showStepIndicators = currentStep !== "start";
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[80] pointer-events-none">
       {/* Background track */}
-      <div className="h-6 bg-sky-50 w-full border-b-4 border-sky-100 shadow-inner overflow-hidden">
+      <div className="h-2 bg-sky-50/60 w-full border-b-2 border-sky-100/40 overflow-hidden">
         <motion.div
           className="h-full bg-secondary rounded-r-full relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
           initial={{ width: "0%" }}
@@ -34,28 +36,37 @@ export default function ProgressBar() {
         </motion.div>
       </div>
 
-      {/* Step indicators (only on larger screens) */}
-      <div className="hidden md:flex justify-between px-8 py-4 max-w-5xl mx-auto">
-        {GAME_STEPS.map((step, i) => (
+      {/* Step indicators — hidden on start screen to avoid overlapping title */}
+      <AnimatePresence>
+        {showStepIndicators && (
           <motion.div
-            key={step}
-            animate={{
-              scale: currentStep === step ? 1.2 : 1,
-              opacity: i <= stepIndex ? 1 : 0.6,
-              y: currentStep === step ? -3 : 0
-            }}
-            className={`flex items-center gap-2 text-xs font-display font-black transition-all duration-300 px-4 py-2 rounded-2xl border-4 ${
-              currentStep === step
-                ? "bg-secondary border-white text-white shadow-lg"
-                : i < stepIndex
-                ? "bg-white border-sky-100 text-secondary"
-                : "bg-white border-slate-50 text-slate-300"
-            }`}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="hidden md:flex justify-between px-8 py-3 max-w-5xl mx-auto"
           >
-            <span className="text-xl leading-none">{STEP_LABELS[step]}</span>
+            {GAME_STEPS.map((step, i) => (
+              <motion.div
+                key={step}
+                animate={{
+                  scale: currentStep === step ? 1.15 : 1,
+                  opacity: i <= stepIndex ? 1 : 0.5,
+                  y: currentStep === step ? -2 : 0
+                }}
+                className={`flex items-center gap-2 text-xs font-display font-black transition-all duration-300 px-3 py-1.5 rounded-xl border-3 ${
+                  currentStep === step
+                    ? "bg-secondary border-white text-white shadow-lg"
+                    : i < stepIndex
+                    ? "bg-white border-sky-100 text-secondary"
+                    : "bg-white/70 border-slate-50 text-slate-300"
+                }`}
+              >
+                <span className="text-lg leading-none">{STEP_LABELS[step]}</span>
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -6,20 +6,34 @@ import {
   ContactShadows,
   Stars,
 } from "@react-three/drei";
+import { AnimatePresence, motion } from "framer-motion";
 import MysteryBag from "./MysteryBag";
+import useGameStore from "../../store/useGameStore";
 
 /**
  * Scene - 3D Canvas wrapper for the Mystery Bag.
+ * Only renders on the mysteryBag step to avoid overlapping other UI panels.
  */
 export default function Scene({ onBagClick, isBagOpened }) {
+  const { currentStep } = useGameStore();
   // Prevent hydration mismatch / ensure client-side rendering
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
 
+  // Only show the 3D scene on the mysteryBag step
+  const showScene = currentStep === "mysteryBag";
+
   return (
-    <div className="w-full h-full absolute inset-0 z-10">
+    <AnimatePresence>
+      {showScene && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full h-full absolute inset-0 z-10">
       <Canvas
         camera={{ position: [0, 2, 8], fov: 45 }}
         dpr={[1, 2]}
@@ -66,6 +80,8 @@ export default function Scene({ onBagClick, isBagOpened }) {
         />
       </Canvas>
 
-    </div>
+    </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

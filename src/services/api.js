@@ -2,7 +2,7 @@
  * API service for communicating with the Gemini voice analysis backend.
  */
 
-const API_BASE = import.meta.env.GEMINI_API_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.GEMINI_API_URL || "https://mystery-bag-talk-1xs8.vercel.app/";
 
 /**
  * Send recorded audio and transcript to the backend for Gemini analysis.

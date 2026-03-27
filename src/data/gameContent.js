@@ -120,17 +120,15 @@ export const gameContent = {
   objects: {
     "2nd grade": [
       { emoji: "🔑", name: "Key" },
-      { emoji: "📛", name: "Name badge" },
+      { emoji: "🧽", name: "Duster" },
       { emoji: "🪙", name: "Coin" },
       { emoji: "🖊", name: "Whiteboard marker" },
-      { emoji: "🤍", name: "Chalk" },
       { emoji: "🪪", name: "ID card" },
       { emoji: "🕒", name: "Small clock" },
       { emoji: "🪛", name: "Pencil sharpener" },
       { emoji: "🥤", name: "Water bottle" },
       { emoji: "✂", name: "Safe scissors" },
       { emoji: "🍃", name: "Leaf" },
-      { emoji: "🪶", name: "Feather" },
       { emoji: "🪨", name: "Small stone" },
       { emoji: "🌸", name: "Flower" },
     ],

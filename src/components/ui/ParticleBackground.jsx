@@ -11,6 +11,7 @@ export default function ParticleBackground() {
 
   const createParticles = useCallback((width, height) => {
     const count = Math.min(80, Math.floor((width * height) / 15000));
+    const palette = [18, 32, 44, 172, 336];
     return Array.from({ length: count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -18,7 +19,7 @@ export default function ParticleBackground() {
       speedX: (Math.random() - 0.5) * 0.3,
       speedY: (Math.random() - 0.5) * 0.3,
       opacity: Math.random() * 0.5 + 0.1,
-      hue: Math.random() * 60 + 240, // purple-blue range
+      hue: palette[Math.floor(Math.random() * palette.length)] + (Math.random() * 8 - 4),
     }));
   }, []);
 
@@ -54,13 +55,13 @@ export default function ParticleBackground() {
         // Draw particle with glow
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 70%, 70%, ${p.opacity})`;
+        ctx.fillStyle = `hsla(${p.hue}, 85%, 70%, ${p.opacity})`;
         ctx.fill();
 
         // Glow effect
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 70%, 70%, ${p.opacity * 0.15})`;
+        ctx.fillStyle = `hsla(${p.hue}, 85%, 70%, ${p.opacity * 0.15})`;
         ctx.fill();
       });
 
@@ -74,7 +75,7 @@ export default function ParticleBackground() {
             ctx.beginPath();
             ctx.moveTo(particlesRef.current[i].x, particlesRef.current[i].y);
             ctx.lineTo(particlesRef.current[j].x, particlesRef.current[j].y);
-            ctx.strokeStyle = `rgba(139, 92, 246, ${0.06 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(251, 146, 60, ${0.05 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

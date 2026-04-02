@@ -1,67 +1,31 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import Scene from "./components/3d/Scene";
+import { useEffect } from "react";
 import ParticleBackground from "./components/ui/ParticleBackground";
-import ProgressBar from "./components/ui/ProgressBar";
-import Mascot from "./components/ui/Mascot";
 import GameFlow from "./components/game/GameFlow";
 import TeacherDashboard from "./components/game/TeacherDashboard";
 import FullscreenButton from "./components/ui/FullscreenButton";
 import useGameStore from "./store/useGameStore";
 import useTeacherMode from "./hooks/useTeacherMode";
 
-// Phase-based background gradients for emotional pacing
-const PHASE_BACKGROUNDS = {
-  start: "from-sky-200 via-sky-300 to-amber-100",
-  content: "from-blue-200 via-white to-green-100",
-  mysteryBag: "from-sky-300 via-blue-200 to-amber-50",
-  think: "from-yellow-100 via-amber-200 to-white",
-  speaking: "from-green-100 via-emerald-200 to-sky-100",
-  guessing: "from-orange-100 via-amber-200 to-white",
-  reveal: "from-purple-100 via-pink-100 to-sky-100",
-  reward: "from-yellow-200 via-amber-300 to-green-200",
-};
-
 function App() {
-  const { currentStep, setStep, hasSeenContent } = useGameStore();
-  const [isBagOpened, setIsBagOpened] = useState(false);
+  const { setStep } = useGameStore();
 
   useTeacherMode();
 
   useEffect(() => {
-    setStep("start");
+    // Start on the activity deck
+    setStep("content");
   }, [setStep]);
 
-  const bgGradient = PHASE_BACKGROUNDS[currentStep] || PHASE_BACKGROUNDS.start;
-
-  const handleBagClick = () => {
-    setIsBagOpened(true);
-    setTimeout(() => {
-      if (hasSeenContent) {
-        setStep("think");
-      } else {
-        setStep("content");
-      }
-      setTimeout(() => setIsBagOpened(false), 500);
-    }, 1500);
-  };
-
   return (
-    <div
-      className={`w-full h-screen bg-gradient-to-br ${bgGradient} text-white overflow-hidden relative font-body selection:bg-pink-500/50 transition-all duration-1000`}
-    >
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#fff8ef] font-body text-[#3d2516] selection:bg-[#ffd089]/50">
       <ParticleBackground />
-      <ProgressBar />
       <FullscreenButton />
 
-      <Scene
-        onBagClick={handleBagClick}
-        isBagOpened={isBagOpened}
-      />
-
-      <GameFlow />
-      <Mascot />
       <TeacherDashboard />
+
+      <div className="relative z-10 w-full min-h-screen">
+        <GameFlow />
+      </div>
     </div>
   );
 }

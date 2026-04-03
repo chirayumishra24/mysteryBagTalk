@@ -6,10 +6,11 @@ import useGameStore from "../../store/useGameStore";
 import { playCheering, playRevealFanfare } from "../../hooks/useAudio";
 
 export default function RevealScreen() {
-  const { selectedObject, setStep } = useGameStore();
+  const { selectedObject, setStep, activityMode } = useGameStore();
   const [showContinue, setShowContinue] = useState(false);
   const [flash, setFlash] = useState(true);
   const [emojiRain, setEmojiRain] = useState([]);
+  const isGroupMode = activityMode === "group";
 
   useEffect(() => {
     setTimeout(() => setFlash(false), 450);
@@ -135,7 +136,7 @@ export default function RevealScreen() {
             <MysteryToken
               emoji={selectedObject.emoji}
               title="Mystery solved"
-              subtitle="You solved the mystery!"
+              subtitle={isGroupMode ? "The teams solved it!" : "You solved the mystery!"}
               size="xl"
               tone="pink"
             />
@@ -152,7 +153,9 @@ export default function RevealScreen() {
         </motion.h2>
 
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#654331] md:text-lg">
-          The class has the answer. Celebrate the reveal, then move on to the final reward screen.
+          {isGroupMode
+            ? "The teams have the answer. Celebrate the reveal, then move on to the final reward screen."
+            : "The class has the answer. Celebrate the reveal, then move on to the final reward screen."}
         </p>
 
         <motion.button
@@ -162,7 +165,7 @@ export default function RevealScreen() {
           onClick={() => setStep("reward")}
           className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-8 py-4 text-base font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
         >
-          Collect stars
+          {isGroupMode ? "Celebrate the teams" : "Collect stars"}
         </motion.button>
       </div>
     </motion.div>

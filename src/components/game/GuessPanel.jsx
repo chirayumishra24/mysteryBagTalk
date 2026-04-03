@@ -13,8 +13,20 @@ const mockGuesses = [
 ];
 
 export default function GuessPanel() {
-  const { setStep, setTimerActive, timerSeconds, resetTimer, selectedObject } = useGameStore();
+  const { setStep, setTimerActive, timerSeconds, resetTimer, selectedObject, activityMode } = useGameStore();
   const [showGuesses, setShowGuesses] = useState(false);
+  const isGroupMode = activityMode === "group";
+  const tips = isGroupMode
+    ? [
+        "Talk quickly with your partner or team before answering.",
+        "Choose one speaker to share the final group guess.",
+        "When time is up, reveal the object together!",
+      ]
+    : [
+        "Raise a hand when you think you know the answer.",
+        "Use the strongest clue to help you guess.",
+        "When time is up, reveal the object together!",
+      ];
 
   useEffect(() => {
     resetTimer(30);
@@ -57,7 +69,7 @@ export default function GuessPanel() {
               Guessing Time
             </span>
             <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
-              Listen carefully
+              {isGroupMode ? "Talk, then guess" : "Listen carefully"}
             </span>
           </div>
 
@@ -65,15 +77,13 @@ export default function GuessPanel() {
             Who knows it?
           </h2>
           <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
-            One student has already given the clue. Now the class listens, thinks, and races to guess the mystery object before the timer ends.
+            {isGroupMode
+              ? "One team has already shared the clue. Now the other groups listen, think, and race to guess the mystery object before the timer ends."
+              : "One student has already given the clue. Now the class listens, thinks, and races to guess the mystery object before the timer ends."}
           </p>
 
           <div className="grid gap-3">
-            {[
-              "Raise a hand when you think you know the answer.",
-              "Use the strongest clue to help you guess.",
-              "When time is up, reveal the object together!",
-            ].map((tip, index) => (
+            {tips.map((tip, index) => (
               <motion.div
                 key={tip}
                 initial={{ opacity: 0, x: -14 }}
@@ -108,7 +118,7 @@ export default function GuessPanel() {
                 <MysteryToken
                   emoji="?"
                   title="Secret clue"
-                  subtitle="Can the class guess it?"
+                  subtitle={isGroupMode ? "Can the teams guess it?" : "Can the class guess it?"}
                   size="sm"
                   tone="mint"
                 />

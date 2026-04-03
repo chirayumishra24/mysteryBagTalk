@@ -5,10 +5,11 @@ import { gameContent } from "../../data/gameContent";
 import { playStarEarned, playSuccess } from "../../hooks/useAudio";
 
 export default function RewardPanel() {
-  const { addScore, resetGame, saveToLeaderboard, selectedAvatar, playerName, updateSentence, setSelectedObject, resetTimer, setStep } =
+  const { addScore, resetGame, saveToLeaderboard, selectedAvatar, playerName, updateSentence, setSelectedObject, resetTimer, setStep, activityMode } =
     useGameStore();
   const [animatingStars, setAnimatingStars] = useState(0);
   const [showBadge, setShowBadge] = useState(false);
+  const isGroupMode = activityMode === "group";
 
   useEffect(() => {
     addScore(3);
@@ -63,7 +64,9 @@ export default function RewardPanel() {
             You did it!
           </h2>
           <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
-            The class listened, guessed, and celebrated together. End the round with stars, praise, and one quick reminder about what made the clue work well.
+            {isGroupMode
+              ? "The groups listened, guessed, and celebrated together. End the round with stars, praise, and one quick reminder about the teamwork that made the clue work well."
+              : "The class listened, guessed, and celebrated together. End the round with stars, praise, and one quick reminder about what made the clue work well."}
           </p>
 
           <div className="grid gap-3">
@@ -87,7 +90,9 @@ export default function RewardPanel() {
           <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] p-5">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Teacher line</p>
             <p className="mt-2 text-sm font-semibold leading-relaxed text-[#17685e]">
-              "You used clear clues, strong listening, and kind applause. That is what great speaking looks like."
+              {isGroupMode
+                ? '"You worked as a team, shared clear clues, and listened carefully. That is what great group speaking looks like."'
+                : '"You used clear clues, strong listening, and kind applause. That is what great speaking looks like."'}
             </p>
           </div>
         </div>
@@ -95,7 +100,7 @@ export default function RewardPanel() {
         <div className="rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
           <div className="flex min-h-[520px] flex-col items-center justify-center text-center">
             <div className="mb-6 rounded-full border border-[#ffd8c2] bg-[#fff4ea] px-5 py-2 text-xs font-black uppercase tracking-[0.32em] text-[#ff7a45]">
-              Star speaker board
+              {isGroupMode ? "Group celebration board" : "Star speaker board"}
             </div>
 
             <div className="mb-6 flex flex-wrap justify-center gap-2">
@@ -136,8 +141,9 @@ export default function RewardPanel() {
                     {gameContent.rewardBadge}
                   </h3>
                   <p className="mt-3 max-w-md text-base leading-relaxed text-[#654331]">
-                    {selectedAvatar ? `${selectedAvatar.emoji} ` : ""}
-                    {playerName || "Mystery Speaker"} finished the round with strong clues and brave speaking.
+                    {isGroupMode
+                      ? `${playerName || "Mystery Team"} finished the round with strong teamwork and confident clues.`
+                      : `${selectedAvatar ? `${selectedAvatar.emoji} ` : ""}${playerName || "Mystery Speaker"} finished the round with strong clues and brave speaking.`}
                   </p>
                 </motion.div>
               )}
@@ -149,7 +155,7 @@ export default function RewardPanel() {
                 onClick={handlePlayAgain}
                 className="inline-flex items-center justify-center gap-3 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-7 py-4 text-base font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
               >
-                Play again
+                {isGroupMode ? "Next group round" : "Play again"}
               </button>
               <button
                 type="button"

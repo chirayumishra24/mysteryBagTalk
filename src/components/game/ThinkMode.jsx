@@ -7,9 +7,10 @@ import { gameContent } from "../../data/gameContent";
 import { playPop, playMagicOpen } from "../../hooks/useAudio";
 
 export default function ThinkMode() {
-  const { setStep, setSelectedObject, gradeLevel } = useGameStore();
+  const { setStep, setSelectedObject, gradeLevel, activityMode } = useGameStore();
   const [showOptions, setShowOptions] = useState(false);
   const [selected, setSelected] = useState(null);
+  const isGroupMode = activityMode === "group";
 
   const objects = (() => {
     try {
@@ -41,7 +42,7 @@ export default function ThinkMode() {
                 Think Mode
               </span>
               <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
-                Quiet clues first
+                {isGroupMode ? "Team huddle first" : "Quiet clues first"}
               </span>
             </div>
 
@@ -49,14 +50,22 @@ export default function ThinkMode() {
               Get your clue ready
             </h2>
             <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
-              Give the speaker a moment to imagine the object before they talk. This keeps the clue calm, clear, and easier for the class to understand.
+              {isGroupMode
+                ? "Give each group a quick whisper huddle before anyone speaks. One team speaker can then share a calm, clear clue for the class."
+                : "Give the speaker a moment to imagine the object before they talk. This keeps the clue calm, clear, and easier for the class to understand."}
             </p>
 
             <div className="grid gap-3">
               {[
-                { icon: "✋", title: "Feel the shape", text: "Is it long, round, soft, or hard?" },
-                { icon: "🎨", title: "Notice a clue", text: "Can you name the colour, size, or texture?" },
-                { icon: "🗣️", title: "Plan the sentence", text: "Think about what you will say before the mic turns on." },
+                isGroupMode
+                  ? { icon: "👥", title: "Whisper together", text: "Let teammates quietly share one or two useful clue ideas." }
+                  : { icon: "✋", title: "Feel the shape", text: "Is it long, round, soft, or hard?" },
+                isGroupMode
+                  ? { icon: "🎨", title: "Choose the best clue", text: "Pick the colour, shape, or use that will help the class most." }
+                  : { icon: "🎨", title: "Notice a clue", text: "Can you name the colour, size, or texture?" },
+                isGroupMode
+                  ? { icon: "🗣️", title: "Pick one speaker", text: "Decide who will say the final clue when the mic turns on." }
+                  : { icon: "🗣️", title: "Plan the sentence", text: "Think about what you will say before the mic turns on." },
               ].map((card, index) => (
                 <motion.div
                   key={card.title}
@@ -85,7 +94,7 @@ export default function ThinkMode() {
                   setShowOptions(true);
                 }}
               >
-                Pick the secret object
+                {isGroupMode ? "Pick the group object" : "Pick the secret object"}
               </Button>
             </div>
           </div>
@@ -100,13 +109,15 @@ export default function ThinkMode() {
                 <MysteryToken
                   emoji="?"
                   title="Mystery item"
-                  subtitle="Choose one secretly"
+                  subtitle={isGroupMode ? "Choose one for the group" : "Choose one secretly"}
                   size="lg"
                 />
               </motion.div>
               <p className="mt-8 text-xs font-black uppercase tracking-[0.3em] text-[#ff7a45]">Teacher prompt</p>
               <p className="mt-3 max-w-md text-xl font-black leading-relaxed text-[#432414]">
-                "Think quietly first... then turn your idea into a clue."
+                {isGroupMode
+                  ? '"Talk together first... then let one speaker share the clue."'
+                  : '"Think quietly first... then turn your idea into a clue."'}
               </p>
             </div>
           </div>
@@ -124,14 +135,16 @@ export default function ThinkMode() {
                   Secret Object Wall
                 </span>
                 <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
-                  Pick one and keep it hidden
+                  {isGroupMode ? "Pick one and hide it from the other teams" : "Pick one and keep it hidden"}
                 </span>
               </div>
               <h2 className="mt-4 text-4xl font-black uppercase tracking-tight text-[#432414] md:text-5xl">
                 What did you find?
               </h2>
               <p className="mt-2 max-w-2xl text-base leading-relaxed text-[#654331]">
-                Choose the object for this round. Once it is picked, the next screen will help the speaker build the clue and record it.
+                {isGroupMode
+                  ? "Choose the object for this round. The next screen will help the group build the clue and let one speaker record it."
+                  : "Choose the object for this round. Once it is picked, the next screen will help the speaker build the clue and record it."}
               </p>
             </div>
 
@@ -144,7 +157,9 @@ export default function ThinkMode() {
                 tone="mint"
               />
               <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] px-5 py-4 text-sm font-bold text-[#0f7c70]">
-                Tip: Remind students not to say the object name out loud.
+                {isGroupMode
+                  ? "Tip: Let teammates whisper their ideas, but keep the object name hidden from the class."
+                  : "Tip: Remind students not to say the object name out loud."}
               </div>
             </div>
           </div>

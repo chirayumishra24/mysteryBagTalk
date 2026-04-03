@@ -1,5 +1,17 @@
 import { create } from "zustand";
 
+function getStoredActivityMode() {
+  if (typeof window === "undefined") {
+    return "solo";
+  }
+
+  try {
+    return localStorage.getItem("activityMode") || "solo";
+  } catch (error) {
+    return "solo";
+  }
+}
+
 // Game steps in order
 export const GAME_STEPS = [
   "content",
@@ -31,6 +43,9 @@ const useGameStore = create((set, get) => ({
 
   // Grade level
   gradeLevel: "2nd grade",
+
+  // Classroom format
+  activityMode: getStoredActivityMode(),
 
   // Avatar and player name
   selectedAvatar: null,
@@ -116,13 +131,20 @@ const useGameStore = create((set, get) => ({
 
   setAvatar: (avatar) => set({ selectedAvatar: avatar }),
   setPlayerName: (name) => set({ playerName: name }),
+  setActivityMode: (mode) => {
+    try {
+      localStorage.setItem("activityMode", mode);
+    } catch (error) {}
+
+    set({ activityMode: mode });
+  },
 
   saveToLeaderboard: () => {
-    const { playerName, selectedAvatar, stars } = get();
+    const { playerName, selectedAvatar, stars, activityMode } = get();
     try {
       const stored = JSON.parse(localStorage.getItem("leaderboard") || "[]");
       stored.push({
-        name: playerName || "Mystery Speaker",
+        name: playerName || (activityMode === "group" ? "Mystery Team" : "Mystery Speaker"),
         avatar: selectedAvatar?.name || "Wizard",
         stars,
         date: new Date().toISOString(),

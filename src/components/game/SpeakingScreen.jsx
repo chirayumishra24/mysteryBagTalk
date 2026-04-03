@@ -18,6 +18,7 @@ export default function SpeakingScreen() {
     selectedAvatar,
     addScore,
     selectedObject,
+    activityMode,
     updateSentence,
     setAiReview,
     setIsAnalyzing,
@@ -45,6 +46,7 @@ export default function SpeakingScreen() {
   const timerRef = useRef(null);
   const celebrationTimeoutRef = useRef(null);
   const milestoneRef = useRef(new Set());
+  const isGroupMode = activityMode === "group";
 
   useEffect(() => {
     timerRef.current = setInterval(() => setElapsed((seconds) => seconds + 1), 1000);
@@ -239,21 +241,31 @@ export default function SpeakingScreen() {
           <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
             {selectedObject ? "Secret object locked" : "Use the clue pattern"}
           </span>
-          {selectedAvatar && (
+          {isGroupMode ? (
+            <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
+              👥 Group turn
+            </span>
+          ) : selectedAvatar ? (
             <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
               {selectedAvatar.emoji} Your turn
             </span>
-          )}
+          ) : null}
         </div>
 
         <h2 className="mt-5 text-5xl font-black uppercase tracking-tight text-[#432414] text-glow md:text-7xl">
-          Describe It!
+          {isGroupMode ? "Describe It Together!" : "Describe It!"}
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-[#654331] md:text-lg">
           {phase === "fill"
-            ? "Build the clue with colorful prompt cards, then record a clear and confident answer."
+            ? isGroupMode
+              ? "Build a team clue with the prompt cards, then let one speaker record a clear group answer."
+              : "Build the clue with colorful prompt cards, then record a clear and confident answer."
             : phase === "record"
-            ? "Speak into the booth and watch the stars pop when your clue gets stronger."
+            ? isGroupMode
+              ? "Let one speaker share the team clue while the booth celebrates strong, clear speaking."
+              : "Speak into the booth and watch the stars pop when your clue gets stronger."
+            : isGroupMode
+            ? "Check the stars, listen back, and move into the team guessing round."
             : "Check the stars, listen back, and move into the guessing round."}
         </p>
       </div>
@@ -296,7 +308,9 @@ export default function SpeakingScreen() {
               <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] p-5">
                 <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Quick check</p>
                 <p className="mt-2 text-sm font-semibold leading-relaxed text-[#17685e]">
-                  Children can tap the chips first, then change the words in the sentence boxes if they want a better clue.
+                  {isGroupMode
+                    ? "Groups can tap the chips together, then choose one strong final clue before the speaker records it."
+                    : "Children can tap the chips first, then change the words in the sentence boxes if they want a better clue."}
                 </p>
               </div>
 
@@ -350,7 +364,7 @@ export default function SpeakingScreen() {
                       : "cursor-not-allowed border-[#f4e1d3] bg-white text-[#b69a86] opacity-70"
                   }`}
                 >
-                  🎙️ Record now
+                  {isGroupMode ? "🎙️ Start group turn" : "🎙️ Record now"}
                 </button>
               </div>
             </div>

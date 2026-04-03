@@ -12,6 +12,14 @@ const STEP_TIPS = {
   reward: { emoji: "🏆", text: "Celebrate the effort, not just the perfect answer." },
 };
 
+const GROUP_STEP_TIPS = {
+  think: { emoji: "👥", text: "Give each team a quick huddle before one speaker shares the clue." },
+  speaking: { emoji: "🎤", text: "Let one child speak for the group while teammates help build the clue first." },
+  guessing: { emoji: "💭", text: "Ask teams to whisper quickly, then choose one voice for the final guess." },
+  reveal: { emoji: "🎊", text: "Celebrate the answer and the teamwork that helped the class solve it." },
+  reward: { emoji: "🏆", text: "Praise strong teamwork, clear clues, and kind listening." },
+};
+
 function getContentTip(slide) {
   if (!slide) {
     return { emoji: "🌟", text: "Swipe through the guide and collect the best clue ideas." };
@@ -38,11 +46,12 @@ function getContentTip(slide) {
 }
 
 export default function Mascot() {
-  const { currentStep, contentSlideIndex } = useGameStore();
+  const { currentStep, contentSlideIndex, activityMode } = useGameStore();
+  const stepTips = activityMode === "group" ? GROUP_STEP_TIPS : STEP_TIPS;
   const tip =
     currentStep === "content"
       ? getContentTip(contentSlides[contentSlideIndex])
-      : STEP_TIPS[currentStep] || { emoji: "🌟", text: "Keep the energy high and the instructions simple." };
+      : stepTips[currentStep] || { emoji: "🌟", text: "Keep the energy high and the instructions simple." };
 
   return (
     <div className="fixed bottom-5 right-5 z-[90] hidden max-w-sm pointer-events-none lg:block">

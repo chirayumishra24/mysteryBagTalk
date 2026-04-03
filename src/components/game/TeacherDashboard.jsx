@@ -2,12 +2,14 @@ import { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import Avatar3D from "../3d/Avatar3D";
+import useGameStore from "../../store/useGameStore";
 
 /**
  * TeacherDashboard - Hidden teacher panel (Shift+T to toggle).
  * Allows custom object entry and shows keyboard shortcuts.
  */
 export default function TeacherDashboard() {
+  const { activityMode, setActivityMode } = useGameStore();
   const [isOpen, setIsOpen] = useState(false);
   const [customObjects, setCustomObjects] = useState("");
 
@@ -75,6 +77,56 @@ export default function TeacherDashboard() {
                   <span className="text-sm font-body text-[#654331]">{action}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h3 className="mb-4 text-sm font-display font-bold uppercase tracking-wider text-[#9b5430]">
+              Activity Format
+            </h3>
+            <p className="mb-4 text-xs font-body text-[#8a6a56]">
+              Switch between one speaker at a time or a team-based classroom round.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                {
+                  id: "solo",
+                  icon: "🧍",
+                  title: "Solo Speaker",
+                  description: "One child gives the clue while the rest of the class guesses.",
+                },
+                {
+                  id: "group",
+                  icon: "👥",
+                  title: "Group Activity",
+                  description: "Children discuss together, then one team speaker shares the clue.",
+                },
+              ].map((option) => {
+                const isActive = activityMode === option.id;
+
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setActivityMode(option.id)}
+                    className={`rounded-[1.4rem] border p-4 text-left transition-all ${
+                      isActive
+                        ? "border-[#ffb087] bg-[#fff1e7] shadow-[0_12px_24px_rgba(249,115,22,0.1)]"
+                        : "border-[#ffd8c2] bg-white hover:border-[#ffcfb0] hover:bg-[#fff7ef]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{option.icon}</span>
+                      <div>
+                        <p className="text-sm font-display font-bold uppercase tracking-[0.16em] text-[#7d4522]">
+                          {option.title}
+                        </p>
+                        <p className="mt-1 text-sm leading-relaxed text-[#654331]">{option.description}</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

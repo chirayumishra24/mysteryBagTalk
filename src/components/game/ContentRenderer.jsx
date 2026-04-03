@@ -328,15 +328,6 @@ export default function ContentRenderer({ onComplete }) {
               </div>
             </div>
 
-            <div className="hidden lg:block">
-              <TeacherJumpStrip
-                slides={slides}
-                activeIndex={activeIndex}
-                onJump={goToSlide}
-                onJumpToFinale={onComplete}
-              />
-            </div>
-
             <CompactGuideControls
               activeIndex={activeIndex}
               slides={slides}
@@ -363,7 +354,7 @@ export default function ContentRenderer({ onComplete }) {
               </div>
             </div>
 
-            <div className="hidden flex-wrap gap-2 xl:flex">
+            <div className="hidden flex-wrap gap-2 lg:flex">
               {slides.map((slide, index) => {
                 const isActive = index === activeIndex;
                 const isVisited = index < activeIndex;
@@ -386,7 +377,7 @@ export default function ContentRenderer({ onComplete }) {
                     <span className="block text-[10px] font-black uppercase tracking-[0.28em] opacity-70">
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <span className="block text-sm font-bold md:text-[15px]">{slide.title}</span>
+                      <span className="block text-sm font-bold md:text-[15px]">{slide.title}</span>
                   </motion.button>
                 );
               })}
@@ -590,39 +581,6 @@ export default function ContentRenderer({ onComplete }) {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function TeacherJumpStrip({ slides, activeIndex, onJump, onJumpToFinale }) {
-  return (
-    <div className="overflow-x-auto pb-1">
-      <div className="flex min-w-max items-center gap-3">
-        <span className="rounded-full border border-[#ffd8c2] bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.26em] text-[#8f522d]">
-          Teacher Jump
-        </span>
-        {slides.map((slide, index) => (
-          <button
-            key={slide.id}
-            type="button"
-            onClick={() => onJump(index)}
-            className={`rounded-full border px-4 py-2 text-sm font-bold transition-all ${
-              activeIndex === index
-                ? "border-[#ffb087] bg-[#fff1e7] text-[#7b3918] shadow-[0_10px_22px_rgba(249,115,22,0.12)]"
-                : "border-[#f4e1d3] bg-white text-[#956f59] hover:border-[#ffd2b6] hover:bg-[#fff8f1]"
-            }`}
-          >
-            {slide.title}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={onJumpToFinale}
-          className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]"
-        >
-          Finale
-        </button>
-      </div>
-    </div>
   );
 }
 

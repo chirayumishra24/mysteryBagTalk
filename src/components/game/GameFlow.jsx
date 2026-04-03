@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import useGameStore from "../../store/useGameStore";
 
 const ContentRenderer = lazy(() => import("./ContentRenderer"));
@@ -57,7 +57,9 @@ export default function GameFlow() {
   return (
     <div className="w-full">
       <Suspense fallback={<FlowLoader />}>
-        <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+        <LayoutGroup>
+          <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+        </LayoutGroup>
       </Suspense>
     </div>
   );

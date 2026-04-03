@@ -4,6 +4,7 @@ import GameFlow from "./components/game/GameFlow";
 import FullscreenButton from "./components/ui/FullscreenButton";
 import ProgressBar from "./components/ui/ProgressBar";
 import Mascot from "./components/ui/Mascot";
+import TeacherToolsButton from "./components/ui/TeacherToolsButton";
 import useGameStore from "./store/useGameStore";
 import useTeacherMode from "./hooks/useTeacherMode";
 
@@ -24,6 +25,7 @@ function App() {
       <ParticleBackground />
       <ProgressBar />
       <Mascot />
+      <TeacherToolsButton />
       <FullscreenButton />
       <Suspense fallback={null}>
         <TeacherDashboard />

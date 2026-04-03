@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import SentenceBuilder from "../ui/SentenceBuilder";
 import SpeechReportCard from "../ui/SpeechReportCard";
+import MysteryToken from "../ui/MysteryToken";
 import { gameContent } from "../../data/gameContent";
 import useGameStore from "../../store/useGameStore";
 import useSpeechRecognition from "../../hooks/useSpeechRecognition";
@@ -39,6 +40,8 @@ export default function SpeakingScreen() {
   const [phase, setPhase] = useState("fill");
   const [celebrationText, setCelebrationText] = useState("");
   const [burstSeed, setBurstSeed] = useState(0);
+  const [micError, setMicError] = useState("");
+  const [manualTranscript, setManualTranscript] = useState("");
   const timerRef = useRef(null);
   const celebrationTimeoutRef = useRef(null);
   const milestoneRef = useRef(new Set());
@@ -77,13 +80,12 @@ export default function SpeakingScreen() {
     sentences.use.trim() !== "";
 
   const promptGroups = useMemo(() => {
-    const objectName = selectedObject?.name || "object";
     return [
       {
         key: "name",
         title: "This is...",
         tone: "orange",
-        chips: [objectName, "pencil", "ball", "key", "book"],
+        chips: ["pencil", "ball", "key", "book", "toy"],
       },
       {
         key: "colour",
@@ -98,7 +100,12 @@ export default function SpeakingScreen() {
         chips: ["write", "draw", "play", "open", "learn"],
       },
     ];
-  }, [selectedObject?.name]);
+  }, []);
+
+  const activeTranscript = manualTranscript || transcript;
+
+  const buildManualTranscript = () =>
+    `This is a ${sentences.name}. It is ${sentences.colour} in colour. We use it to ${sentences.use}.`;
 
   const triggerCelebration = (text, colors) => {
     setCelebrationText(text);
@@ -121,6 +128,8 @@ export default function SpeakingScreen() {
     resetTranscript();
     resetRecording();
     setAiReview(null);
+    setMicError("");
+    setManualTranscript("");
     setPhase("record");
     setCelebrationText("");
     milestoneRef.current.clear();
@@ -138,6 +147,11 @@ export default function SpeakingScreen() {
         await startRecording();
       } catch (error) {
         console.warn("Audio recording failed to start:", error);
+        try {
+          stopListening();
+        } catch (stopError) {}
+        setPhase("fill");
+        setMicError("Microphone access is blocked right now. You can allow the mic and try again, or continue with a no-mic version.");
       }
     }, 300);
   };
@@ -178,8 +192,17 @@ export default function SpeakingScreen() {
     resetRecording();
     setAiReview(null);
     setCelebrationText("");
+    setMicError("");
+    setManualTranscript("");
     setElapsed(0);
     setPhase("fill");
+  };
+
+  const handleContinueWithoutMic = () => {
+    setManualTranscript(buildManualTranscript());
+    setAiReview(null);
+    setIsAnalyzing(false);
+    setPhase("report");
   };
 
   const handleContinue = (stars) => {
@@ -198,13 +221,23 @@ export default function SpeakingScreen() {
       transition={{ duration: 0.45, ease: "easeOut" }}
       className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-24 md:px-6"
     >
+      <div className="absolute right-4 top-28 z-20 hidden md:block">
+        <MysteryToken
+          emoji="?"
+          title="Secret object"
+          subtitle="Keep the answer hidden"
+          size="sm"
+          tone="mint"
+        />
+      </div>
+
       <div className="mb-8 text-center">
         <div className="flex flex-wrap items-center justify-center gap-3">
           <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white shadow-[0_8px_18px_rgba(249,115,22,0.2)]">
             Speaking Booth
           </span>
           <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
-            {selectedObject ? `Secret object chosen: ${selectedObject.name}` : "Use the clue pattern"}
+            {selectedObject ? "Secret object locked" : "Use the clue pattern"}
           </span>
           {selectedAvatar && (
             <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
@@ -266,6 +299,31 @@ export default function SpeakingScreen() {
                   Children can tap the chips first, then change the words in the sentence boxes if they want a better clue.
                 </p>
               </div>
+
+              {micError && (
+                <div className="rounded-[1.6rem] border border-[#ffd2dc] bg-[#fff1f5] p-5">
+                  <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9b3b58]">Microphone fallback</p>
+                  <p className="mt-2 text-sm font-semibold leading-relaxed text-[#8b3550]">
+                    {micError}
+                  </p>
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={handleStartRecording}
+                      className="rounded-full border border-[#ffd2dc] bg-white px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-[#8b3550] shadow-sm"
+                    >
+                      Try mic again
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleContinueWithoutMic}
+                      className="rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
+                    >
+                      Continue without mic
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-5 rounded-[2.2rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_60px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
@@ -441,7 +499,7 @@ export default function SpeakingScreen() {
             className="w-full"
           >
             <SpeechReportCard
-              transcript={transcript}
+              transcript={activeTranscript}
               audioUrl={audioUrl}
               metrics={metrics}
               sentences={sentences}

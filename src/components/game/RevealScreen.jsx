@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
+import MysteryToken from "../ui/MysteryToken";
 import useGameStore from "../../store/useGameStore";
 import { playCheering, playRevealFanfare } from "../../hooks/useAudio";
 
@@ -125,16 +126,20 @@ export default function RevealScreen() {
             className="absolute h-[430px] w-[430px] rounded-full border-4 border-dashed border-[#ffb087]"
           />
 
-          <div className="relative z-10 flex h-80 w-80 items-center justify-center overflow-hidden rounded-[3rem] border border-white/90 bg-white/92 shadow-[0_24px_60px_rgba(249,115,22,0.16)]">
-            <motion.span
-              initial={{ scale: 0, rotateY: 180 }}
-              animate={{ scale: [0, 1.35, 1], rotateY: [180, -16, 0] }}
-              transition={{ duration: 1.4, type: "spring", bounce: 0.45, delay: 0.2 }}
-              className="text-[11rem] drop-shadow-2xl"
-            >
-              {selectedObject.emoji}
-            </motion.span>
-          </div>
+          <motion.div
+            initial={{ scale: 0.92 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative z-10"
+          >
+            <MysteryToken
+              emoji={selectedObject.emoji}
+              title="Mystery solved"
+              subtitle="You solved the mystery!"
+              size="xl"
+              tone="pink"
+            />
+          </motion.div>
         </div>
 
         <motion.h2

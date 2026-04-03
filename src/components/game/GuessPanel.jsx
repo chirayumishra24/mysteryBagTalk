@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Timer from "../ui/Timer";
+import MysteryToken from "../ui/MysteryToken";
 import useGameStore from "../../store/useGameStore";
 
 const mockGuesses = [
@@ -103,6 +104,15 @@ export default function GuessPanel() {
             </AnimatePresence>
 
             <div className="relative z-20 flex flex-col items-center">
+              <div className="mb-6">
+                <MysteryToken
+                  emoji="?"
+                  title="Secret clue"
+                  subtitle="Can the class guess it?"
+                  size="sm"
+                  tone="mint"
+                />
+              </div>
               <div className="rounded-[2rem] border border-[#ffe7a1] bg-[#fff8db] p-6 shadow-[0_14px_28px_rgba(249,115,22,0.08)]">
                 <Timer initialSeconds={30} onComplete={handleReveal} />
               </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
+import MysteryToken from "../ui/MysteryToken";
 import useGameStore from "../../store/useGameStore";
 import { gameContent } from "../../data/gameContent";
 import { playPop, playMagicOpen } from "../../hooks/useAudio";
@@ -93,11 +94,15 @@ export default function ThinkMode() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.32),_transparent_28%),radial-gradient(circle_at_bottom,_rgba(45,212,191,0.16),_transparent_30%)]" />
             <div className="relative flex min-h-[440px] flex-col items-center justify-center text-center">
               <motion.div
-                animate={{ scale: [1, 1.06, 1], rotate: [0, 2, 0] }}
+                animate={{ scale: [1, 1.04, 1], rotate: [0, 2, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="flex h-56 w-56 items-center justify-center rounded-[3rem] border border-[#ffd8c2] bg-[linear-gradient(135deg,#fff4ea,#fffce7)] text-[5rem] shadow-[0_20px_40px_rgba(249,115,22,0.12)]"
               >
-                🤔
+                <MysteryToken
+                  emoji="?"
+                  title="Mystery item"
+                  subtitle="Choose one secretly"
+                  size="lg"
+                />
               </motion.div>
               <p className="mt-8 text-xs font-black uppercase tracking-[0.3em] text-[#ff7a45]">Teacher prompt</p>
               <p className="mt-3 max-w-md text-xl font-black leading-relaxed text-[#432414]">
@@ -130,8 +135,17 @@ export default function ThinkMode() {
               </p>
             </div>
 
-            <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] px-5 py-4 text-sm font-bold text-[#0f7c70]">
-              Tip: Remind students not to say the object name out loud.
+            <div className="flex flex-col items-end gap-3">
+              <MysteryToken
+                emoji="?"
+                title="Secret object"
+                subtitle="Keep it hidden"
+                size="sm"
+                tone="mint"
+              />
+              <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] px-5 py-4 text-sm font-bold text-[#0f7c70]">
+                Tip: Remind students not to say the object name out loud.
+              </div>
             </div>
           </div>
 

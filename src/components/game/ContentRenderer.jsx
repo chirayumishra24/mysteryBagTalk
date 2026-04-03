@@ -111,6 +111,7 @@ export default function ContentRenderer({ onComplete }) {
   const [direction, setDirection] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeActionId, setActiveActionId] = useState("listen");
+  const [mobileJumpOpen, setMobileJumpOpen] = useState(false);
   const containerRef = useRef(null);
   const shapeOneRef = useRef(null);
   const shapeTwoRef = useRef(null);
@@ -185,6 +186,7 @@ export default function ContentRenderer({ onComplete }) {
   useEffect(() => {
     setActiveImageIndex(0);
     setActiveActionId("listen");
+    setMobileJumpOpen(false);
     setContentPosition(activeIndex, activeSlide.moduleIndex, activeSlide.chapterIndex);
   }, [activeIndex, activeSlide.chapterIndex, activeSlide.moduleIndex, setContentPosition]);
 
@@ -326,10 +328,24 @@ export default function ContentRenderer({ onComplete }) {
               </div>
             </div>
 
-            <TeacherJumpStrip
-              slides={slides}
+            <div className="hidden lg:block">
+              <TeacherJumpStrip
+                slides={slides}
+                activeIndex={activeIndex}
+                onJump={goToSlide}
+                onJumpToFinale={onComplete}
+              />
+            </div>
+
+            <CompactGuideControls
               activeIndex={activeIndex}
+              slides={slides}
+              isLastSlide={isLastSlide}
+              isOpen={mobileJumpOpen}
+              onToggle={() => setMobileJumpOpen((value) => !value)}
               onJump={goToSlide}
+              onPrev={() => goToSlide(activeIndex - 1)}
+              onNext={handleAdvance}
               onJumpToFinale={onComplete}
             />
 
@@ -347,7 +363,7 @@ export default function ContentRenderer({ onComplete }) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="hidden flex-wrap gap-2 xl:flex">
               {slides.map((slide, index) => {
                 const isActive = index === activeIndex;
                 const isVisited = index < activeIndex;
@@ -606,6 +622,95 @@ function TeacherJumpStrip({ slides, activeIndex, onJump, onJumpToFinale }) {
           Finale
         </button>
       </div>
+    </div>
+  );
+}
+
+function CompactGuideControls({
+  activeIndex,
+  slides,
+  isLastSlide,
+  isOpen,
+  onToggle,
+  onJump,
+  onPrev,
+  onNext,
+  onJumpToFinale,
+}) {
+  return (
+    <div className="space-y-3 lg:hidden">
+      <div className="flex flex-wrap items-center gap-3 rounded-[1.6rem] border border-[#ffd8c2] bg-white p-4 shadow-[0_12px_24px_rgba(249,115,22,0.08)]">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-[#a86132]">Quick guide controls</p>
+          <p className="mt-1 truncate text-sm font-bold text-[#654331]">
+            Slide {activeIndex + 1} of {slides.length}: {slides[activeIndex].title}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onPrev}
+            disabled={activeIndex === 0}
+            className={`rounded-full border px-4 py-2 text-sm font-black uppercase tracking-[0.18em] ${
+              activeIndex === 0
+                ? "cursor-not-allowed border-[#f4e1d3] bg-white text-[#c2a894] opacity-50"
+                : "border-[#ffd8c2] bg-[#fff4ec] text-[#7d4522]"
+            }`}
+          >
+            Prev
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            className="rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-white"
+          >
+            {isLastSlide ? "Finale" : "Next"}
+          </button>
+          <button
+            type="button"
+            onClick={onToggle}
+            className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-[#0f7c70]"
+          >
+            Jump
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden rounded-[1.6rem] border border-[#ffe0cf] bg-[#fffaf4] p-4 shadow-[0_12px_24px_rgba(249,115,22,0.08)]"
+          >
+            <div className="flex flex-wrap gap-2">
+              {slides.map((slide, index) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => onJump(index)}
+                  className={`rounded-full border px-3 py-2 text-left text-sm font-bold ${
+                    activeIndex === index
+                      ? "border-[#ffb087] bg-[#fff1e7] text-[#7b3918]"
+                      : "border-[#f4e1d3] bg-white text-[#956f59]"
+                  }`}
+                >
+                  {slide.title}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={onJumpToFinale}
+                className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-3 py-2 text-sm font-bold text-[#0f7c70]"
+              >
+                Finale
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

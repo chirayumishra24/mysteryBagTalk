@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useGameStore, { GAME_STEPS } from "../store/useGameStore";
+import useGameStore from "../store/useGameStore";
 
 /**
  * useTeacherMode - Keyboard shortcuts for teacher presentation control.
@@ -10,7 +10,7 @@ import useGameStore, { GAME_STEPS } from "../store/useGameStore";
  * T: Toggle teacher dashboard (emits custom event)
  */
 export default function useTeacherMode() {
-  const { nextStep, prevStep, resetGame } = useGameStore();
+  const { currentStep, nextStep, prevStep, resetGame } = useGameStore();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -19,13 +19,20 @@ export default function useTeacherMode() {
 
       switch (e.code) {
         case "Space":
-        case "ArrowRight":
           e.preventDefault();
           nextStep();
           break;
+        case "ArrowRight":
+          if (e.shiftKey || currentStep !== "content") {
+            e.preventDefault();
+            nextStep();
+          }
+          break;
         case "ArrowLeft":
-          e.preventDefault();
-          prevStep();
+          if (e.shiftKey || currentStep !== "content") {
+            e.preventDefault();
+            prevStep();
+          }
           break;
         case "KeyR":
           if (e.shiftKey) {
@@ -46,5 +53,5 @@ export default function useTeacherMode() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [nextStep, prevStep, resetGame]);
+  }, [currentStep, nextStep, prevStep, resetGame]);
 }

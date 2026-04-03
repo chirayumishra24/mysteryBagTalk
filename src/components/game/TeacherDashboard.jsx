@@ -62,8 +62,9 @@ export default function TeacherDashboard() {
             </h3>
             <div className="space-y-2">
               {[
-                ["Space / →", "Next step"],
-                ["←", "Previous step"],
+                ["Space", "Next step"],
+                ["Shift + →", "Next step anywhere"],
+                ["Shift + ←", "Previous step anywhere"],
                 ["Shift + R", "Reset game"],
                 ["Shift + T", "Toggle this panel"],
               ].map(([key, action]) => (

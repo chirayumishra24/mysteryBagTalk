@@ -7,6 +7,11 @@ import useGameStore from "../../store/useGameStore";
 export default function SentenceBuilder({ sentences = [] }) {
   const { sentences: answers, updateSentence } = useGameStore();
   const keyMap = ["name", "colour", "use"];
+  const tones = [
+    "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
+    "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    "border-[#ccefe8] bg-[#ecfffb] text-[#0f7c70]",
+  ];
 
   return (
     <div className="space-y-6">
@@ -18,17 +23,15 @@ export default function SentenceBuilder({ sentences = [] }) {
           transition={{ delay: index * 0.2, duration: 0.5, ease: "easeOut" }}
           className="group"
         >
-          <div className="bg-white p-6 rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center gap-6 border-4 border-sky-100 hover:border-secondary transition-all duration-300 shadow-md">
-            {/* Sentence number */}
-            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-white font-display font-black text-xl shadow-md transform -rotate-3">
+          <div className={`flex flex-col items-start gap-6 rounded-[2rem] border-4 p-6 shadow-[0_14px_28px_rgba(249,115,22,0.08)] transition-all duration-300 sm:flex-row sm:items-center ${tones[index]}`}>
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-xl font-display font-black shadow-md">
               {index + 1}
             </div>
 
-            {/* Sentence template with input */}
             <div className="flex-1 flex flex-wrap items-center gap-2">
               {sentence.template.split("___").map((part, partIndex, arr) => (
                 <span key={partIndex} className="flex items-center gap-2">
-                  <span className="text-slate-700 font-display font-black text-xl">{part}</span>
+                  <span className="text-xl font-display font-black text-[#513120]">{part}</span>
                   {partIndex < arr.length - 1 && (
                     <motion.div className="relative" whileFocus={{ scale: 1.05 }}>
                       <input
@@ -36,7 +39,7 @@ export default function SentenceBuilder({ sentences = [] }) {
                         value={answers[keyMap[index]] || ""}
                         onChange={(e) => updateSentence(keyMap[index], e.target.value)}
                         placeholder={sentence.placeholder}
-                        className="bg-sky-50 border-4 border-sky-100 rounded-2xl px-5 py-3 text-secondary font-display font-black placeholder-slate-300 focus:outline-none focus:border-secondary focus:bg-white transition-all duration-300 min-w-[200px] shadow-inner"
+                        className="min-w-[200px] rounded-2xl border-4 border-white bg-white/85 px-5 py-3 font-display font-black text-[#7d4522] shadow-inner placeholder:text-[#c79c82] focus:border-[#ffb087] focus:bg-white focus:outline-none transition-all duration-300"
                       />
                     </motion.div>
                   )}

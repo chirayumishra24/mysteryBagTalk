@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Button from "../ui/Button";
+import confetti from "canvas-confetti";
 import SentenceBuilder from "../ui/SentenceBuilder";
 import SpeechReportCard from "../ui/SpeechReportCard";
 import { gameContent } from "../../data/gameContent";
@@ -11,63 +11,149 @@ import { playClick, playChime } from "../../hooks/useAudio";
 import { analyzeVoice } from "../../services/api";
 
 export default function SpeakingScreen() {
-  const { setStep, sentences, selectedAvatar, addScore, selectedObject, setAiReview, setIsAnalyzing, aiReview, isAnalyzing } = useGameStore();
-  const { transcript, isListening, isSupported, startListening, stopListening, resetTranscript } =
-    useSpeechRecognition();
   const {
-    isRecording, volumeLevel, audioUrl, audioBlob, metrics,
-    startRecording, stopRecording, resetRecording,
+    setStep,
+    sentences,
+    selectedAvatar,
+    addScore,
+    selectedObject,
+    updateSentence,
+    setAiReview,
+    setIsAnalyzing,
+    aiReview,
+    isAnalyzing,
+  } = useGameStore();
+  const { transcript, isSupported, startListening, stopListening, resetTranscript } = useSpeechRecognition();
+  const {
+    isRecording,
+    volumeLevel,
+    audioUrl,
+    audioBlob,
+    metrics,
+    startRecording,
+    stopRecording,
+    resetRecording,
   } = useAudioRecorder();
-  const [elapsed, setElapsed] = useState(0);
-  const [phase, setPhase] = useState("fill"); // "fill" | "record" | "report"
-  const timerRef = useRef(null);
 
-  // Count up timer
+  const [elapsed, setElapsed] = useState(0);
+  const [phase, setPhase] = useState("fill");
+  const [celebrationText, setCelebrationText] = useState("");
+  const [burstSeed, setBurstSeed] = useState(0);
+  const timerRef = useRef(null);
+  const celebrationTimeoutRef = useRef(null);
+  const milestoneRef = useRef(new Set());
+
   useEffect(() => {
-    timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
-    return () => clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => setElapsed((seconds) => seconds + 1), 1000);
+    return () => {
+      clearInterval(timerRef.current);
+      clearTimeout(celebrationTimeoutRef.current);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isRecording) {
+      milestoneRef.current.clear();
+      return;
+    }
+
+    const milestones = [
+      { threshold: 25, text: "Nice voice!", colors: ["#fb923c", "#facc15"] },
+      { threshold: 55, text: "Great clue!", colors: ["#fb923c", "#fb7185"] },
+      { threshold: 80, text: "Super Speaker!", colors: ["#14b8a6", "#fb7185", "#fb923c"] },
+    ];
+
+    milestones.forEach((item) => {
+      if (volumeLevel >= item.threshold && !milestoneRef.current.has(item.threshold)) {
+        milestoneRef.current.add(item.threshold);
+        triggerCelebration(item.text, item.colors);
+      }
+    });
+  }, [isRecording, volumeLevel]);
 
   const isComplete =
     sentences.name.trim() !== "" &&
     sentences.colour.trim() !== "" &&
     sentences.use.trim() !== "";
 
-  // Start recording + speech recognition together
+  const promptGroups = useMemo(() => {
+    const objectName = selectedObject?.name || "object";
+    return [
+      {
+        key: "name",
+        title: "This is...",
+        tone: "orange",
+        chips: [objectName, "pencil", "ball", "key", "book"],
+      },
+      {
+        key: "colour",
+        title: "It is...",
+        tone: "yellow",
+        chips: ["red", "blue", "yellow", "green", "brown"],
+      },
+      {
+        key: "use",
+        title: "We use it to...",
+        tone: "mint",
+        chips: ["write", "draw", "play", "open", "learn"],
+      },
+    ];
+  }, [selectedObject?.name]);
+
+  const triggerCelebration = (text, colors) => {
+    setCelebrationText(text);
+    setBurstSeed((value) => value + 1);
+    clearTimeout(celebrationTimeoutRef.current);
+    celebrationTimeoutRef.current = setTimeout(() => setCelebrationText(""), 1400);
+
+    confetti({
+      particleCount: 40,
+      spread: 70,
+      startVelocity: 28,
+      origin: { x: 0.5, y: 0.6 },
+      colors,
+      scalar: 0.8,
+    });
+  };
+
   const handleStartRecording = async () => {
     playClick();
     resetTranscript();
     resetRecording();
+    setAiReview(null);
     setPhase("record");
+    setCelebrationText("");
+    milestoneRef.current.clear();
 
-    // Start speech recognition first (it has its own mic access)
     if (isSupported) {
       try {
         startListening();
-      } catch (e) {
-        console.warn("Speech recognition failed to start:", e);
+      } catch (error) {
+        console.warn("Speech recognition failed to start:", error);
       }
     }
 
-    // Small delay so speech recognition grabs mic first, then recorder layers on
     setTimeout(async () => {
       try {
         await startRecording();
-      } catch (e) {
-        console.warn("Audio recording failed to start:", e);
+      } catch (error) {
+        console.warn("Audio recording failed to start:", error);
       }
     }, 300);
   };
 
-  // Stop recording + speech recognition together, then trigger AI analysis
   const handleStopRecording = () => {
     playClick();
-    try { stopRecording(); } catch (e) {}
-    try { stopListening(); } catch (e) {}
-    // Show report immediately, analysis happens in background
-    setTimeout(() => setPhase("report"), 400);
+    try {
+      stopRecording();
+    } catch (error) {}
+    try {
+      stopListening();
+    } catch (error) {}
 
-    // Trigger Gemini analysis in background
+    triggerCelebration("Take saved!", ["#fb923c", "#fb7185", "#facc15", "#14b8a6"]);
+    setTimeout(() => setPhase("report"), 450);
+
     setTimeout(async () => {
       setIsAnalyzing(true);
       try {
@@ -78,244 +164,278 @@ export default function SpeakingScreen() {
           objectName: selectedObject?.name,
         });
         setAiReview(review);
-      } catch (err) {
-        console.error("AI analysis failed:", err);
+      } catch (error) {
+        console.error("AI analysis failed:", error);
         setAiReview(null);
       } finally {
         setIsAnalyzing(false);
       }
-    }, 600);
+    }, 650);
   };
 
-  // Retry recording
   const handleRetry = () => {
     resetTranscript();
     resetRecording();
     setAiReview(null);
+    setCelebrationText("");
+    setElapsed(0);
     setPhase("fill");
   };
 
-  // Continue to guessing with awarded stars
   const handleContinue = (stars) => {
     clearInterval(timerRef.current);
     playChime();
     addScore(stars);
-    if (elapsed <= 15) addScore(2); // Speed bonus
+    if (elapsed <= 15) addScore(2);
     setStep("guessing");
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, y: 50 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full max-w-4xl mx-auto z-20 relative px-4 py-8 flex flex-col items-center min-h-[80vh]"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-24 md:px-6"
     >
-      <div className="text-center mb-10 w-full relative z-30">
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {/* Avatar badge */}
+      <div className="mb-8 text-center">
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white shadow-[0_8px_18px_rgba(249,115,22,0.2)]">
+            Speaking Booth
+          </span>
+          <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
+            {selectedObject ? `Secret object chosen: ${selectedObject.name}` : "Use the clue pattern"}
+          </span>
           {selectedAvatar && (
-            <span className="inline-flex items-center justify-center gap-3 py-2 pr-6 pl-2 rounded-full bg-white border-4 border-secondary text-secondary font-display text-sm font-black tracking-widest uppercase mb-6 shadow-lg transform -rotate-1">
-              <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center border-2 border-secondary shadow-inner">
-                <span className="text-2xl">{selectedAvatar.emoji}</span>
-              </div>
-              MYSTERY SPEAKER TURN
+            <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
+              {selectedAvatar.emoji} Your turn
             </span>
           )}
-          {!selectedAvatar && (
-            <span className="inline-block py-2 px-6 rounded-full bg-white border-4 border-secondary text-secondary font-display text-sm font-black tracking-widest uppercase mb-6 shadow-lg transform -rotate-1">
-              MYSTERY SPEAKER TURN
-            </span>
-          )}
-          <h2 className="text-5xl md:text-7xl font-display font-black text-secondary text-outline-blue mb-4 uppercase tracking-tighter">
-            Describe It!
-          </h2>
-          <p className="text-xl text-slate-600 font-display font-bold max-w-2xl mx-auto bg-white/50 px-4 py-2 rounded-full inline-block">
-            {phase === "fill"
-              ? "Fill in the blanks, then record your voice! 🎤"
-              : phase === "record"
-              ? "Speak clearly into the microphone... 📢"
-              : "Check out your speech results! ✨"}
-          </p>
-        </motion.div>
+        </div>
+
+        <h2 className="mt-5 text-5xl font-black uppercase tracking-tight text-[#432414] text-glow md:text-7xl">
+          Describe It!
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-[#654331] md:text-lg">
+          {phase === "fill"
+            ? "Build the clue with colorful prompt cards, then record a clear and confident answer."
+            : phase === "record"
+            ? "Speak into the booth and watch the stars pop when your clue gets stronger."
+            : "Check the stars, listen back, and move into the guessing round."}
+        </p>
       </div>
 
       <AnimatePresence mode="wait">
-        {/* PHASE 1: Fill in the blanks */}
         {phase === "fill" && (
           <motion.div
             key="fill"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="w-full flex flex-col items-center"
+            exit={{ opacity: 0, y: -16 }}
+            className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]"
           >
-            <div className="w-full max-w-2xl mb-8 relative">
-              <div className="absolute inset-0 bg-purple-600/10 blur-3xl rounded-full" />
-              <div className="relative z-10">
-                <SentenceBuilder sentences={gameContent.sentenceStarters} />
+            <div className="space-y-5 rounded-[2.2rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_60px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+              <div className="rounded-[1.8rem] border border-[#ffd8c2] bg-[linear-gradient(180deg,rgba(255,245,236,0.96),rgba(255,234,224,0.96))] p-5">
+                <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">How to sound great</p>
+                <div className="mt-4 grid gap-3">
+                  {[
+                    "Say what the object is.",
+                    "Add one clue about colour or shape.",
+                    "Tell the class what we use it for.",
+                  ].map((tip) => (
+                    <div key={tip} className="rounded-[1.2rem] border border-white/70 bg-white/80 px-4 py-3 text-sm font-semibold text-[#654331]">
+                      {tip}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {promptGroups.map((group) => (
+                  <PromptChipGroup
+                    key={group.key}
+                    group={group}
+                    onSelect={(value) => updateSentence(group.key, value)}
+                  />
+                ))}
+              </div>
+
+              <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] p-5">
+                <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Quick check</p>
+                <p className="mt-2 text-sm font-semibold leading-relaxed text-[#17685e]">
+                  Children can tap the chips first, then change the words in the sentence boxes if they want a better clue.
+                </p>
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-4 mt-auto">
-              {/* Timer Badge */}
-              <div className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-display font-black shadow-md border-4 ${
-                elapsed <= 15
-                  ? "bg-accent text-white border-white"
-                  : "bg-white text-secondary border-secondary"
-              }`}>
-                <span>⏱️</span>
-                <span>{elapsed}S</span>
-                {elapsed <= 15 && isComplete && (
-                  <span className="text-white animate-bounce ml-2 text-xs bg-black/20 px-2 py-0.5 rounded-full">SPEED BONUS! ⚡</span>
-                )}
-              </div>
+            <div className="space-y-5 rounded-[2.2rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_60px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+              <SentenceBuilder sentences={gameContent.sentenceStarters} />
 
-              <Button
-                size="xl"
-                variant={isComplete ? "primary" : "ghost"}
-                onClick={handleStartRecording}
-                disabled={!isComplete}
-                icon="🎙️"
-                className={isComplete ? "animate-bounce" : ""}
-              >
-                RECORD NOW!
-              </Button>
-              {!isComplete && (
-                <span className="text-sm text-slate-500 font-display font-bold uppercase tracking-widest mt-2">
-                  Finish the sentences first! 👇
-                </span>
-              )}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className={`inline-flex items-center gap-3 rounded-full border px-5 py-3 text-sm font-black uppercase tracking-[0.22em] ${
+                  elapsed <= 15
+                    ? "border-[#ccefe8] bg-[#ecfffb] text-[#0f7c70]"
+                    : "border-[#ffd8c2] bg-[#fff4ec] text-[#7d4522]"
+                }`}>
+                  <span>⏱️</span>
+                  <span>{elapsed}s</span>
+                  {elapsed <= 15 && isComplete && <span>Speed bonus</span>}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleStartRecording}
+                  disabled={!isComplete}
+                  className={`inline-flex items-center justify-center gap-3 rounded-full border px-7 py-4 text-base font-black uppercase tracking-[0.2em] transition-all ${
+                    isComplete
+                      ? "border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)] hover:-translate-y-0.5"
+                      : "cursor-not-allowed border-[#f4e1d3] bg-white text-[#b69a86] opacity-70"
+                  }`}
+                >
+                  🎙️ Record now
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
 
-        {/* PHASE 2: Recording (live volume meter) */}
         {phase === "record" && (
           <motion.div
             key="record"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="w-full max-w-lg flex flex-col items-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]"
           >
-            {/* Your sentences to say */}
-            <div className="card-playful-yellow p-6 w-full mb-8 relative">
-              <div className="absolute -top-4 -left-4 bg-primary text-secondary font-display font-black px-4 py-1 rounded-full border-4 border-white shadow-md uppercase text-xs">
-                SAY THIS! 📣
+            <div className="space-y-5 rounded-[2.2rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_60px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+              <div className="rounded-[1.8rem] border border-[#ffd8c2] bg-[linear-gradient(180deg,rgba(255,245,236,0.96),rgba(255,234,224,0.96))] p-5">
+                <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">Say this clue</p>
+                <div className="mt-4 space-y-3 text-left">
+                  <PromptLine label="1" text={`This is a ${sentences.name}.`} />
+                  <PromptLine label="2" text={`It is ${sentences.colour} in colour.`} />
+                  <PromptLine label="3" text={`We use it to ${sentences.use}.`} />
+                </div>
               </div>
-              <div className="space-y-4 pt-2">
-                <p className="text-slate-800 font-display font-bold text-2xl">
-                  "This is a <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.name}</span>."
-                </p>
-                <p className="text-slate-800 font-display font-bold text-2xl">
-                  "It is <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.colour}</span> in colour."
-                </p>
-                <p className="text-slate-800 font-display font-bold text-2xl">
-                  "We use it to <span className="text-secondary underline decoration-4 decoration-secondary/30">{sentences.use}</span>."
-                </p>
+
+              <div className="rounded-[1.8rem] border border-[#ffe7a1] bg-[#fff8db] p-5">
+                <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.28em] text-[#8c5a1a]">
+                  <span>Voice meter</span>
+                  <span>{volumeLevel}%</span>
+                </div>
+                <div className="mt-4 h-5 overflow-hidden rounded-full border border-white/80 bg-white/70">
+                  <motion.div
+                    className="h-full rounded-full bg-[linear-gradient(90deg,#fb923c,#fb7185,#14b8a6)]"
+                    animate={{ width: `${Math.max(6, volumeLevel)}%` }}
+                    transition={{ duration: 0.12 }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between text-[11px] font-bold uppercase tracking-[0.18em] text-[#a67b53]">
+                  <span>Too quiet</span>
+                  <span>Great voice</span>
+                  <span>Very loud</span>
+                </div>
               </div>
+
+              {!isSupported && (
+                <div className="rounded-[1.5rem] border border-[#ffd2dc] bg-[#fff1f5] p-4 text-sm font-semibold text-[#8b3550]">
+                  Speech recognition is not available here, but the audio recorder can still capture the clue.
+                </div>
+              )}
             </div>
 
-            {/* Volume Visualizer */}
-            <div className="w-full mb-6">
-              <div className="flex items-center justify-between mb-2 text-xs text-purple-300/60 font-body">
-                <span>Volume</span>
-                <span>{volumeLevel}%</span>
-              </div>
-              <div className="w-full h-6 bg-purple-900/40 rounded-full overflow-hidden border border-purple-500/20 relative">
+            <div className="relative overflow-hidden rounded-[2.2rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_60px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.28),_transparent_28%),radial-gradient(circle_at_bottom,_rgba(45,212,191,0.18),_transparent_30%)]" />
+
+              <div className="relative flex min-h-[460px] flex-col items-center justify-center text-center">
                 <motion.div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.max(3, volumeLevel)}%`,
-                    background: volumeLevel > 40
-                      ? "linear-gradient(90deg, #22c55e, #4ade80)"
-                      : volumeLevel > 15
-                      ? "linear-gradient(90deg, #eab308, #facc15)"
-                      : "linear-gradient(90deg, #ef4444, #f87171)",
+                  animate={{
+                    scale: isRecording ? [1, 1.08, 1] : 1,
+                    opacity: isRecording ? [0.24, 0.42, 0.24] : 0.2,
                   }}
-                  animate={{ width: `${Math.max(3, volumeLevel)}%` }}
-                  transition={{ duration: 0.1 }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute h-72 w-72 rounded-full bg-[#ffe06f]/[0.55] blur-2xl"
                 />
-                {/* Pulsing glow */}
-                {volumeLevel > 20 && (
-                  <div
-                    className="absolute inset-0 rounded-full animate-pulse"
-                    style={{
-                      background: `radial-gradient(circle at ${volumeLevel}% 50%, rgba(34,197,94,0.3), transparent 60%)`,
-                    }}
-                  />
+                <motion.div
+                  animate={{
+                    scale: isRecording ? [0.94, 1.12, 0.94] : 1,
+                    opacity: isRecording ? [0.12, 0.26, 0.12] : 0.12,
+                  }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                  className="absolute h-96 w-96 rounded-full bg-[#a7f4e9]/35 blur-3xl"
+                />
+
+                <AnimatePresence>
+                  {celebrationText && (
+                    <motion.div
+                      key={celebrationText}
+                      initial={{ opacity: 0, y: 12, scale: 0.94 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.96 }}
+                      className="absolute top-8 rounded-full border border-[#ffb087] bg-white px-5 py-2 text-sm font-black uppercase tracking-[0.22em] text-[#ff7a45] shadow-[0_12px_24px_rgba(249,115,22,0.12)]"
+                    >
+                      {celebrationText}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <StarBurst seed={burstSeed} />
+
+                <p className="text-xs font-black uppercase tracking-[0.34em] text-[#ff7a45]">
+                  Live booth
+                </p>
+                <h3 className="mt-4 text-3xl font-black text-[#432414] md:text-4xl">
+                  {isRecording ? "Keep talking" : "Tap to go live"}
+                </h3>
+                <p className="mt-3 max-w-md text-base leading-relaxed text-[#654331]">
+                  Speak naturally and let the star meter fill. The louder and clearer the clue sounds, the more the booth celebrates.
+                </p>
+
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleStopRecording}
+                  className="relative z-10 mt-8 flex h-36 w-36 items-center justify-center rounded-full border border-[#ffb4b4] bg-[linear-gradient(135deg,#f87171,#fb7185)] text-lg font-black uppercase tracking-[0.22em] text-white shadow-[0_0_36px_rgba(251,113,133,0.22)]"
+                >
+                  Stop
+                </motion.button>
+
+                <div className="mt-8 flex h-14 items-end gap-2">
+                  {Array.from({ length: 16 }).map((_, index) => {
+                    const height = Math.max(12, ((volumeLevel + index * 5) % 100) * 0.62);
+                    return (
+                      <motion.div
+                        key={index}
+                        className="w-3 rounded-full"
+                        animate={{
+                          height: isRecording ? height : 14,
+                          backgroundColor: isRecording ? "#14b8a6" : "#f9c9b5",
+                        }}
+                        transition={{ duration: 0.18 }}
+                      />
+                    );
+                  })}
+                </div>
+
+                {transcript && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mt-6 w-full max-w-lg rounded-[1.6rem] border border-[#ffd8c2] bg-white/90 p-4"
+                  >
+                    <p className="text-xs font-black uppercase tracking-[0.24em] text-[#a86132]">Live transcript</p>
+                    <p className="mt-2 text-sm italic leading-relaxed text-[#654331]">"{transcript}"</p>
+                  </motion.div>
                 )}
               </div>
-              <div className="flex justify-between mt-1 text-[10px] text-purple-400/40 font-body">
-                <span>Too Quiet</span>
-                <span>Perfect!</span>
-                <span>Too Loud</span>
-              </div>
             </div>
-
-            {/* Live Waveform Dots */}
-            <div className="flex gap-1 mb-6 h-12 items-end">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const height = Math.max(4, Math.random() * volumeLevel * 0.8);
-                return (
-                  <motion.div
-                    key={i}
-                    className="w-2 rounded-full"
-                    animate={{
-                      height: isRecording ? height : 4,
-                      backgroundColor: volumeLevel > 30
-                        ? "#4ade80"
-                        : volumeLevel > 10
-                        ? "#facc15"
-                        : "#a78bfa",
-                    }}
-                    transition={{ duration: 0.15 }}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Live Transcript */}
-            {transcript && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="w-full bg-purple-900/30 rounded-xl p-4 border border-purple-500/10 mb-6"
-              >
-                <p className="text-purple-100 font-body text-sm italic">"{transcript}"</p>
-                <div className="flex items-center gap-2 mt-2 text-xs text-purple-300/60">
-                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                  Listening...
-                </div>
-              </motion.div>
-            )}
-
-            {/* Stop Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleStopRecording}
-              className="w-24 h-24 rounded-full bg-red-500 shadow-[0_0_40px_rgba(239,68,68,0.5)] flex items-center justify-center text-4xl animate-pulse cursor-pointer border-4 border-red-300/30"
-            >
-              ⏹️
-            </motion.button>
-            <p className="text-purple-300/60 text-sm font-body mt-3">
-              Tap to stop recording
-            </p>
           </motion.div>
         )}
 
-        {/* PHASE 3: Report Card */}
         {phase === "report" && (
           <motion.div
             key="report"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             className="w-full"
@@ -334,5 +454,72 @@ export default function SpeakingScreen() {
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+function PromptChipGroup({ group, onSelect }) {
+  const tones = {
+    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
+    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
+  };
+
+  return (
+    <div className={`rounded-[1.6rem] border p-4 ${tones[group.tone]}`}>
+      <p className="text-xs font-black uppercase tracking-[0.24em] opacity-70">{group.title}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {group.chips.map((chip) => (
+          <button
+            key={chip}
+            type="button"
+            onClick={() => onSelect(chip)}
+            className="rounded-full border border-white/90 bg-white px-4 py-2 text-sm font-black capitalize tracking-[0.04em] shadow-sm"
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PromptLine({ label, text }) {
+  return (
+    <div className="flex items-start gap-4 rounded-[1.2rem] border border-white/70 bg-white/85 p-4">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#fff1e8] text-sm font-black text-[#86401b]">
+        {label}
+      </div>
+      <p className="text-left text-lg font-black leading-relaxed text-[#513120]">{text}</p>
+    </div>
+  );
+}
+
+function StarBurst({ seed }) {
+  const stars = [
+    { left: "-64px", top: "-6px" },
+    { left: "-46px", top: "-54px" },
+    { left: "0px", top: "-82px" },
+    { left: "48px", top: "-52px" },
+    { left: "68px", top: "-4px" },
+    { left: "40px", top: "54px" },
+    { left: "-34px", top: "58px" },
+  ];
+
+  if (!seed) return null;
+
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      {stars.map((star, index) => (
+        <motion.span
+          key={`${seed}-${index}`}
+          initial={{ opacity: 0, scale: 0.2, x: 0, y: 0 }}
+          animate={{ opacity: [0, 1, 0], scale: [0.2, 1.1, 0.8], x: star.left, y: star.top }}
+          transition={{ duration: 0.9, delay: index * 0.03, ease: "easeOut" }}
+          className="absolute text-3xl"
+        >
+          ⭐
+        </motion.span>
+      ))}
+    </div>
   );
 }

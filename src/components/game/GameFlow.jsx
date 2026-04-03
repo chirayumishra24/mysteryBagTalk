@@ -1,8 +1,17 @@
-import { useRef } from "react";
-import ContentRenderer from "./ContentRenderer";
-import HollowInteraction from "./HollowInteraction";
+import { lazy, Suspense, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import useGameStore from "../../store/useGameStore";
+
+const ContentRenderer = lazy(() => import("./ContentRenderer"));
+const HollowInteraction = lazy(() => import("./HollowInteraction"));
+const ThinkMode = lazy(() => import("./ThinkMode"));
+const SpeakingScreen = lazy(() => import("./SpeakingScreen"));
+const GuessPanel = lazy(() => import("./GuessPanel"));
+const RevealScreen = lazy(() => import("./RevealScreen"));
+const RewardPanel = lazy(() => import("./RewardPanel"));
 
 export default function GameFlow() {
+  const { currentStep } = useGameStore();
   const challengeRef = useRef(null);
 
   const scrollToChallenge = () => {
@@ -12,13 +21,65 @@ export default function GameFlow() {
     });
   };
 
-  return (
-    <div className="w-full pb-20">
-      <ContentRenderer onComplete={scrollToChallenge} />
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case "content":
+        return (
+          <div key="content" className="w-full pb-20">
+            <ContentRenderer onComplete={scrollToChallenge} />
+            <section ref={challengeRef} className="scroll-mt-24 px-4 pb-6 md:px-6">
+              <HollowInteraction />
+            </section>
+          </div>
+        );
+      case "think":
+        return <ThinkMode key="think" />;
+      case "speaking":
+        return <SpeakingScreen key="speaking" />;
+      case "guessing":
+        return <GuessPanel key="guessing" />;
+      case "reveal":
+        return <RevealScreen key="reveal" />;
+      case "reward":
+        return <RewardPanel key="reward" />;
+      default:
+        return (
+          <div key="fallback" className="w-full pb-20">
+            <ContentRenderer onComplete={scrollToChallenge} />
+            <section ref={challengeRef} className="scroll-mt-24 px-4 pb-6 md:px-6">
+              <HollowInteraction />
+            </section>
+          </div>
+        );
+    }
+  };
 
-      <section ref={challengeRef} className="scroll-mt-6 px-4 pb-6 md:px-6">
-        <HollowInteraction />
-      </section>
+  return (
+    <div className="w-full">
+      <Suspense fallback={<FlowLoader />}>
+        <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+      </Suspense>
     </div>
+  );
+}
+
+function FlowLoader() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex min-h-[70vh] items-center justify-center px-6 py-16"
+    >
+      <div className="rounded-[2rem] border border-white/80 bg-white/80 px-8 py-6 text-center shadow-[0_20px_40px_rgba(249,115,22,0.12)] backdrop-blur-xl">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+          className="mx-auto mb-4 h-12 w-12 rounded-full border-4 border-[#ffd8c2] border-t-[#ff7a45]"
+        />
+        <p className="font-display text-lg font-black uppercase tracking-[0.24em] text-[#9b5430]">
+          Loading fun...
+        </p>
+      </div>
+    </motion.div>
   );
 }

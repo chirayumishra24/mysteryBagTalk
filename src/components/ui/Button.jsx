@@ -38,15 +38,15 @@ export default function Button({
 
   const variants = {
     primary:
-      "bg-primary text-secondary-dark hover:bg-yellow-300 shadow-[0_6px_0_#ca8a04] active:shadow-[0_2px_0_#ca8a04] active:translate-y-[4px]",
+      "bg-primary text-[#7a3d1c] hover:bg-[#ffd85e] shadow-[0_6px_0_#d98b12] active:shadow-[0_2px_0_#d98b12] active:translate-y-[4px]",
     secondary:
-      "bg-secondary text-white hover:bg-blue-400 shadow-[0_6px_0_#1d4ed8] active:shadow-[0_2px_0_#1d4ed8] active:translate-y-[4px]",
+      "bg-secondary text-white hover:bg-[#ff9468] shadow-[0_6px_0_#d95b25] active:shadow-[0_2px_0_#d95b25] active:translate-y-[4px]",
     accent:
-      "bg-accent text-white hover:bg-green-300 shadow-[0_6px_0_#166534] active:shadow-[0_2px_0_#166534] active:translate-y-[4px]",
+      "bg-accent text-white hover:bg-[#58e6d4] shadow-[0_6px_0_#0f8c7c] active:shadow-[0_2px_0_#0f8c7c] active:translate-y-[4px]",
     ghost:
-      "bg-white/20 text-blue-900 hover:bg-white/40 border-none shadow-sm",
+      "bg-white/70 text-[#7a3d1c] hover:bg-white border-none shadow-sm",
     outline:
-      "border-4 border-secondary text-secondary hover:bg-secondary/10 shadow-none",
+      "border-4 border-secondary text-secondary hover:bg-[#fff1e7] shadow-none",
   };
 
   const sizes = {

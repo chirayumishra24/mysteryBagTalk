@@ -1,57 +1,78 @@
-/**
- * Mascot - A floating animated guide character that gives contextual tips.
- */
 import { motion, AnimatePresence } from "framer-motion";
 import useGameStore from "../../store/useGameStore";
+import { gameContent } from "../../data/gameContent";
 
-const TIPS = {
-  start: { emoji: "🧚", text: "Welcome! Pick an avatar and let's play! ✨" },
-  content: { emoji: "📖", text: "Read carefully! You'll need this info soon! 🤓" },
-  mysteryBag: { emoji: "🎒", text: "Tap the glowing bag to open it! 👆" },
-  think: { emoji: "🤔", text: "Feel the object... What could it be? 🔍" },
-  speaking: { emoji: "🗣️", text: "Speak clearly! Try the microphone! 🎤" },
-  guessing: { emoji: "⏱️", text: "Hurry! Your classmates are guessing! 🏃" },
-  reveal: { emoji: "🎉", text: "TADA! Look what it was! 🌟" },
-  reward: { emoji: "🏆", text: "Amazing job! You're a Star Speaker! ⭐" },
+const contentSlides = gameContent.modules.flatMap((module) => module.chapters);
+
+const STEP_TIPS = {
+  think: { emoji: "🕵️", text: "Pick one secret object and keep it hidden from the class." },
+  speaking: { emoji: "🎤", text: "Use short, clear clues so everyone can understand your idea." },
+  guessing: { emoji: "💭", text: "Listen for the best clue and make your smartest guess." },
+  reveal: { emoji: "🎊", text: "Big reveal time! Let the whole class celebrate the answer." },
+  reward: { emoji: "🏆", text: "Celebrate the effort, not just the perfect answer." },
 };
 
+function getContentTip(slide) {
+  if (!slide) {
+    return { emoji: "🌟", text: "Swipe through the guide and collect the best clue ideas." };
+  }
+
+  if (slide.video) {
+    return {
+      emoji: "🎬",
+      text: "Pause after the demo and ask children to copy the sentence pattern together.",
+    };
+  }
+
+  if (slide.questions?.length) {
+    return {
+      emoji: "🧩",
+      text: "Pick one prompt and let a child answer in a full sentence before moving on.",
+    };
+  }
+
+  return {
+    emoji: "💡",
+    text: "Keep the explanation short, playful, and easy to repeat aloud.",
+  };
+}
+
 export default function Mascot() {
-  const { currentStep } = useGameStore();
-  const tip = TIPS[currentStep] || TIPS.start;
+  const { currentStep, contentSlideIndex } = useGameStore();
+  const tip =
+    currentStep === "content"
+      ? getContentTip(contentSlides[contentSlideIndex])
+      : STEP_TIPS[currentStep] || { emoji: "🌟", text: "Keep the energy high and the instructions simple." };
 
   return (
-    <div className="fixed bottom-6 left-6 z-[90] pointer-events-none">
+    <div className="fixed bottom-5 right-5 z-[90] hidden max-w-sm pointer-events-none lg:block">
       <AnimatePresence mode="wait">
         <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, y: 30, scale: 0.8 }}
+          key={`${currentStep}-${contentSlideIndex}`}
+          initial={{ opacity: 0, y: 30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.8 }}
-          transition={{ type: "spring", damping: 15, stiffness: 200 }}
-          className="flex items-end gap-3 pointer-events-auto"
+          exit={{ opacity: 0, y: 12, scale: 0.92 }}
+          transition={{ type: "spring", damping: 18, stiffness: 200 }}
+          className="flex items-end gap-3"
         >
-          {/* Mascot Character */}
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(236,72,153,0.4)] border-2 border-white/20 flex-shrink-0"
+            animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+            className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-[1.6rem] border border-white/90 bg-[linear-gradient(135deg,#fb923c,#facc15)] text-3xl shadow-[0_14px_28px_rgba(249,115,22,0.18)]"
           >
             {tip.emoji}
           </motion.div>
 
-          {/* Speech Bubble */}
           <motion.div
-            initial={{ opacity: 0, x: -10 }}
+            initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="relative bg-white border-4 border-primary rounded-2xl rounded-bl-sm px-5 py-3 max-w-[240px] shadow-lg pointer-events-auto"
+            transition={{ delay: 0.15 }}
+            className="relative rounded-[1.8rem] rounded-br-[0.6rem] border border-white/85 bg-white/88 px-5 py-4 shadow-[0_18px_40px_rgba(249,115,22,0.12)] backdrop-blur-xl"
           >
-            <p className="text-sm text-slate-800 font-display font-black leading-snug">
-              {tip.text}
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#ff7a45]">
+              Buddy Tip
             </p>
-            {/* Bubble tail */}
-            <div className="absolute -left-[14px] bottom-1 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-primary border-b-[8px] border-b-transparent" />
-            <div className="absolute -left-2 bottom-2 w-0 h-0 border-t-4 border-t-transparent border-r-8 border-r-white border-b-4 border-b-transparent z-10" />
+            <p className="mt-2 text-sm font-bold leading-relaxed text-[#654331]">{tip.text}</p>
           </motion.div>
         </motion.div>
       </AnimatePresence>

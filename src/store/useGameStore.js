@@ -2,8 +2,6 @@ import { create } from "zustand";
 
 // Game steps in order
 export const GAME_STEPS = [
-  "start",
-  "mysteryBag",
   "content",
   "think",
   "speaking",
@@ -25,7 +23,7 @@ export const AVATARS = [
 
 const useGameStore = create((set, get) => ({
   // Current game step
-  currentStep: "start",
+  currentStep: "content",
   stepIndex: 0,
 
   // Selected object from the mystery bag
@@ -65,6 +63,7 @@ const useGameStore = create((set, get) => ({
   // Content navigation
   currentChapterIndex: 0,
   currentModuleIndex: 0,
+  contentSlideIndex: 0,
 
   // Actions
   setStep: (step) => {
@@ -94,7 +93,7 @@ const useGameStore = create((set, get) => ({
 
   resetGame: () => {
     set({
-      currentStep: "start",
+      currentStep: "content",
       stepIndex: 0,
       selectedObject: null,
       sentences: { name: "", colour: "", use: "" },
@@ -108,6 +107,7 @@ const useGameStore = create((set, get) => ({
       stars: 0,
       currentChapterIndex: 0,
       currentModuleIndex: 0,
+      contentSlideIndex: 0,
       hasSeenContent: false,
     });
   },
@@ -181,6 +181,13 @@ const useGameStore = create((set, get) => ({
       currentModuleIndex: state.currentModuleIndex + 1,
       currentChapterIndex: 0,
     })),
+
+  setContentPosition: (slideIndex, moduleIndex, chapterIndex) =>
+    set({
+      contentSlideIndex: slideIndex,
+      currentModuleIndex: moduleIndex,
+      currentChapterIndex: chapterIndex,
+    }),
 }));
 
 export default useGameStore;

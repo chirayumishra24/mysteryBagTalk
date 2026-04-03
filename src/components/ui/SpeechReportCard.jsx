@@ -1,16 +1,12 @@
-/**
- * SpeechReportCard - Visual scoring card after audio recording.
- * Analyzes the transcript and audio metrics against activity parameters.
- */
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
-// Lists of describing/color words to detect
 const COLOR_WORDS = [
   "red", "blue", "green", "yellow", "orange", "purple", "pink", "white",
   "black", "brown", "grey", "gray", "silver", "golden", "gold", "transparent",
   "shiny", "bright", "dark", "light", "colourful", "colorful",
 ];
+
 const ADJECTIVES = [
   "big", "small", "long", "short", "round", "flat", "soft", "hard",
   "smooth", "rough", "heavy", "light", "thin", "thick", "sharp",
@@ -22,26 +18,21 @@ function analyzeTranscript(transcript, sentences) {
   const lower = transcript.toLowerCase();
   const words = lower.split(/\s+/).filter(Boolean);
 
-  // 1. Sentence Completeness — did they mention name, colour, use?
   const hasName = sentences.name.trim() !== "" && lower.includes(sentences.name.toLowerCase());
   const hasColour = sentences.colour.trim() !== "" && (
     lower.includes(sentences.colour.toLowerCase()) ||
-    COLOR_WORDS.some((c) => lower.includes(c))
+    COLOR_WORDS.some((color) => lower.includes(color))
   );
   const hasUse = sentences.use.trim() !== "" && lower.includes(sentences.use.toLowerCase());
-  const completenessScore = [hasName, hasColour, hasUse].filter(Boolean).length; // 0–3
+  const completenessScore = [hasName, hasColour, hasUse].filter(Boolean).length;
 
-  // 2. Describing Words
-  const foundColors = COLOR_WORDS.filter((w) => lower.includes(w));
-  const foundAdj = ADJECTIVES.filter((w) => {
-    const regex = new RegExp(`\\b${w}\\b`, "i");
+  const foundColors = COLOR_WORDS.filter((word) => lower.includes(word));
+  const foundAdj = ADJECTIVES.filter((word) => {
+    const regex = new RegExp(`\\b${word}\\b`, "i");
     return regex.test(lower);
   });
   const describingWords = [...new Set([...foundColors, ...foundAdj])];
-  const describingScore = Math.min(3, describingWords.length); // 0–3
-
-  // 3. Word count
-  const wordCount = words.length;
+  const describingScore = Math.min(3, describingWords.length);
 
   return {
     hasName,
@@ -50,20 +41,20 @@ function analyzeTranscript(transcript, sentences) {
     completenessScore,
     describingWords,
     describingScore,
-    wordCount,
+    wordCount: words.length,
   };
 }
 
 function StarRating({ score, maxStars = 3 }) {
   return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: maxStars }).map((_, i) => (
+    <div className="flex gap-1">
+      {Array.from({ length: maxStars }).map((_, index) => (
         <motion.span
-          key={i}
+          key={index}
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.3 + i * 0.15, type: "spring", stiffness: 300 }}
-          className={`text-lg ${i < score ? "" : "opacity-20"}`}
+          transition={{ delay: 0.24 + index * 0.12, type: "spring", stiffness: 300 }}
+          className={`text-xl ${index < score ? "" : "opacity-20 grayscale"}`}
         >
           ⭐
         </motion.span>
@@ -72,22 +63,31 @@ function StarRating({ score, maxStars = 3 }) {
   );
 }
 
-function ScoreRow({ icon, label, score, maxStars = 3, detail, delay = 0 }) {
+function ScoreRow({ icon, label, score, detail, delay, tone }) {
+  const tones = {
+    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
+    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
+    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.4 }}
-      className="flex items-center gap-4 bg-white p-5 rounded-2xl border-4 border-sky-50 shadow-sm"
+      className={`flex items-center gap-4 rounded-[1.5rem] border p-4 ${tones[tone]}`}
     >
-      <span className="text-2xl flex-shrink-0">{icon}</span>
-      <div className="flex-1 min-w-0">
-        <div className="text-slate-800 font-display font-black text-sm uppercase tracking-tight">{label}</div>
+      <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+        {icon}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="text-sm font-black uppercase tracking-[0.2em]">{label}</div>
         {detail && (
-          <div className="text-slate-400 text-xs font-display font-bold mt-0.5 truncate uppercase">{detail}</div>
+          <div className="mt-1 text-xs font-semibold opacity-80">{detail}</div>
         )}
       </div>
-      <StarRating score={score} maxStars={maxStars} />
+      <StarRating score={score} />
     </motion.div>
   );
 }
@@ -95,19 +95,18 @@ function ScoreRow({ icon, label, score, maxStars = 3, detail, delay = 0 }) {
 export default function SpeechReportCard({
   transcript,
   audioUrl,
-  metrics, // { avgVolume, peakVolume, durationMs }
-  sentences, // { name, colour, use }
-  aiReview, // Gemini AI review object (or null)
-  isAnalyzing, // boolean
+  metrics,
+  sentences,
+  aiReview,
+  isAnalyzing,
   onContinue,
   onRetry,
 }) {
   const analysis = useMemo(
     () => analyzeTranscript(transcript || "", sentences || {}),
-    [transcript, sentences]
+    [sentences, transcript],
   );
 
-  // Volume score: 0–3 stars based on avgVolume
   const volumeScore = !metrics
     ? 0
     : metrics.avgVolume >= 30
@@ -118,256 +117,227 @@ export default function SpeechReportCard({
     ? 1
     : 0;
 
-  // Duration score: 0–3 stars based on seconds spoken
   const durationSec = metrics ? Math.round(metrics.durationMs / 1000) : 0;
   const durationScore = durationSec >= 8 ? 3 : durationSec >= 5 ? 2 : durationSec >= 3 ? 1 : 0;
-
-  // Overall: total from all 4 categories (max 12) → mapped to 0–5 stars
   const totalRaw = volumeScore + analysis.completenessScore + analysis.describingScore + durationScore;
   const overallStars = Math.min(5, Math.round((totalRaw / 12) * 5));
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+      initial={{ opacity: 0, scale: 0.92, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.5, type: "spring", damping: 20 }}
-      className="w-full max-w-lg mx-auto bg-white p-8 rounded-[3rem] border-8 border-secondary shadow-2xl relative overflow-hidden"
+      transition={{ duration: 0.5, type: "spring", damping: 22 }}
+      className="mx-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl md:p-8"
     >
-      <div className="absolute top-0 left-0 right-0 h-4 bg-secondary/10" />
-      {/* Header */}
-      <div className="text-center mb-8">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="text-5xl mb-3"
-        >
-          📜
-        </motion.div>
-        <h3 className="text-3xl font-display font-black text-secondary uppercase tracking-tighter">SPEECH REPORT</h3>
-        <p className="text-slate-400 text-sm font-display font-black uppercase mt-1">
-          HERE IS YOUR PERFORMANCE!
-        </p>
-      </div>
+      <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="space-y-5">
+          <div className="rounded-[2rem] border border-[#ffd8c2] bg-[linear-gradient(180deg,rgba(255,245,236,0.96),rgba(255,234,224,0.96))] p-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
+                Speech Report
+              </span>
+              <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
+                Bright feedback
+              </span>
+            </div>
 
-      {/* Score Rows */}
-      <div className="space-y-3 mb-6">
-        <ScoreRow
-          icon="🔊"
-          label="Clear, Loud Voice"
-          score={volumeScore}
-          detail={metrics ? `Avg. volume: ${metrics.avgVolume}%` : "No data"}
-          delay={0.1}
-        />
-        <ScoreRow
-          icon="📝"
-          label="Complete Sentences"
-          score={analysis.completenessScore}
-          detail={`${analysis.hasName ? "✅" : "❌"} Name  ${analysis.hasColour ? "✅" : "❌"} Colour  ${analysis.hasUse ? "✅" : "❌"} Use`}
-          delay={0.2}
-        />
-        <ScoreRow
-          icon="🎨"
-          label="Good Describing Words"
-          score={analysis.describingScore}
-          detail={
-            analysis.describingWords.length > 0
-              ? analysis.describingWords.slice(0, 5).join(", ")
-              : "None detected"
-          }
-          delay={0.3}
-        />
-        <ScoreRow
-          icon="⏱️"
-          label="Speaking Duration"
-          score={durationScore}
-          detail={`${durationSec} seconds  ·  ${analysis.wordCount} words`}
-          delay={0.4}
-        />
-      </div>
-
-      {/* Overall Stars */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="text-center mb-8 py-6 bg-sky-50 rounded-[2rem] border-4 border-sky-100 shadow-inner"
-      >
-        <div className="text-xs font-display font-black text-secondary uppercase tracking-widest mb-3">
-          OVERALL SCORE
-        </div>
-        <div className="flex justify-center gap-2 mb-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <motion.span
-              key={i}
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.8 + i * 0.15, type: "spring", stiffness: 300 }}
-              className={`text-3xl ${i < overallStars ? "" : "opacity-20 grayscale"}`}
-              style={{ filter: i < overallStars ? "drop-shadow(0 4px 0 #ca8a04)" : "none" }}
-            >
-              ⭐
-            </motion.span>
-          ))}
-        </div>
-        <div className="text-slate-600 font-display font-black text-sm uppercase tracking-tight">
-          {overallStars >= 4 ? "🎉 AMAZING SPEAKER!" : overallStars >= 2 ? "👏 GREAT JOB!" : "💪 KEEP PRACTICING!"}
-        </div>
-      </motion.div>
-
-      {/* Transcript Preview */}
-      {transcript && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="bg-white rounded-2xl p-5 border-4 border-sky-50 mb-6"
-        >
-          <div className="text-xs font-display font-black text-slate-400 uppercase tracking-widest mb-2">
-            WHAT YOU SAID
-          </div>
-          <p className="text-slate-700 font-display font-bold text-base italic leading-relaxed">
-            "{transcript}"
-          </p>
-        </motion.div>
-      )}
-
-      {/* Audio Playback */}
-      {audioUrl && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mb-6"
-        >
-          <div className="text-xs font-display font-bold text-purple-400 uppercase tracking-wider mb-2">
-            🎧 Listen to Yourself
-          </div>
-          <audio
-            controls
-            src={audioUrl}
-            className="w-full h-10 rounded-lg"
-            style={{ filter: "hue-rotate(260deg)" }}
-          />
-        </motion.div>
-      )}
-
-      {/* AI Review Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
-        className="mb-6"
-      >
-        <div className="text-xs font-display font-black text-secondary uppercase tracking-widest mb-3">
-          🤖 AI TEACHER REVIEW
-        </div>
-
-        {isAnalyzing && (
-          <div className="bg-sky-50 rounded-2xl p-6 border-4 border-sky-100 text-center">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-              className="text-4xl mb-3 inline-block"
-            >
-              🔍
-            </motion.div>
-            <p className="text-slate-500 font-display font-bold text-sm uppercase">
-              Analyzing your speech with AI...
-            </p>
-          </div>
-        )}
-
-        {!isAnalyzing && aiReview && (
-          <div className="space-y-4">
-            {/* AI Feedback Message */}
-            <div className="bg-green-50 rounded-2xl p-5 border-4 border-green-100">
-              <p className="text-slate-700 font-display font-bold text-base leading-relaxed">
-                {aiReview.feedback}
+            <div className="mt-5 rounded-[1.8rem] border border-[#ffe0cf] bg-white/90 p-6 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a86132]">Overall score</p>
+              <div className="mt-4 flex justify-center gap-2">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.48 + index * 0.12, type: "spring", stiffness: 300 }}
+                    className={`text-4xl ${index < overallStars ? "" : "opacity-20 grayscale"}`}
+                    style={{ filter: index < overallStars ? "drop-shadow(0 6px 0 rgba(249,115,22,0.18))" : "none" }}
+                  >
+                    ⭐
+                  </motion.span>
+                ))}
+              </div>
+              <p className="mt-4 text-xl font-black uppercase tracking-[0.16em] text-[#432414]">
+                {overallStars >= 4 ? "Amazing speaker!" : overallStars >= 2 ? "Great job!" : "Keep practicing!"}
+              </p>
+              <p className="mt-2 text-sm text-[#6b4633]">
+                {overallStars >= 4
+                  ? "Your clues sounded clear and confident."
+                  : "Each round helps the next clue sound even stronger."}
               </p>
             </div>
+          </div>
 
-            {/* AI Score Breakdown */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {[
-                { label: "Clarity", score: aiReview.clarity, icon: "🗣️" },
-                { label: "Vocabulary", score: aiReview.vocabulary, icon: "📚" },
-                { label: "Sentences", score: aiReview.sentence_structure, icon: "✏️" },
-                { label: "Accuracy", score: aiReview.accuracy, icon: "🎯" },
-                { label: "Confidence", score: aiReview.confidence, icon: "💪" },
-                { label: "Overall", score: aiReview.overall_stars, icon: "⭐" },
-              ].map(({ label, score, icon }) => (
-                <div
-                  key={label}
-                  className="bg-white rounded-2xl p-4 border-4 border-sky-50 text-center shadow-sm"
-                >
-                  <div className="text-2xl mb-1">{icon}</div>
-                  <div className="text-xs font-display font-black text-slate-400 uppercase">{label}</div>
-                  <div className="text-2xl font-display font-black text-secondary">
-                    {score}<span className="text-sm text-slate-300">/5</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="space-y-3">
+            <ScoreRow
+              icon="🔊"
+              label="Clear voice"
+              score={volumeScore}
+              detail={metrics ? `Average volume ${metrics.avgVolume}%` : "No voice data yet"}
+              delay={0.1}
+              tone="orange"
+            />
+            <ScoreRow
+              icon="📝"
+              label="Full clues"
+              score={analysis.completenessScore}
+              detail={`${analysis.hasName ? "Name" : "Name missing"} · ${analysis.hasColour ? "Colour" : "Colour missing"} · ${analysis.hasUse ? "Use" : "Use missing"}`}
+              delay={0.18}
+              tone="yellow"
+            />
+            <ScoreRow
+              icon="🎨"
+              label="Describing words"
+              score={analysis.describingScore}
+              detail={analysis.describingWords.length > 0 ? analysis.describingWords.slice(0, 5).join(", ") : "Add more describing words next round"}
+              delay={0.26}
+              tone="mint"
+            />
+            <ScoreRow
+              icon="⏱️"
+              label="Speaking time"
+              score={durationScore}
+              detail={`${durationSec} seconds · ${analysis.wordCount} words`}
+              delay={0.34}
+              tone="pink"
+            />
+          </div>
+        </div>
 
-            {/* Tip */}
-            {aiReview.tip && (
-              <div className="bg-amber-50 rounded-2xl p-5 border-4 border-amber-100">
-                <div className="text-xs font-display font-black text-amber-600 uppercase tracking-widest mb-2">💡 TIP FOR NEXT TIME</div>
-                <p className="text-slate-700 font-display font-bold text-sm">
-                  {aiReview.tip}
+        <div className="space-y-5">
+          {transcript && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="rounded-[1.8rem] border border-[#ffd8c2] bg-white p-5"
+            >
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">What you said</p>
+              <p className="mt-3 text-base font-semibold italic leading-relaxed text-[#654331]">"{transcript}"</p>
+            </motion.div>
+          )}
+
+          {audioUrl && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="rounded-[1.8rem] border border-[#d7f4ef] bg-[#effffb] p-5"
+            >
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Listen back</p>
+              <audio controls src={audioUrl} className="mt-4 h-10 w-full rounded-lg" />
+            </motion.div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.48 }}
+            className="rounded-[1.8rem] border border-[#ffe0cf] bg-[#fffaf4] p-5"
+          >
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">AI teacher review</p>
+
+            {isAnalyzing && (
+              <div className="mt-4 rounded-[1.5rem] border border-[#ffe7a1] bg-[#fff8db] p-6 text-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+                  className="mx-auto mb-3 h-12 w-12 rounded-full border-4 border-[#ffd6c2] border-t-[#ff7a45]"
+                />
+                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8c5a1a]">
+                  Reading the clue...
                 </p>
               </div>
             )}
 
-            {/* Highlighted Words */}
-            {aiReview.highlighted_words?.length > 0 && (
-              <div className="bg-purple-50 rounded-2xl p-5 border-4 border-purple-100">
-                <div className="text-xs font-display font-black text-purple-600 uppercase tracking-widest mb-3">✨ GREAT WORDS YOU USED</div>
-                <div className="flex flex-wrap gap-2">
-                  {aiReview.highlighted_words.map((word, i) => (
-                    <span
-                      key={i}
-                      className="bg-white border-2 border-purple-200 text-purple-700 px-3 py-1 rounded-full font-display font-bold text-sm shadow-sm"
-                    >
-                      {word}
-                    </span>
+            {!isAnalyzing && aiReview && (
+              <div className="mt-4 space-y-4">
+                <div className="rounded-[1.5rem] border border-[#ccefe8] bg-[#ecfffb] p-4">
+                  <p className="text-sm font-semibold leading-relaxed text-[#17685e]">{aiReview.feedback}</p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    { label: "Clarity", score: aiReview.clarity, icon: "🗣️", tone: "orange" },
+                    { label: "Vocabulary", score: aiReview.vocabulary, icon: "📚", tone: "yellow" },
+                    { label: "Confidence", score: aiReview.confidence, icon: "💪", tone: "pink" },
+                  ].map(({ label, score, icon, tone }) => (
+                    <MiniStat key={label} label={label} score={score} icon={icon} tone={tone} />
                   ))}
                 </div>
+
+                {aiReview.tip && (
+                  <div className="rounded-[1.5rem] border border-[#ffd2dc] bg-[#fff1f5] p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9b3b58]">Next time tip</p>
+                    <p className="mt-2 text-sm font-semibold leading-relaxed text-[#7d3650]">{aiReview.tip}</p>
+                  </div>
+                )}
+
+                {aiReview.highlighted_words?.length > 0 && (
+                  <div className="rounded-[1.5rem] border border-[#ffd8c2] bg-[#fff4ec] p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.28em] text-[#86401b]">Words you used well</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {aiReview.highlighted_words.map((word) => (
+                        <span
+                          key={word}
+                          className="rounded-full border border-[#ffd6c2] bg-white px-3 py-1 text-sm font-bold text-[#7d4522]"
+                        >
+                          {word}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
 
-        {!isAnalyzing && !aiReview && (
-          <div className="bg-slate-50 rounded-2xl p-5 border-4 border-slate-100 text-center">
-            <p className="text-slate-400 font-display font-bold text-sm">
-              AI review unavailable. Check your backend connection.
-            </p>
-          </div>
-        )}
-      </motion.div>
+            {!isAnalyzing && !aiReview && (
+              <div className="mt-4 rounded-[1.5rem] border border-[#f4e1d3] bg-white p-4 text-sm font-semibold text-[#8d6a57]">
+                AI review is not available right now. The class can still use the stars and transcript as feedback.
+              </div>
+            )}
+          </motion.div>
 
-      {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        className="flex gap-4"
-      >
-        <button
-          onClick={onRetry}
-          className="flex-1 py-4 rounded-[1.5rem] border-4 border-slate-100 text-slate-400 font-display font-black text-sm hover:bg-slate-50 transition-all cursor-pointer uppercase tracking-widest"
-        >
-          🔄 RETRY
-        </button>
-        <button
-          onClick={() => onContinue(overallStars)}
-          className="flex-1 py-4 rounded-[1.5rem] bg-secondary hover:bg-blue-400 text-white font-display font-black text-sm shadow-lg transition-all cursor-pointer uppercase tracking-widest active:translate-y-1"
-        >
-          ✅ NEXT
-        </button>
-      </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.58 }}
+            className="flex flex-col gap-3 sm:flex-row"
+          >
+            <button
+              onClick={onRetry}
+              className="flex-1 rounded-full border border-[#ffd8c2] bg-white px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-[#7d4522] shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(249,115,22,0.12)]"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => onContinue(overallStars)}
+              className="flex-1 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)] transition hover:-translate-y-0.5"
+            >
+              Next round
+            </button>
+          </motion.div>
+        </div>
+      </div>
     </motion.div>
+  );
+}
+
+function MiniStat({ label, score, icon, tone }) {
+  const tones = {
+    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
+    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
+  };
+
+  return (
+    <div className={`rounded-[1.4rem] border p-4 text-center ${tones[tone]}`}>
+      <div className="text-2xl">{icon}</div>
+      <p className="mt-2 text-[11px] font-black uppercase tracking-[0.24em] opacity-70">{label}</p>
+      <p className="mt-2 text-2xl font-black">
+        {score}
+        <span className="text-sm opacity-60">/5</span>
+      </p>
+    </div>
   );
 }

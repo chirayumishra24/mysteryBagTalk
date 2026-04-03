@@ -1,181 +1,167 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Button from "../ui/Button";
-import Card from "../ui/Card";
 import useGameStore from "../../store/useGameStore";
 import { gameContent } from "../../data/gameContent";
-import { playSuccess, playStarEarned } from "../../hooks/useAudio";
+import { playStarEarned, playSuccess } from "../../hooks/useAudio";
 
 export default function RewardPanel() {
-  const { setStep, addScore, stars, resetGame, saveToLeaderboard, selectedAvatar, playerName } = useGameStore();
+  const { addScore, resetGame, saveToLeaderboard, selectedAvatar, playerName, updateSentence, setSelectedObject, resetTimer, setStep } =
+    useGameStore();
   const [animatingStars, setAnimatingStars] = useState(0);
   const [showBadge, setShowBadge] = useState(false);
 
-  // Animate stars appearing one by one based on criteria
   useEffect(() => {
-    // We give all 3 criteria points for the demo logic
-    // Add 3 points -> 3 stars out of 5 total max
-    addScore(3); 
-    
+    addScore(3);
+
     let currentStar = 0;
-    const targetStars = 5; // Simulating max success for feel-good gameplay
-    
+    const targetStars = 5;
+
     const interval = setInterval(() => {
       if (currentStar < targetStars) {
-        currentStar++;
+        currentStar += 1;
         setAnimatingStars(currentStar);
         playStarEarned();
       } else {
         clearInterval(interval);
         playSuccess();
         saveToLeaderboard();
-        setTimeout(() => setShowBadge(true), 500);
+        setTimeout(() => setShowBadge(true), 400);
       }
-    }, 400);
+    }, 350);
 
     return () => clearInterval(interval);
-  }, [addScore]);
+  }, [addScore, saveToLeaderboard]);
+
+  const handlePlayAgain = () => {
+    setSelectedObject(null);
+    updateSentence("name", "");
+    updateSentence("colour", "");
+    updateSentence("use", "");
+    resetTimer();
+    setStep("think");
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="w-full max-w-4xl mx-auto z-20 relative px-4 flex flex-col items-center justify-center min-h-[90vh]"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-24 md:px-6"
     >
-      <div className="text-center mb-12 w-full relative z-30">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-64 bg-primary/20 blur-3xl rounded-full" />
-        
-        <motion.h2
-          initial={{ y: -30, opacity: 0, rotate: -2 }}
-          animate={{ y: 0, opacity: 1, rotate: 2 }}
-          transition={{ repeat: Infinity, repeatType: "reverse", duration: 2 }}
-          className="text-6xl md:text-8xl font-display font-black text-secondary text-outline-blue relative z-10 uppercase tracking-tighter"
-        >
-          YOU DID IT!
-        </motion.h2>
-      </div>
+      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+        <div className="space-y-5 rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
+              Reward Time
+            </span>
+            <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
+              Celebrate the effort
+            </span>
+          </div>
 
-      <div className="flex flex-col md:flex-row gap-8 w-full items-stretch justify-center relative z-10">
-        
-        {/* Left Card: Score Breakdown */}
-        <Card variant="light" className="flex-1 flex flex-col p-8 border-4 border-sky-100" delay={0.2}>
-          <h3 className="text-2xl font-display font-black text-secondary border-b-4 border-sky-50 pb-4 mb-6 uppercase tracking-tight">
-            MYSTERY POINTS 🏅
-          </h3>
-          
-          <ul className="space-y-4 flex-1">
-            {gameContent.browniePoints.map((point, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + i * 0.2 }}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border-2 border-sky-50 shadow-sm transition-all hover:scale-[1.02]">
-                  <span className="text-2xl bg-sky-50 rounded-full p-1">✅</span>
-                  <span className="text-slate-700 font-display font-bold text-lg">{point.action}</span>
-                </div>
-                <span className="font-display font-black text-secondary text-2xl">+{point.points}</span>
-              </motion.li>
-            ))}
-          </ul>
-        </Card>
+          <h2 className="text-5xl font-black uppercase tracking-tight text-[#432414] text-glow md:text-7xl">
+            You did it!
+          </h2>
+          <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
+            The class listened, guessed, and celebrated together. End the round with stars, praise, and one quick reminder about what made the clue work well.
+          </p>
 
-        {/* Right Card: Final Reward */}
-        <Card variant="highlight" className="flex-1 flex flex-col items-center justify-center p-8 text-center" delay={0.4}>
-          <div className="mb-6 flex gap-2">
-            {[1, 2, 3, 4, 5].map((star) => (
+          <div className="grid gap-3">
+            {gameContent.browniePoints.map((point, index) => (
               <motion.div
-                key={star}
-                initial={{ scale: 0, rotate: -180 }}
-                animate={
-                  star <= animatingStars
-                    ? { scale: 1, rotate: 0 }
-                    : { scale: 0, rotate: -180 }
-                }
-                transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="text-5xl"
-                style={{ filter: "drop-shadow(0 0 10px rgba(253,224,71,0.5))" }}
+                key={point.action}
+                initial={{ opacity: 0, x: -14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 + index * 0.12 }}
+                className="flex items-center justify-between rounded-[1.5rem] border border-[#ffd8c2] bg-[#fff4ec] p-4"
               >
-                {star <= animatingStars ? "⭐" : <span className="opacity-20 grayscale">⭐</span>}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">⭐</span>
+                  <span className="text-sm font-black uppercase tracking-[0.16em] text-[#7d4522]">{point.action}</span>
+                </div>
+                <span className="text-lg font-black text-[#ff7a45]">+{point.points}</span>
               </motion.div>
             ))}
           </div>
 
-          <AnimatePresence>
-            {showBadge && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", bounce: 0.6 }}
-                className="flex flex-col items-center"
-              >
-                <div className="relative w-48 h-48 mb-6 flex justify-center items-center">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-[-10px] border-4 border-dashed border-primary/50 rounded-full"
-                  />
-                  <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center p-2 shadow-2xl border-8 border-primary">
-                    <div className="w-full h-full bg-sky-50 rounded-full flex items-center justify-center relative overflow-hidden border-4 border-white">
-                      <motion.div 
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "200%" }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-                        className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent transform -skew-x-12"
-                      />
-                      <span className="text-7xl group-hover:scale-110 transition-transform drop-shadow-md">🏆</span>
+          <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] p-5">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Teacher line</p>
+            <p className="mt-2 text-sm font-semibold leading-relaxed text-[#17685e]">
+              "You used clear clues, strong listening, and kind applause. That is what great speaking looks like."
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+          <div className="flex min-h-[520px] flex-col items-center justify-center text-center">
+            <div className="mb-6 rounded-full border border-[#ffd8c2] bg-[#fff4ea] px-5 py-2 text-xs font-black uppercase tracking-[0.32em] text-[#ff7a45]">
+              Star speaker board
+            </div>
+
+            <div className="mb-6 flex flex-wrap justify-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <motion.span
+                  key={star}
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={star <= animatingStars ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+                  transition={{ type: "spring", stiffness: 220, damping: 12 }}
+                  className="text-5xl"
+                  style={{ filter: "drop-shadow(0 8px 0 rgba(249,115,22,0.16))" }}
+                >
+                  {star <= animatingStars ? "⭐" : <span className="opacity-20 grayscale">⭐</span>}
+                </motion.span>
+              ))}
+            </div>
+
+            <AnimatePresence>
+              {showBadge && (
+                <motion.div
+                  initial={{ scale: 0.7, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", bounce: 0.45 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="relative mb-6 flex h-48 w-48 items-center justify-center">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-[-10px] rounded-full border-4 border-dashed border-[#ffc83d]/60"
+                    />
+                    <div className="flex h-40 w-40 items-center justify-center rounded-full border border-white/90 bg-[linear-gradient(135deg,#fff8db,#fff1e8)] text-7xl shadow-[0_24px_50px_rgba(249,115,22,0.16)]">
+                      🏆
                     </div>
                   </div>
-                </div>
-                
-                <h3 className="text-4xl font-display font-black text-secondary text-outline-blue uppercase transform -rotate-2">
-                  {gameContent.rewardBadge}
-                </h3>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Card>
-      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: showBadge ? 1 : 0, y: showBadge ? 0 : 30 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="mt-12 flex flex-col sm:flex-row gap-4 items-center"
-      >
-        {/* Quick Replay - Skip content, go straight to next object */}
-        <Button
-          size="xl"
-          variant="primary"
-          onClick={() => {
-            const store = useGameStore.getState();
-            store.setSelectedObject(null);
-            store.updateSentence("name", "");
-            store.updateSentence("colour", "");
-            store.updateSentence("use", "");
-            store.resetTimer();
-            store.setStep("think");
-          }}
-          icon="🎒"
-        >
-          PLAY AGAIN!
-        </Button>
-        
-        {/* Full Reset */}
-        <Button
-          size="lg"
-          variant="outline"
-          onClick={() => {
-            resetGame();
-          }}
-          icon="🔄"
-        >
-          Main Menu
-        </Button>
-      </motion.div>
+                  <h3 className="text-4xl font-black uppercase tracking-tight text-[#432414]">
+                    {gameContent.rewardBadge}
+                  </h3>
+                  <p className="mt-3 max-w-md text-base leading-relaxed text-[#654331]">
+                    {selectedAvatar ? `${selectedAvatar.emoji} ` : ""}
+                    {playerName || "Mystery Speaker"} finished the round with strong clues and brave speaking.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={handlePlayAgain}
+                className="inline-flex items-center justify-center gap-3 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-7 py-4 text-base font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
+              >
+                Play again
+              </button>
+              <button
+                type="button"
+                onClick={() => resetGame()}
+                className="inline-flex items-center justify-center gap-3 rounded-full border border-[#ffd8c2] bg-white px-7 py-4 text-base font-black uppercase tracking-[0.2em] text-[#7d4522] shadow-sm"
+              >
+                Restart guide
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }

@@ -7,6 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          light: "#ffe16a",
+          DEFAULT: "#ffc83d",
+          dark: "#f59e0b",
+        },
+        secondary: {
+          light: "#ff9b74",
+          DEFAULT: "#ff7a45",
+          dark: "#d95b25",
+        },
+        accent: {
+          light: "#92f1d9",
+          DEFAULT: "#2dd4bf",
+          dark: "#0f766e",
+        },
+        surface: {
+          light: "#fffdf8",
+          DEFAULT: "#fff6ed",
+          card: "#ffffff",
+          coral: "#fff1f2",
+          bubble: "#e0f2fe",
+        },
         ocean: {
           light: '#38bdf8',    // Sunny surface water
           DEFAULT: '#0284c7',  // Mid ocean
@@ -19,10 +41,11 @@ export default {
           pearl: '#f8fafc',    // Pearl shine
           sonar: '#34d399',    // Sonar green
         },
-        surface: {
-          coral: '#fff1f2',
-          bubble: '#e0f2fe',
-        }
+        ink: {
+          DEFAULT: "#432414",
+          soft: "#654331",
+          muted: "#8b6a59",
+        },
       },
       fontFamily: {
         display: ['Sora', 'sans-serif'],

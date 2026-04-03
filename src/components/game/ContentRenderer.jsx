@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { gsap } from "gsap";
 import MediaRenderer from "../ui/MediaRenderer";
 import ReadAloud from "../ui/ReadAloud";
 import { gameContent } from "../../data/gameContent";
 import { playChime, playClick, resumeAudio } from "../../hooks/useAudio";
+import useGameStore from "../../store/useGameStore";
 
 const slides = gameContent.modules.flatMap((module, moduleIndex) =>
   module.chapters.map((chapter, chapterIndex) => ({
@@ -44,10 +45,72 @@ const slideVariants = {
   }),
 };
 
+const actionStyles = {
+  listen: {
+    button: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
+    panel: "border-[#ffd6c2] bg-[#fff4ec] text-[#7b3e1f]",
+  },
+  try: {
+    button: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    panel: "border-[#ffe7a1] bg-[#fffbee] text-[#7c5416]",
+  },
+  guess: {
+    button: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
+    panel: "border-[#ffd2dc] bg-[#fff5f8] text-[#8b3550]",
+  },
+  teacher: {
+    button: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
+    panel: "border-[#ccefe8] bg-[#f1fffc] text-[#0f6e62]",
+  },
+};
+
+function buildSlideActions(slide) {
+  const introText = slide.intro?.replace(/\n/g, " ") || "Take a quick look at this step together.";
+  const promptText = slide.questions?.length
+    ? slide.questions.slice(0, 3).join(" ")
+    : "Ask children to describe the object in short, clear clues.";
+
+  return [
+    {
+      id: "listen",
+      icon: "🔊",
+      label: "Listen",
+      title: "Read it out loud",
+      body: introText,
+      readText: `${slide.title}. ${introText}`,
+    },
+    {
+      id: "try",
+      icon: "🛠️",
+      label: "Try",
+      title: "Mini classroom action",
+      body: slide.video
+        ? "Pause after the demo and ask the class to copy the speaking pattern together."
+        : "Ask one child to answer using a full sentence before moving on.",
+    },
+    {
+      id: "guess",
+      icon: "💡",
+      label: "Guess",
+      title: "Talk prompt idea",
+      body: promptText,
+    },
+    {
+      id: "teacher",
+      icon: "🧑‍🏫",
+      label: "Teacher Tip",
+      title: "Facilitation note",
+      body: slide.explain || "Keep the energy upbeat and move quickly once children understand the pattern.",
+    },
+  ];
+}
+
 export default function ContentRenderer({ onComplete }) {
+  const { setContentPosition } = useGameStore();
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [activeActionId, setActiveActionId] = useState("listen");
   const containerRef = useRef(null);
   const shapeOneRef = useRef(null);
   const shapeTwoRef = useRef(null);
@@ -56,6 +119,8 @@ export default function ContentRenderer({ onComplete }) {
 
   const activeSlide = slides[activeIndex];
   const activeImages = activeSlide.images || [];
+  const actions = useMemo(() => buildSlideActions(activeSlide), [activeSlide]);
+  const activeAction = actions.find((action) => action.id === activeActionId) || actions[0];
   const progress = ((activeIndex + 1) / slides.length) * 100;
   const isLastSlide = activeIndex === slides.length - 1;
 
@@ -115,11 +180,13 @@ export default function ContentRenderer({ onComplete }) {
     }, slideRef);
 
     return () => ctx.revert();
-  }, [activeIndex]);
+  }, [activeIndex, activeActionId]);
 
   useEffect(() => {
     setActiveImageIndex(0);
-  }, [activeIndex]);
+    setActiveActionId("listen");
+    setContentPosition(activeIndex, activeSlide.moduleIndex, activeSlide.chapterIndex);
+  }, [activeIndex, activeSlide.chapterIndex, activeSlide.moduleIndex, setContentPosition]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -129,29 +196,37 @@ export default function ContentRenderer({ onComplete }) {
       }
 
       if (event.key === "ArrowRight") {
+        event.preventDefault();
         if (isLastSlide) {
           resumeAudio();
           playChime();
           onComplete?.();
         } else {
-          setDirection(1);
-          setActiveIndex((current) => Math.min(current + 1, slides.length - 1));
-          resumeAudio();
-          playClick();
+          goToSlide(activeIndex + 1);
         }
       }
 
       if (event.key === "ArrowLeft") {
-        setDirection(-1);
-        setActiveIndex((current) => Math.max(current - 1, 0));
-        resumeAudio();
-        playClick();
+        event.preventDefault();
+        goToSlide(activeIndex - 1);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isLastSlide, onComplete]);
+  }, [activeIndex, isLastSlide, onComplete]);
+
+  const speakText = (text) => {
+    if (!("speechSynthesis" in window) || !text) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.92;
+    utterance.pitch = 1.08;
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+    resumeAudio();
+    playClick();
+  };
 
   const goToSlide = (nextIndex) => {
     if (nextIndex === activeIndex || nextIndex < 0 || nextIndex >= slides.length) {
@@ -173,6 +248,16 @@ export default function ContentRenderer({ onComplete }) {
     }
 
     goToSlide(activeIndex + 1);
+  };
+
+  const handleDragEnd = (_, info) => {
+    if (info.offset.x <= -90) {
+      handleAdvance();
+    }
+
+    if (info.offset.x >= 90) {
+      goToSlide(activeIndex - 1);
+    }
   };
 
   return (
@@ -213,6 +298,9 @@ export default function ContentRenderer({ onComplete }) {
                   <span className="rounded-full border border-[#ffd7be] bg-[#fff4ea] px-4 py-2 text-sm font-bold text-[#8a451b]">
                     {activeSlide.moduleTitle}
                   </span>
+                  <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
+                    Swipe or tap to move
+                  </span>
                 </div>
                 <h1 className="text-4xl font-black tracking-tight text-[#432414] text-glow md:text-6xl">
                   {gameContent.title}
@@ -238,9 +326,16 @@ export default function ContentRenderer({ onComplete }) {
               </div>
             </div>
 
+            <TeacherJumpStrip
+              slides={slides}
+              activeIndex={activeIndex}
+              onJump={goToSlide}
+              onJumpToFinale={onComplete}
+            />
+
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.28em] text-[#a86132]">
-                <span>Progress</span>
+                <span>Guide progress</span>
                 <span>{Math.round(progress)}% complete</span>
               </div>
               <div className="h-3 overflow-hidden rounded-full bg-[#ffe9db]">
@@ -291,6 +386,10 @@ export default function ContentRenderer({ onComplete }) {
                   initial="enter"
                   animate="center"
                   exit="exit"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.12}
+                  onDragEnd={handleDragEnd}
                   className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]"
                 >
                   <div className="relative overflow-hidden rounded-[1.8rem] border border-[#ffdccc] bg-[linear-gradient(180deg,rgba(255,243,231,0.96),rgba(255,233,226,0.96))] p-4 md:p-5">
@@ -372,37 +471,79 @@ export default function ContentRenderer({ onComplete }) {
                       </div>
                     )}
 
+                    <div data-slide-item className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-black uppercase tracking-[0.32em] text-[#ff7a45]">
+                          Slide Actions
+                        </h3>
+                        <span className="rounded-full bg-[#effffb] px-3 py-1 text-xs font-bold text-[#0f7c70]">
+                          Tap a card
+                        </span>
+                      </div>
+
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {actions.map((action) => {
+                          const isSelected = action.id === activeAction.id;
+                          const tone = actionStyles[action.id];
+
+                          return (
+                            <motion.button
+                              key={action.id}
+                              type="button"
+                              whileHover={{ y: -2 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={() => setActiveActionId(action.id)}
+                              className={`rounded-[1.4rem] border p-4 text-left transition-all ${tone.button} ${
+                                isSelected ? "shadow-[0_10px_22px_rgba(249,115,22,0.12)] ring-2 ring-white" : "opacity-90"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+                                  {action.icon}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-black uppercase tracking-[0.24em]">{action.label}</p>
+                                  <p className="mt-1 text-sm font-medium opacity-85">{action.title}</p>
+                                </div>
+                              </div>
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+
+                      <div className={`rounded-[1.5rem] border p-5 ${actionStyles[activeAction.id].panel}`}>
+                        <p className="text-xs font-black uppercase tracking-[0.28em] opacity-70">
+                          {activeAction.title}
+                        </p>
+                        <p className="mt-3 text-sm leading-relaxed md:text-base">
+                          {activeAction.body}
+                        </p>
+
+                        {activeAction.readText && (
+                          <button
+                            type="button"
+                            onClick={() => speakText(activeAction.readText)}
+                            className="mt-4 rounded-full border border-white/90 bg-white px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[#7d4522] shadow-sm"
+                          >
+                            Read it aloud
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
                     {activeSlide.explain && (
                       <div
                         data-slide-item
                         className="rounded-[1.5rem] border border-[#ffd2bc] bg-[linear-gradient(135deg,rgba(253,224,71,0.34),rgba(251,191,36,0.18),rgba(251,146,60,0.24))] p-5"
                       >
                         <p className="text-xs font-black uppercase tracking-[0.3em] text-[#935028]">
-                          Teacher Note
+                          Why it matters
                         </p>
                         <p className="mt-3 text-base leading-relaxed text-[#5b3420] md:text-lg">
                           {activeSlide.explain}
                         </p>
                       </div>
                     )}
-
-                    <div data-slide-item className="mt-auto grid gap-3 sm:grid-cols-3">
-                      <MiniInsight
-                        label="Focus"
-                        value={activeSlide.video ? "Notice the speaking order" : "Describe using clear clues"}
-                        tone="orange"
-                      />
-                      <MiniInsight
-                        label="Goal"
-                        value={activeSlide.questions?.length ? "Answer each cue in full sentences" : "Move on when the class is ready"}
-                        tone="pink"
-                      />
-                      <MiniInsight
-                        label="Flow"
-                        value={isLastSlide ? "Guide ends here, activity starts next" : "Use the next button to keep the pace moving"}
-                        tone="mint"
-                      />
-                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -411,7 +552,7 @@ export default function ContentRenderer({ onComplete }) {
             <div className="flex flex-col gap-4 pt-2 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-3 text-sm text-[#7f5a46]">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#ff7a45] shadow-[0_0_12px_rgba(249,115,22,0.35)]" />
-                Use the buttons or arrow keys to move through the activity.
+                Kids can tap, swipe, or use the buttons to move through the guide.
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -423,7 +564,7 @@ export default function ContentRenderer({ onComplete }) {
                 />
                 <NavButton
                   highlight
-                  label={isLastSlide ? "Start challenge" : "Next"}
+                  label={isLastSlide ? "Go to finale" : "Next"}
                   direction="right"
                   onClick={handleAdvance}
                 />
@@ -433,6 +574,39 @@ export default function ContentRenderer({ onComplete }) {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function TeacherJumpStrip({ slides, activeIndex, onJump, onJumpToFinale }) {
+  return (
+    <div className="overflow-x-auto pb-1">
+      <div className="flex min-w-max items-center gap-3">
+        <span className="rounded-full border border-[#ffd8c2] bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.26em] text-[#8f522d]">
+          Teacher Jump
+        </span>
+        {slides.map((slide, index) => (
+          <button
+            key={slide.id}
+            type="button"
+            onClick={() => onJump(index)}
+            className={`rounded-full border px-4 py-2 text-sm font-bold transition-all ${
+              activeIndex === index
+                ? "border-[#ffb087] bg-[#fff1e7] text-[#7b3918] shadow-[0_10px_22px_rgba(249,115,22,0.12)]"
+                : "border-[#f4e1d3] bg-white text-[#956f59] hover:border-[#ffd2b6] hover:bg-[#fff8f1]"
+            }`}
+          >
+            {slide.title}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={onJumpToFinale}
+          className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]"
+        >
+          Finale
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -537,21 +711,6 @@ function InfoTile({ label, value, tone }) {
     <div className={`rounded-[1.3rem] border px-4 py-3 text-left ${tones[tone]}`}>
       <p className="text-[11px] font-black uppercase tracking-[0.28em] opacity-70">{label}</p>
       <p className="mt-2 text-lg font-black md:text-xl">{value}</p>
-    </div>
-  );
-}
-
-function MiniInsight({ label, value, tone }) {
-  const tones = {
-    orange: "border-[#ffd8c2] bg-[#fff3eb] text-[#8b4a22]",
-    pink: "border-[#ffd2dc] bg-[#fff0f5] text-[#94425d]",
-    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
-  };
-
-  return (
-    <div className={`rounded-[1.3rem] border p-4 ${tones[tone]}`}>
-      <p className="text-[11px] font-black uppercase tracking-[0.28em] opacity-70">{label}</p>
-      <p className="mt-2 text-sm font-bold leading-relaxed">{value}</p>
     </div>
   );
 }

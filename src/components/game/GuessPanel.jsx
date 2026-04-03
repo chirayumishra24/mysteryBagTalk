@@ -5,11 +5,11 @@ import MysteryToken from "../ui/MysteryToken";
 import useGameStore from "../../store/useGameStore";
 
 const mockGuesses = [
-  { text: "Is it a pencil?", delay: 0.5, avatar: "👦", tone: "orange", x: -250, y: -40 },
-  { text: "Maybe an eraser?", delay: 2.6, avatar: "👧", tone: "pink", x: 240, y: -90 },
-  { text: "A tiny ball!", delay: 5.5, avatar: "🧒", tone: "mint", x: -300, y: -170 },
-  { text: "Wait... a key?", delay: 8.4, avatar: "👦🏽", tone: "yellow", x: 210, y: -220 },
-  { text: "Is it a coin?", delay: 12, avatar: "👧🏼", tone: "orange", x: -180, y: -290 },
+  { text: "Is it a key? 🗝️", delay: 0.5, avatar: "🧜‍♂️", tone: "cyan", x: -250, y: -40 },
+  { text: "Maybe a shell? 🐚", delay: 2.6, avatar: "🧜‍♀️", tone: "pink", x: 240, y: -90 },
+  { text: "A tiny pearl!", delay: 5.5, avatar: "🐙", tone: "teal", x: -300, y: -170 },
+  { text: "Wait... a starfish? ⭐", delay: 8.4, avatar: "🦑", tone: "gold", x: 210, y: -220 },
+  { text: "Is it a coin? 🪙", delay: 12, avatar: "🐠", tone: "cyan", x: -180, y: -290 },
 ];
 
 export default function GuessPanel() {
@@ -17,16 +17,8 @@ export default function GuessPanel() {
   const [showGuesses, setShowGuesses] = useState(false);
   const isGroupMode = activityMode === "group";
   const tips = isGroupMode
-    ? [
-        "Talk quickly with your partner or team before answering.",
-        "Choose one speaker to share the final group guess.",
-        "When time is up, reveal the object together!",
-      ]
-    : [
-        "Raise a hand when you think you know the answer.",
-        "Use the strongest clue to help you guess.",
-        "When time is up, reveal the object together!",
-      ];
+    ? ["Whisper with your crew first! 🤫", "One brave diver shares the guess! 🐙", "Timer up = reveal time! 🎉"]
+    : ["Raise a fin if you know! 🐠", "Use the strongest clue!", "Timer up = reveal time! 🎉"];
 
   useEffect(() => {
     resetTimer(30);
@@ -53,56 +45,61 @@ export default function GuessPanel() {
         {isUrgent && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.4, 0] }}
+            animate={{ opacity: [0, 0.3, 0] }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, repeat: Infinity }}
             className="pointer-events-none fixed inset-0 z-0"
-            style={{ background: "radial-gradient(circle, transparent 40%, rgba(251,146,60,0.24) 100%)" }}
+            style={{ background: "radial-gradient(circle, transparent 40%, rgba(244,114,182,0.15) 100%)" }}
           />
         )}
       </AnimatePresence>
 
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div className="space-y-5 rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+        <div className="space-y-5 sea-glass p-6">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
-              Guessing Time
+            <span className="sea-tag-coral px-4 py-2 flex items-center gap-2">
+              🐙 Guessing Time!
             </span>
-            <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
-              {isGroupMode ? "Talk, then guess" : "Listen carefully"}
+            <span className="sea-tag px-4 py-2">
+              {isGroupMode ? "Huddle, then guess!" : "Listen carefully!"}
             </span>
           </div>
 
-          <h2 className={`text-5xl font-black uppercase tracking-tight text-[#432414] text-glow md:text-7xl ${isUrgent ? "animate-pulse" : ""}`}>
-            Who knows it?
+          <h2 className={`text-4xl font-black uppercase tracking-tight text-cyan-50 bio-glow md:text-5xl ${isUrgent ? "animate-pulse" : ""}`}>
+            Who Knows It? 🏴‍☠️
           </h2>
-          <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
-            {isGroupMode
-              ? "One team has already shared the clue. Now the other groups listen, think, and race to guess the mystery object before the timer ends."
-              : "One student has already given the clue. Now the class listens, thinks, and races to guess the mystery object before the timer ends."}
-          </p>
 
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             {tips.map((tip, index) => (
               <motion.div
                 key={tip}
                 initial={{ opacity: 0, x: -14 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.12 * index }}
-                className="rounded-[1.4rem] border border-[#ffd8c2] bg-[#fff4ec] p-4 text-sm font-semibold leading-relaxed text-[#654331]"
+                className="rounded-xl border border-cyan-500/15 bg-cyan-500/5 px-4 py-3 text-sm font-semibold text-cyan-200/80"
               >
                 {tip}
               </motion.div>
             ))}
           </div>
-
-          <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] p-4 text-sm font-bold text-[#0f7c70]">
-            Speaker clue target: {selectedObject?.name ? "keep it secret until the reveal" : "secret object still hidden"}
-          </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.32),_transparent_30%),radial-gradient(circle_at_bottom,_rgba(45,212,191,0.16),_transparent_30%)]" />
+        {/* Sonar arena */}
+        <div className="relative overflow-hidden sea-glass p-6">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(103,232,249,0.06),_transparent_40%)]" />
+
+          {/* Sonar pulse rings */}
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            {[1, 2, 3].map((ring) => (
+              <motion.div
+                key={ring}
+                className="absolute rounded-full border border-cyan-500/10"
+                style={{ width: `${ring * 30}%`, height: `${ring * 30}%` }}
+                animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.3, 0.15] }}
+                transition={{ duration: 3, delay: ring * 0.5, repeat: Infinity, ease: "easeInOut" }}
+              />
+            ))}
+          </div>
 
           <div className="relative flex min-h-[500px] items-center justify-center">
             <AnimatePresence>
@@ -116,14 +113,14 @@ export default function GuessPanel() {
             <div className="relative z-20 flex flex-col items-center">
               <div className="mb-6">
                 <MysteryToken
-                  emoji="?"
+                  emoji="🔮"
                   title="Secret clue"
-                  subtitle={isGroupMode ? "Can the teams guess it?" : "Can the class guess it?"}
+                  subtitle={isGroupMode ? "Can the crews guess it?" : "Can the crew guess it?"}
                   size="sm"
                   tone="mint"
                 />
               </div>
-              <div className="rounded-[2rem] border border-[#ffe7a1] bg-[#fff8db] p-6 shadow-[0_14px_28px_rgba(249,115,22,0.08)]">
+              <div className="rounded-[2rem] border border-amber-500/20 bg-amber-500/5 p-6 shadow-[0_0_30px_rgba(251,191,36,0.08)]">
                 <Timer initialSeconds={30} onComplete={handleReveal} />
               </div>
 
@@ -132,9 +129,9 @@ export default function GuessPanel() {
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleReveal}
-                className="mt-8 inline-flex items-center gap-3 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-7 py-4 text-base font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
+                className="coral-btn mt-8 inline-flex items-center gap-3 px-7 py-4 text-base"
               >
-                Reveal the answer
+                🐙 Reveal the Treasure!
               </motion.button>
             </div>
           </div>
@@ -146,10 +143,10 @@ export default function GuessPanel() {
 
 function GuessBubble({ guess }) {
   const tones = {
-    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
-    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
-    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
-    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
+    cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-200",
+    pink: "border-pink-500/20 bg-pink-500/10 text-pink-200",
+    teal: "border-teal-500/20 bg-teal-500/10 text-teal-200",
+    gold: "border-amber-500/20 bg-amber-500/10 text-amber-200",
   };
 
   return (
@@ -170,8 +167,8 @@ function GuessBubble({ guess }) {
       }}
       className="absolute z-10 pointer-events-none"
     >
-      <div className={`flex items-center gap-4 rounded-[1.8rem] border p-4 shadow-[0_14px_28px_rgba(249,115,22,0.08)] ${tones[guess.tone]}`}>
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-3xl shadow-sm">
+      <div className={`flex items-center gap-4 rounded-[1.8rem] border p-4 shadow-[0_8px_24px_rgba(0,0,0,0.3)] backdrop-blur-sm ${tones[guess.tone]}`}>
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-950/50 text-3xl shadow-sm border border-cyan-500/10">
           {guess.avatar}
         </div>
         <div className="pr-2 text-xl font-black tracking-tight">{guess.text}</div>

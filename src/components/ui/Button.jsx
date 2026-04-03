@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Button({
   children,
@@ -11,42 +11,21 @@ export default function Button({
   icon,
 }) {
   const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
-
-  const handleMouseMove = (e) => {
-    if (disabled || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    x.set((mouseX - width / 2) * 0.3);
-    y.set((mouseY - height / 2) * 0.3);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
 
   const baseClasses =
-    "relative font-display font-bold rounded-2xl transition-all duration-200 cursor-pointer select-none overflow-hidden group border-2 border-white/30";
+    "relative font-display font-bold rounded-2xl transition-all duration-200 cursor-pointer select-none overflow-hidden group border-2";
 
   const variants = {
     primary:
-      "bg-primary text-[#7a3d1c] hover:bg-[#ffd85e] shadow-[0_6px_0_#d98b12] active:shadow-[0_2px_0_#d98b12] active:translate-y-[4px]",
+      "bg-gradient-to-r from-cyan-500 to-teal-400 text-white border-cyan-400/30 shadow-[0_6px_0_#0e7490,0_0_30px_rgba(103,232,249,0.15)] active:shadow-[0_2px_0_#0e7490] active:translate-y-[4px] hover:from-cyan-400 hover:to-teal-300",
     secondary:
-      "bg-secondary text-white hover:bg-[#ff9468] shadow-[0_6px_0_#d95b25] active:shadow-[0_2px_0_#d95b25] active:translate-y-[4px]",
+      "bg-gradient-to-r from-pink-500 to-orange-400 text-white border-pink-400/30 shadow-[0_6px_0_#be185d,0_0_30px_rgba(244,114,182,0.15)] active:shadow-[0_2px_0_#be185d] active:translate-y-[4px] hover:from-pink-400 hover:to-orange-300",
     accent:
-      "bg-accent text-white hover:bg-[#58e6d4] shadow-[0_6px_0_#0f8c7c] active:shadow-[0_2px_0_#0f8c7c] active:translate-y-[4px]",
+      "bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-900 border-amber-300/30 shadow-[0_6px_0_#b45309,0_0_30px_rgba(251,191,36,0.15)] active:shadow-[0_2px_0_#b45309] active:translate-y-[4px] hover:from-amber-300 hover:to-yellow-200",
     ghost:
-      "bg-white/70 text-[#7a3d1c] hover:bg-white border-none shadow-sm",
+      "bg-white/10 text-cyan-200 border-cyan-500/15 hover:bg-white/15 shadow-none backdrop-blur-sm",
     outline:
-      "border-4 border-secondary text-secondary hover:bg-[#fff1e7] shadow-none",
+      "border-2 border-cyan-400/40 text-cyan-300 hover:bg-cyan-500/10 shadow-none",
   };
 
   const sizes = {
@@ -62,11 +41,11 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className} ${disabled ? "opacity-50 cursor-not-allowed grayscale" : ""}`}
-      whileHover={disabled ? {} : { scale: 1.02 }}
+      whileHover={disabled ? {} : { scale: 1.03, y: -2 }}
       whileTap={disabled ? {} : { scale: 0.98 }}
     >
-      {/* Glossy Reflection Overlay */}
-      <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 pointer-events-none rounded-t-xl" />
+      {/* Glossy sea-glass reflection */}
+      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none rounded-t-xl" />
 
       <span className="relative z-10 flex items-center justify-center gap-2 drop-shadow-sm uppercase tracking-wider">
         {icon && <span className="text-xl">{icon}</span>}

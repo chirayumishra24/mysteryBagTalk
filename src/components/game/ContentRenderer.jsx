@@ -47,28 +47,28 @@ const slideVariants = {
 
 const actionStyles = {
   listen: {
-    button: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
-    panel: "border-[#ffd6c2] bg-[#fff4ec] text-[#7b3e1f]",
+    button: "card-ocean text-cyan-200",
+    panel: "card-ocean text-cyan-200",
   },
   try: {
-    button: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
-    panel: "border-[#ffe7a1] bg-[#fffbee] text-[#7c5416]",
+    button: "card-gold text-amber-200",
+    panel: "card-gold text-amber-200",
   },
   guess: {
-    button: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
-    panel: "border-[#ffd2dc] bg-[#fff5f8] text-[#8b3550]",
+    button: "card-coral text-pink-200",
+    panel: "card-coral text-pink-200",
   },
   teacher: {
-    button: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
-    panel: "border-[#ccefe8] bg-[#f1fffc] text-[#0f6e62]",
+    button: "border-teal-500/20 bg-teal-900/20 text-teal-200",
+    panel: "border-teal-500/20 bg-teal-900/20 text-teal-200",
   },
 };
 
 function buildSlideActions(slide) {
-  const introText = slide.intro?.replace(/\n/g, " ") || "Take a quick look at this step together.";
+  const introText = slide.intro?.replace(/\\n/g, " ") || "Take a quick look at this step together.";
   const promptText = slide.questions?.length
     ? slide.questions.slice(0, 3).join(" ")
-    : "Ask children to describe the object in short, clear clues.";
+    : "Ask the divers to describe the treasure in short, clear clues.";
 
   return [
     {
@@ -81,26 +81,26 @@ function buildSlideActions(slide) {
     },
     {
       id: "try",
-      icon: "🛠️",
-      label: "Try",
-      title: "Mini classroom action",
+      icon: "🏊",
+      label: "Dive In",
+      title: "Mini dive action",
       body: slide.video
-        ? "Pause after the demo and ask the class to copy the speaking pattern together."
-        : "Ask one child to answer using a full sentence before moving on.",
+        ? "Pause after the demo and ask the crew to copy the speaking pattern together."
+        : "Ask one diver to answer using a full sentence before moving on.",
     },
     {
       id: "guess",
       icon: "💡",
-      label: "Guess",
-      title: "Talk prompt idea",
+      label: "Clue",
+      title: "Treasure clue idea",
       body: promptText,
     },
     {
       id: "teacher",
       icon: "🧑‍🏫",
-      label: "Teacher Tip",
+      label: "Captain's Tip",
       title: "Facilitation note",
-      body: slide.explain || "Keep the energy upbeat and move quickly once children understand the pattern.",
+      body: slide.explain || "Keep the energy high and move quickly once divers understand the pattern.",
     },
   ];
 }
@@ -267,19 +267,20 @@ export default function ContentRenderer({ onComplete }) {
       ref={containerRef}
       className="relative flex min-h-screen w-full items-center overflow-hidden px-4 py-10 md:px-6 md:py-14"
     >
+      {/* Underwater ambient shapes */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.44),_transparent_30%),radial-gradient(circle_at_right,_rgba(251,146,60,0.18),_transparent_24%),radial-gradient(circle_at_left_bottom,_rgba(45,212,191,0.18),_transparent_22%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.08),_transparent_30%),radial-gradient(circle_at_right,_rgba(45,212,191,0.06),_transparent_24%),radial-gradient(circle_at_left_bottom,_rgba(103,232,249,0.06),_transparent_22%)]" />
         <div
           ref={shapeOneRef}
-          className="absolute left-[4%] top-[8%] h-40 w-40 rounded-[2.5rem] bg-[#ffd86c]/[0.55] blur-2xl"
+          className="absolute left-[4%] top-[8%] h-40 w-40 rounded-[2.5rem] bg-cyan-500/[0.08] blur-2xl"
         />
         <div
           ref={shapeTwoRef}
-          className="absolute bottom-[12%] right-[8%] h-56 w-56 rounded-full bg-[#ffb5a2]/[0.45] blur-3xl"
+          className="absolute bottom-[12%] right-[8%] h-56 w-56 rounded-full bg-pink-500/[0.06] blur-3xl"
         />
         <div
           ref={shapeThreeRef}
-          className="absolute right-[22%] top-[16%] h-28 w-28 rounded-[1.8rem] bg-[#7ee7d8]/[0.45] blur-2xl"
+          className="absolute right-[22%] top-[16%] h-28 w-28 rounded-[1.8rem] bg-teal-400/[0.08] blur-2xl"
         />
       </div>
 
@@ -288,46 +289,42 @@ export default function ContentRenderer({ onComplete }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="overflow-hidden rounded-[2.3rem] border border-white/[0.75] bg-white/[0.78] p-5 shadow-[0_24px_80px_rgba(249,115,22,0.15)] backdrop-blur-2xl md:p-8"
+          className="sea-glass overflow-hidden p-5 md:p-8"
         >
           <div className="flex flex-col gap-6">
+            {/* Header */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white shadow-[0_8px_18px_rgba(249,115,22,0.2)]">
-                    Showtime Deck
+                <div className="mb-3 flex flex-wrap items-center gap-3">
+                  <span className="sea-tag-gold flex items-center gap-2 px-4 py-2">
+                    🐙 Treasure Deck
                   </span>
-                  <span className="rounded-full border border-[#ffd7be] bg-[#fff4ea] px-4 py-2 text-sm font-bold text-[#8a451b]">
+                  <span className="sea-tag px-4 py-2">
                     {activeSlide.moduleTitle}
                   </span>
-                  <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
-                    Swipe or tap to move
-                  </span>
                 </div>
-                <h1 className="text-4xl font-black tracking-tight text-[#432414] text-glow md:text-6xl">
+                <h1 className="text-4xl font-black tracking-tight text-cyan-50 bio-glow md:text-5xl">
                   {gameContent.title}
                 </h1>
-                <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#654331] md:text-lg">
-                  {gameContent.objective}
-                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <InfoTile label="Slide" value={`${activeIndex + 1}/${slides.length}`} tone="orange" />
+                <InfoTile label="Slide" value={`${activeIndex + 1}/${slides.length}`} tone="cyan" />
                 <InfoTile label="Module" value={`0${activeSlide.moduleIndex + 1}`} tone="pink" />
                 <InfoTile
                   label="Prompts"
                   value={String(activeSlide.questions?.length || 0).padStart(2, "0")}
-                  tone="yellow"
+                  tone="gold"
                 />
                 <InfoTile
                   label="Media"
                   value={activeSlide.video ? "Video" : activeImages.length ? "Gallery" : "Focus"}
-                  tone="mint"
+                  tone="teal"
                 />
               </div>
             </div>
 
+            {/* Mobile controls */}
             <CompactGuideControls
               activeIndex={activeIndex}
               slides={slides}
@@ -340,20 +337,22 @@ export default function ContentRenderer({ onComplete }) {
               onJumpToFinale={onComplete}
             />
 
+            {/* Progress */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.28em] text-[#a86132]">
-                <span>Guide progress</span>
-                <span>{Math.round(progress)}% complete</span>
+              <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.28em] text-cyan-400">
+                <span>🗺️ Dive progress</span>
+                <span>{Math.round(progress)}% explored</span>
               </div>
-              <div className="h-3 overflow-hidden rounded-full bg-[#ffe9db]">
+              <div className="h-3 overflow-hidden rounded-full bg-cyan-950/50 border border-cyan-500/20">
                 <motion.div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#fb923c,#fb7185,#14b8a6)] shadow-[0_0_22px_rgba(249,115,22,0.25)]"
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-teal-400 to-amber-400 shadow-[0_0_16px_rgba(103,232,249,0.3)]"
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 />
               </div>
             </div>
 
+            {/* Desktop slide pills */}
             <div className="hidden flex-wrap gap-2 lg:flex">
               {slides.map((slide, index) => {
                 const isActive = index === activeIndex;
@@ -368,10 +367,10 @@ export default function ContentRenderer({ onComplete }) {
                     onClick={() => goToSlide(index)}
                     className={`rounded-full border px-3 py-2 text-left transition-all md:px-4 ${
                       isActive
-                        ? "border-[#ffb087] bg-[#fff1e7] text-[#7b3918] shadow-[0_10px_22px_rgba(249,115,22,0.12)]"
+                        ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-100 shadow-[0_0_20px_rgba(103,232,249,0.1)]"
                         : isVisited
-                        ? "border-[#ffe08a] bg-[#fff7d7] text-[#87511d]"
-                        : "border-[#f4e1d3] bg-white text-[#956f59] hover:border-[#ffd2b6] hover:bg-[#fff8f1]"
+                        ? "border-amber-500/30 bg-amber-500/10 text-amber-200"
+                        : "border-cyan-500/10 bg-cyan-950/30 text-cyan-300/60 hover:border-cyan-500/25 hover:bg-cyan-500/10"
                     }`}
                   >
                     <span className="block text-[10px] font-black uppercase tracking-[0.28em] opacity-70">
@@ -383,7 +382,8 @@ export default function ContentRenderer({ onComplete }) {
               })}
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] border border-[#fde2cf] bg-[#fffaf6] p-3 md:p-4">
+            {/* Main slide content */}
+            <div className="overflow-hidden rounded-[2rem] sea-glass-light p-3 md:p-4">
               <AnimatePresence custom={direction} mode="wait">
                 <motion.div
                   key={activeSlide.id}
@@ -399,8 +399,9 @@ export default function ContentRenderer({ onComplete }) {
                   onDragEnd={handleDragEnd}
                   className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]"
                 >
-                  <div className="relative overflow-hidden rounded-[1.8rem] border border-[#ffdccc] bg-[linear-gradient(180deg,rgba(255,243,231,0.96),rgba(255,233,226,0.96))] p-4 md:p-5">
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(253,224,71,0.22),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(45,212,191,0.16),_transparent_32%)]" />
+                  {/* Media panel */}
+                  <div className="relative overflow-hidden rounded-[1.8rem] border border-cyan-500/15 bg-gradient-to-b from-cyan-950/40 to-blue-950/30 p-4 md:p-5">
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(103,232,249,0.06),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(45,212,191,0.04),_transparent_32%)]" />
 
                     <div data-slide-item className="relative">
                       <SlideMedia
@@ -411,82 +412,69 @@ export default function ContentRenderer({ onComplete }) {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 rounded-[1.8rem] border border-[#ffe0cf] bg-white/[0.92] p-5 md:p-6">
+                  {/* Text content panel */}
+                  <div className="flex flex-col gap-4 rounded-[1.8rem] border border-cyan-500/10 bg-[rgba(10,22,40,0.5)] p-5 md:p-6">
                     <div data-slide-item className="space-y-4">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <p className="text-xs font-black uppercase tracking-[0.32em] text-[#ff7a45]">
+                          <p className="text-xs font-black uppercase tracking-[0.32em] text-cyan-400">
                             Chapter {activeSlide.chapterIndex + 1}
                           </p>
                           <div className="mt-2 flex items-start gap-3">
-                            <h2 className="text-3xl font-black leading-tight text-[#432414] md:text-4xl">
+                            <h2 className="text-3xl font-black leading-tight text-cyan-50 md:text-4xl">
                               {activeSlide.title}
                             </h2>
                             <ReadAloud
                               text={activeSlide.title}
-                              className="mt-1 border border-[#ffd0a1] bg-[#fff2da] hover:bg-[#ffe8c2]"
+                              className="mt-1 border border-cyan-500/20 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300"
                             />
                           </div>
                         </div>
 
-                        <div className="rounded-full border border-[#ffe2cf] bg-[#fff7ef] px-4 py-2 text-sm font-bold text-[#8f522d]">
+                        <div className="sea-tag px-4 py-2">
                           {activeSlide.video
-                            ? "Watch and respond"
+                            ? "🎬 Watch & respond"
                             : activeImages.length
-                            ? `${activeImages.length} visual clue${activeImages.length > 1 ? "s" : ""}`
-                            : "Speaking guide"}
+                            ? `📸 ${activeImages.length} clue${activeImages.length > 1 ? "s" : ""}`
+                            : "🗣️ Speaking guide"}
                         </div>
                       </div>
 
                       {activeSlide.intro && (
-                        <p className="text-base leading-relaxed text-[#654331] md:text-lg">
+                        <p className="text-base leading-relaxed text-cyan-200/80 md:text-lg">
                           {activeSlide.intro}
                         </p>
                       )}
                     </div>
 
+                    {/* Questions */}
                     {activeSlide.questions?.length > 0 && (
-                      <div data-slide-item className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-sm font-black uppercase tracking-[0.32em] text-[#ff7a45]">
-                            Talk Prompts
-                          </h3>
-                          <span className="rounded-full bg-[#ffe6d9] px-3 py-1 text-xs font-bold text-[#9b5430]">
-                            {activeSlide.questions.length} cue
-                            {activeSlide.questions.length > 1 ? "s" : ""}
-                          </span>
-                        </div>
-
-                        <div className="grid gap-3">
+                      <div data-slide-item className="space-y-2">
+                        <h3 className="text-xs font-black uppercase tracking-[0.32em] text-amber-400">
+                          🐠 Treasure Clues
+                        </h3>
+                        <div className="grid gap-2">
                           {activeSlide.questions.map((question, index) => (
                             <motion.div
                               key={question}
-                              initial={{ opacity: 0, y: 14 }}
+                              initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: 0.08 * index }}
-                              className="rounded-[1.4rem] border border-[#ffe5b6] bg-[#fff7de] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
+                              transition={{ delay: 0.06 * index }}
+                              className="flex items-start gap-3 rounded-[1.2rem] border border-amber-500/20 bg-amber-500/8 px-4 py-3"
                             >
-                              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#c47b20]">
-                                Prompt {String(index + 1).padStart(2, "0")}
-                              </p>
-                              <p className="mt-2 text-[15px] leading-relaxed text-[#513120] md:text-base">
-                                {question}
-                              </p>
+                              <span className="text-amber-400/70 text-sm font-black">{index + 1}.</span>
+                              <p className="text-sm leading-relaxed text-amber-100">{question}</p>
                             </motion.div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    <div data-slide-item className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-black uppercase tracking-[0.32em] text-[#ff7a45]">
-                          Slide Actions
-                        </h3>
-                        <span className="rounded-full bg-[#effffb] px-3 py-1 text-xs font-bold text-[#0f7c70]">
-                          Tap a card
-                        </span>
-                      </div>
+                    {/* Slide Actions */}
+                    <div data-slide-item className="space-y-2">
+                      <h3 className="text-xs font-black uppercase tracking-[0.32em] text-cyan-400">
+                        🧭 Dive Actions
+                      </h3>
 
                       <div className="grid gap-3 sm:grid-cols-2">
                         {actions.map((action) => {
@@ -501,17 +489,14 @@ export default function ContentRenderer({ onComplete }) {
                               whileTap={{ scale: 0.98 }}
                               onClick={() => setActiveActionId(action.id)}
                               className={`rounded-[1.4rem] border p-4 text-left transition-all ${tone.button} ${
-                                isSelected ? "shadow-[0_10px_22px_rgba(249,115,22,0.12)] ring-2 ring-white" : "opacity-90"
+                                isSelected ? "shadow-[0_0_20px_rgba(103,232,249,0.1)] ring-1 ring-cyan-400/30" : "opacity-75"
                               }`}
                             >
                               <div className="flex items-center gap-3">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-950/50 text-xl shadow-sm border border-cyan-500/10">
                                   {action.icon}
                                 </div>
-                                <div>
-                                  <p className="text-sm font-black uppercase tracking-[0.24em]">{action.label}</p>
-                                  <p className="mt-1 text-sm font-medium opacity-85">{action.title}</p>
-                                </div>
+                                <p className="text-sm font-black uppercase tracking-[0.2em]">{action.label}</p>
                               </div>
                             </motion.button>
                           );
@@ -530,23 +515,24 @@ export default function ContentRenderer({ onComplete }) {
                           <button
                             type="button"
                             onClick={() => speakText(activeAction.readText)}
-                            className="mt-4 rounded-full border border-white/90 bg-white px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[#7d4522] shadow-sm"
+                            className="mt-4 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-cyan-300 hover:bg-cyan-500/20 transition-colors"
                           >
-                            Read it aloud
+                            🔊 Read it aloud
                           </button>
                         )}
                       </div>
                     </div>
 
+                    {/* Explain */}
                     {activeSlide.explain && (
                       <div
                         data-slide-item
-                        className="rounded-[1.5rem] border border-[#ffd2bc] bg-[linear-gradient(135deg,rgba(253,224,71,0.34),rgba(251,191,36,0.18),rgba(251,146,60,0.24))] p-5"
+                        className="rounded-[1.5rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/5 p-5"
                       >
-                        <p className="text-xs font-black uppercase tracking-[0.3em] text-[#935028]">
-                          Why it matters
+                        <p className="text-xs font-black uppercase tracking-[0.3em] text-amber-400">
+                          🌟 Why it matters
                         </p>
-                        <p className="mt-3 text-base leading-relaxed text-[#5b3420] md:text-lg">
+                        <p className="mt-3 text-base leading-relaxed text-amber-100 md:text-lg">
                           {activeSlide.explain}
                         </p>
                       </div>
@@ -556,10 +542,11 @@ export default function ContentRenderer({ onComplete }) {
               </AnimatePresence>
             </div>
 
+            {/* Navigation */}
             <div className="flex flex-col gap-4 pt-2 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex items-center gap-3 text-sm text-[#7f5a46]">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#ff7a45] shadow-[0_0_12px_rgba(249,115,22,0.35)]" />
-                Kids can tap, swipe, or use the buttons to move through the guide.
+              <div className="flex items-center gap-3 text-sm text-cyan-300/60">
+                <span className="h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(103,232,249,0.4)]" />
+                Swipe, tap, or use arrows to explore the treasure guide 🐠
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -571,7 +558,7 @@ export default function ContentRenderer({ onComplete }) {
                 />
                 <NavButton
                   highlight
-                  label={isLastSlide ? "Go to finale" : "Next"}
+                  label={isLastSlide ? "🎯 Start the Quest!" : "Next"}
                   direction="right"
                   onClick={handleAdvance}
                 />
@@ -597,10 +584,10 @@ function CompactGuideControls({
 }) {
   return (
     <div className="space-y-3 lg:hidden">
-      <div className="flex flex-wrap items-center gap-3 rounded-[1.6rem] border border-[#ffd8c2] bg-white p-4 shadow-[0_12px_24px_rgba(249,115,22,0.08)]">
+      <div className="flex flex-wrap items-center gap-3 rounded-[1.6rem] border border-cyan-500/15 bg-cyan-950/30 p-4 shadow-[0_12px_24px_rgba(0,0,0,0.2)]">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-[#a86132]">Quick guide controls</p>
-          <p className="mt-1 truncate text-sm font-bold text-[#654331]">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-cyan-400">🧭 Navigation</p>
+          <p className="mt-1 truncate text-sm font-bold text-cyan-200">
             Slide {activeIndex + 1} of {slides.length}: {slides[activeIndex].title}
           </p>
         </div>
@@ -612,8 +599,8 @@ function CompactGuideControls({
             disabled={activeIndex === 0}
             className={`rounded-full border px-4 py-2 text-sm font-black uppercase tracking-[0.18em] ${
               activeIndex === 0
-                ? "cursor-not-allowed border-[#f4e1d3] bg-white text-[#c2a894] opacity-50"
-                : "border-[#ffd8c2] bg-[#fff4ec] text-[#7d4522]"
+                ? "cursor-not-allowed border-cyan-500/10 bg-cyan-950/20 text-cyan-600 opacity-50"
+                : "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
             }`}
           >
             Prev
@@ -621,14 +608,14 @@ function CompactGuideControls({
           <button
             type="button"
             onClick={onNext}
-            className="rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-white"
+            className="coral-btn px-4 py-2 text-sm"
           >
-            {isLastSlide ? "Finale" : "Next"}
+            {isLastSlide ? "Quest!" : "Next"}
           </button>
           <button
             type="button"
             onClick={onToggle}
-            className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-[#0f7c70]"
+            className="rounded-full border border-teal-500/20 bg-teal-500/10 px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-teal-300"
           >
             Jump
           </button>
@@ -641,7 +628,7 @@ function CompactGuideControls({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden rounded-[1.6rem] border border-[#ffe0cf] bg-[#fffaf4] p-4 shadow-[0_12px_24px_rgba(249,115,22,0.08)]"
+            className="overflow-hidden rounded-[1.6rem] border border-cyan-500/15 bg-cyan-950/30 p-4"
           >
             <div className="flex flex-wrap gap-2">
               {slides.map((slide, index) => (
@@ -651,8 +638,8 @@ function CompactGuideControls({
                   onClick={() => onJump(index)}
                   className={`rounded-full border px-3 py-2 text-left text-sm font-bold ${
                     activeIndex === index
-                      ? "border-[#ffb087] bg-[#fff1e7] text-[#7b3918]"
-                      : "border-[#f4e1d3] bg-white text-[#956f59]"
+                      ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-100"
+                      : "border-cyan-500/10 bg-cyan-950/30 text-cyan-300/60"
                   }`}
                 >
                   {slide.title}
@@ -661,9 +648,9 @@ function CompactGuideControls({
               <button
                 type="button"
                 onClick={onJumpToFinale}
-                className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-3 py-2 text-sm font-bold text-[#0f7c70]"
+                className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm font-bold text-amber-300"
               >
-                Finale
+                🎯 Start Quest
               </button>
             </div>
           </motion.div>
@@ -677,7 +664,7 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
   if (slide.video?.url) {
     return (
       <div className="space-y-4">
-        <div className="rounded-[1.5rem] border border-[#ffd8c2] bg-white p-3 shadow-[0_16px_36px_rgba(249,115,22,0.08)]">
+        <div className="rounded-[1.5rem] border border-cyan-500/15 bg-cyan-950/40 p-3 shadow-[0_0_30px_rgba(103,232,249,0.05)]">
           <MediaRenderer
             type="video"
             src={slide.video.url}
@@ -685,15 +672,12 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
             className="w-full"
           />
         </div>
-        <div className="rounded-[1.4rem] border border-[#ffd8c2] bg-[#fff4ea] p-4">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#ff7a45]">
-            Demo Cue
+        <div className="rounded-[1.4rem] border border-cyan-500/15 bg-cyan-500/5 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-400">
+            🎬 Demo Dive
           </p>
-          <p className="mt-3 text-lg font-bold text-[#472718]">
-            {slide.video.title || "Watch the sample"}
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-[#6b4633]">
-            Let students notice the order, the describing words, and the calm speaking pace before they try it themselves.
+          <p className="mt-2 text-base font-bold text-cyan-100">
+            {slide.video.title || "Watch the underwater demo"}
           </p>
         </div>
       </div>
@@ -705,7 +689,7 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
 
     return (
       <div className="space-y-4">
-        <div className="overflow-hidden rounded-[1.6rem] border border-[#ffd8c2] bg-white shadow-[0_16px_36px_rgba(249,115,22,0.08)]">
+        <div className="overflow-hidden rounded-[1.6rem] border border-cyan-500/15 bg-cyan-950/40 shadow-[0_0_30px_rgba(103,232,249,0.05)]">
           <MediaRenderer
             type="image"
             src={currentImage}
@@ -725,8 +709,8 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
                 onClick={() => onImageSelect(index)}
                 className={`overflow-hidden rounded-[1.2rem] border p-1 transition-all ${
                   index === activeImageIndex
-                    ? "border-[#ffb087] bg-[#fff1e7] shadow-[0_10px_22px_rgba(249,115,22,0.12)]"
-                    : "border-[#fde0ce] bg-white"
+                    ? "border-cyan-400/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(103,232,249,0.1)]"
+                    : "border-cyan-500/10 bg-cyan-950/30"
                 }`}
               >
                 <MediaRenderer
@@ -744,19 +728,16 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
   }
 
   return (
-    <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[1.8rem] border border-[#ffdccc] bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.34),_transparent_36%),linear-gradient(180deg,rgba(255,250,237,0.96),rgba(255,233,226,0.96))] p-8 text-center">
+    <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[1.8rem] border border-cyan-500/15 bg-gradient-to-b from-cyan-950/40 to-blue-950/30 p-8 text-center">
       <div className="absolute inset-0 opacity-60">
-        <div className="absolute left-10 top-10 h-16 w-16 rounded-full border border-[#ffd4aa] bg-white/[0.55]" />
-        <div className="absolute bottom-14 right-12 h-24 w-24 rounded-full border border-[#b5efe6] bg-[#cffff4]/70" />
+        <div className="absolute left-10 top-10 h-16 w-16 rounded-full border border-cyan-400/10 bg-cyan-500/5" />
+        <div className="absolute bottom-14 right-12 h-24 w-24 rounded-full border border-teal-400/10 bg-teal-500/5" />
       </div>
       <div className="relative max-w-md">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-[#ffd6b4] bg-white/[0.75] text-5xl shadow-[0_10px_26px_rgba(249,115,22,0.12)]">
-          ?
+        <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-cyan-400/20 bg-cyan-500/10 shadow-[0_0_30px_rgba(103,232,249,0.15)]">
+          <img src="/images/sea/treasure_chest.png" alt="Treasure" className="h-20 w-20 object-contain" />
         </div>
-        <h3 className="mt-6 text-3xl font-black text-[#432414]">{slide.title}</h3>
-        <p className="mt-3 text-base leading-relaxed text-[#664230]">
-          This part is all about vocabulary, speaking structure, and confidence. Use the cue cards to set up the next round smoothly.
-        </p>
+        <h3 className="mt-5 text-2xl font-black text-cyan-50 bio-glow">{slide.title}</h3>
       </div>
     </div>
   );
@@ -764,10 +745,10 @@ function SlideMedia({ slide, activeImageIndex, onImageSelect }) {
 
 function InfoTile({ label, value, tone }) {
   const tones = {
-    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
-    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
-    yellow: "border-[#ffe8ab] bg-[#fff8db] text-[#96611f]",
-    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#0f7c70]",
+    cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-200",
+    pink: "border-pink-500/20 bg-pink-500/10 text-pink-200",
+    gold: "border-amber-500/20 bg-amber-500/10 text-amber-200",
+    teal: "border-teal-500/20 bg-teal-500/10 text-teal-200",
   };
 
   return (
@@ -787,9 +768,9 @@ function NavButton({ direction, disabled = false, highlight = false, label, onCl
       onClick={disabled ? undefined : onClick}
       className={`inline-flex items-center gap-3 rounded-full border px-6 py-3.5 text-base font-black transition-all ${
         highlight
-          ? "border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)]"
-          : "border-[#ffd8c2] bg-white text-[#7d4522]"
-      } ${disabled ? "cursor-not-allowed opacity-40 grayscale" : "hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(249,115,22,0.12)]"}`}
+          ? "coral-btn"
+          : "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+      } ${disabled ? "cursor-not-allowed opacity-40 grayscale" : "hover:-translate-y-0.5"}`}
     >
       {direction === "left" && <span className="text-lg">{"<"}</span>}
       <span>{label}</span>

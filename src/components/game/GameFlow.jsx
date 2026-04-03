@@ -72,14 +72,14 @@ function FlowLoader() {
       animate={{ opacity: 1 }}
       className="flex min-h-[70vh] items-center justify-center px-6 py-16"
     >
-      <div className="rounded-[2rem] border border-white/80 bg-white/80 px-8 py-6 text-center shadow-[0_20px_40px_rgba(249,115,22,0.12)] backdrop-blur-xl">
+      <div className="sea-glass px-8 py-6 text-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
-          className="mx-auto mb-4 h-12 w-12 rounded-full border-4 border-[#ffd8c2] border-t-[#ff7a45]"
+          className="mx-auto mb-4 h-12 w-12 rounded-full border-4 border-cyan-900 border-t-cyan-400"
         />
-        <p className="font-display text-lg font-black uppercase tracking-[0.24em] text-[#9b5430]">
-          Loading fun...
+        <p className="font-display text-lg font-black uppercase tracking-[0.24em] text-cyan-300">
+          🐙 Diving deep...
         </p>
       </div>
     </motion.div>

@@ -28,9 +28,10 @@ const sizeClasses = {
 };
 
 const toneClasses = {
-  warm: "from-[#fff4ea] to-[#fffce7]",
-  mint: "from-[#effffb] to-[#fff8db]",
-  pink: "from-[#fff1f5] to-[#fff4ea]",
+  warm: "from-cyan-900/60 to-blue-900/40",
+  mint: "from-teal-900/60 to-cyan-900/40",
+  pink: "from-pink-900/60 to-purple-900/40",
+  gold: "from-amber-900/60 to-orange-900/40",
 };
 
 export default function MysteryToken({
@@ -39,6 +40,7 @@ export default function MysteryToken({
   subtitle = "Keep it secret",
   size = "lg",
   tone = "warm",
+  image = null,
   className = "",
 }) {
   const classes = sizeClasses[size] || sizeClasses.lg;
@@ -47,22 +49,36 @@ export default function MysteryToken({
   return (
     <motion.div
       layoutId="mystery-token-shell"
-      className={`relative flex flex-col items-center justify-center border border-[#ffd8c2] bg-white/90 shadow-[0_20px_40px_rgba(249,115,22,0.12)] ${classes.shell} ${className}`}
+      className={`relative flex flex-col items-center justify-center border border-cyan-500/20 bg-[rgba(15,30,60,0.6)] shadow-[0_0_40px_rgba(103,232,249,0.1)] backdrop-blur-xl ${classes.shell} ${className}`}
     >
+      {/* Sonar pulse ring */}
+      <motion.div
+        className="absolute inset-[-8px] rounded-[inherit] border-2 border-dashed border-cyan-400/20"
+        animate={{ rotate: 360, scale: [1, 1.04, 1] }}
+        transition={{
+          rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+          scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
       <motion.div
         layoutId="mystery-token-core"
-        className={`flex items-center justify-center border border-white/90 bg-[linear-gradient(135deg,var(--tw-gradient-stops))] shadow-[0_14px_30px_rgba(249,115,22,0.12)] ${classes.iconWrap} ${gradient}`}
+        className={`flex items-center justify-center border border-cyan-400/20 bg-[linear-gradient(135deg,var(--tw-gradient-stops))] shadow-[0_0_30px_rgba(103,232,249,0.15)] overflow-hidden ${classes.iconWrap} ${gradient}`}
       >
-        <motion.span layoutId="mystery-token-emoji" className={`${classes.icon} drop-shadow-sm`}>
-          {emoji}
-        </motion.span>
+        {image ? (
+          <img src={image} alt={title} className="h-full w-full object-cover" />
+        ) : (
+          <motion.span layoutId="mystery-token-emoji" className={`${classes.icon} drop-shadow-sm`}>
+            {emoji}
+          </motion.span>
+        )}
       </motion.div>
 
       <motion.div layoutId="mystery-token-copy" className="mt-5 px-4 text-center">
-        <p className={`font-display font-black uppercase tracking-[0.12em] text-[#432414] ${classes.title}`}>
+        <p className={`font-display font-black uppercase tracking-[0.12em] text-cyan-100 ${classes.title}`}>
           {title}
         </p>
-        <p className="mt-2 text-sm font-semibold text-[#654331]">{subtitle}</p>
+        <p className="mt-2 text-sm font-semibold text-cyan-300/70">{subtitle}</p>
       </motion.div>
     </motion.div>
   );

@@ -36,7 +36,7 @@ export default function Timer({ initialSeconds = 30, onComplete }) {
           cy="70"
           r="54"
           fill="none"
-          stroke="rgba(255, 216, 194, 0.8)"
+          stroke="rgba(8, 47, 73, 0.8)"
           strokeWidth="10"
         />
         <motion.circle
@@ -44,7 +44,7 @@ export default function Timer({ initialSeconds = 30, onComplete }) {
           cy="70"
           r="54"
           fill="none"
-          stroke={isUrgent ? "url(#urgentGradient)" : "url(#timerGradient)"}
+          stroke={isUrgent ? "url(#urgentGradient)" : "url(#seaTimerGradient)"}
           strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -52,23 +52,23 @@ export default function Timer({ initialSeconds = 30, onComplete }) {
           transition={{ duration: 0.3 }}
         />
         <defs>
-          <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#fb923c" />
-            <stop offset="55%" stopColor="#fb7185" />
-            <stop offset="100%" stopColor="#14b8a6" />
+          <linearGradient id="seaTimerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="55%" stopColor="#2dd4bf" />
+            <stop offset="100%" stopColor="#fbbf24" />
           </linearGradient>
           <linearGradient id="urgentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="0%" stopColor="#f472b6" />
             <stop offset="100%" stopColor="#fb923c" />
           </linearGradient>
         </defs>
       </svg>
 
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`text-3xl font-display font-black ${isUrgent ? "text-red-500" : "text-[#7d4522]"}`}>
+        <span className={`text-3xl font-display font-black ${isUrgent ? "text-pink-400" : "text-cyan-200"}`}>
           {timerSeconds}
         </span>
-        <span className="text-[11px] uppercase tracking-[0.24em] text-[#9b7a64]">seconds</span>
+        <span className="text-[11px] uppercase tracking-[0.24em] text-cyan-400/60">seconds</span>
       </div>
 
       {isUrgent && (
@@ -76,9 +76,9 @@ export default function Timer({ initialSeconds = 30, onComplete }) {
           className="absolute inset-0 rounded-full"
           animate={{
             boxShadow: [
-              "0 0 0 rgba(239,68,68,0.18)",
-              "0 0 36px rgba(239,68,68,0.28)",
-              "0 0 0 rgba(239,68,68,0.18)",
+              "0 0 0 rgba(244,114,182,0.1)",
+              "0 0 36px rgba(244,114,182,0.2)",
+              "0 0 0 rgba(244,114,182,0.1)",
             ],
           }}
           transition={{ duration: 1, repeat: Infinity }}

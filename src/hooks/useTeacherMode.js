@@ -3,11 +3,10 @@ import useGameStore from "../store/useGameStore";
 
 /**
  * useTeacherMode - Keyboard shortcuts for teacher presentation control.
- * 
+ *
  * Space / ArrowRight: Advance to next step
  * ArrowLeft: Go back to previous step
- * R: Reset game
- * T: Toggle teacher dashboard (emits custom event)
+ * Shift + R: Reset game
  */
 export default function useTeacherMode() {
   const { currentStep, nextStep, prevStep, resetGame } = useGameStore();
@@ -38,12 +37,6 @@ export default function useTeacherMode() {
           if (e.shiftKey) {
             e.preventDefault();
             resetGame();
-          }
-          break;
-        case "KeyT":
-          if (e.shiftKey) {
-            e.preventDefault();
-            window.dispatchEvent(new CustomEvent("toggle-teacher-dashboard"));
           }
           break;
         default:

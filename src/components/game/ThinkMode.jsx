@@ -36,50 +36,50 @@ export default function ThinkMode() {
     >
       {!showOptions ? (
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="space-y-5 rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
+          <div className="space-y-5 sea-glass p-6">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
-                Think Mode
+              <span className="sea-tag-gold px-4 py-2 flex items-center gap-2">
+                🧠 Think Mode
               </span>
-              <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
-                {isGroupMode ? "Team huddle first" : "Quiet clues first"}
+              <span className="sea-tag-mint px-4 py-2">
+                {isGroupMode ? "Crew huddle first" : "Quiet dive first"}
               </span>
             </div>
 
-            <h2 className="text-5xl font-black uppercase tracking-tight text-[#432414] text-glow md:text-7xl">
-              Get your clue ready
+            <h2 className="text-5xl font-black uppercase tracking-tight text-cyan-50 bio-glow md:text-7xl">
+              Get Your Clue Ready! 🐙
             </h2>
-            <p className="max-w-xl text-base leading-relaxed text-[#654331] md:text-lg">
+            <p className="max-w-xl text-base leading-relaxed text-cyan-200/80 md:text-lg">
               {isGroupMode
-                ? "Give each group a quick whisper huddle before anyone speaks. One team speaker can then share a calm, clear clue for the class."
-                : "Give the speaker a moment to imagine the object before they talk. This keeps the clue calm, clear, and easier for the class to understand."}
+                ? "Give each crew a quick whisper huddle before anyone speaks. One team diver can then share a calm, clear treasure clue for the rest of the ocean."
+                : "Give the diver a moment to imagine the treasure before they talk. This keeps the clue calm, clear, and easier for the crew to understand."}
             </p>
 
             <div className="grid gap-3">
               {[
                 isGroupMode
-                  ? { icon: "👥", title: "Whisper together", text: "Let teammates quietly share one or two useful clue ideas." }
-                  : { icon: "✋", title: "Feel the shape", text: "Is it long, round, soft, or hard?" },
+                  ? { icon: "👥", title: "Huddle up!", text: "Let crewmates quietly share clue ideas underwater." }
+                  : { icon: "🤚", title: "Feel the treasure", text: "Is it long, round, soft, or hard?" },
                 isGroupMode
-                  ? { icon: "🎨", title: "Choose the best clue", text: "Pick the colour, shape, or use that will help the class most." }
-                  : { icon: "🎨", title: "Notice a clue", text: "Can you name the colour, size, or texture?" },
+                  ? { icon: "💎", title: "Best clue wins", text: "Pick the colour, shape, or use that helps the crew most." }
+                  : { icon: "🎨", title: "Spot a clue", text: "Can you name the colour, size, or texture?" },
                 isGroupMode
-                  ? { icon: "🗣️", title: "Pick one speaker", text: "Decide who will say the final clue when the mic turns on." }
-                  : { icon: "🗣️", title: "Plan the sentence", text: "Think about what you will say before the mic turns on." },
+                  ? { icon: "🎤", title: "Pick one diver", text: "Choose who will share the final treasure clue." }
+                  : { icon: "🗣️", title: "Plan the sentence", text: "Think about what you'll say before the mic opens." },
               ].map((card, index) => (
                 <motion.div
                   key={card.title}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.12 * index }}
-                  className="flex items-start gap-4 rounded-[1.6rem] border border-[#ffe0cf] bg-[#fffaf4] p-4"
+                  className="flex items-start gap-4 rounded-[1.6rem] border border-cyan-500/15 bg-cyan-500/5 p-4"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-950/50 text-2xl shadow-sm border border-cyan-500/10">
                     {card.icon}
                   </div>
                   <div>
-                    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#9b5430]">{card.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-[#654331]">{card.text}</p>
+                    <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-300">{card.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-cyan-200/70">{card.text}</p>
                   </div>
                 </motion.div>
               ))}
@@ -94,30 +94,31 @@ export default function ThinkMode() {
                   setShowOptions(true);
                 }}
               >
-                {isGroupMode ? "Pick the group object" : "Pick the secret object"}
+                {isGroupMode ? "🐙 Open the crew's chest" : "🐙 Open the treasure chest"}
               </Button>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(253,224,71,0.32),_transparent_28%),radial-gradient(circle_at_bottom,_rgba(45,212,191,0.16),_transparent_30%)]" />
+          <div className="relative overflow-hidden sea-glass p-6">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.06),_transparent_28%),radial-gradient(circle_at_bottom,_rgba(103,232,249,0.06),_transparent_30%)]" />
             <div className="relative flex min-h-[440px] flex-col items-center justify-center text-center">
               <motion.div
                 animate={{ scale: [1, 1.04, 1], rotate: [0, 2, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <MysteryToken
-                  emoji="?"
-                  title="Mystery item"
-                  subtitle={isGroupMode ? "Choose one for the group" : "Choose one secretly"}
+                  image="/images/sea/treasure_chest.png"
+                  title="Mystery treasure"
+                  subtitle={isGroupMode ? "Choose one for the crew" : "Choose one secretly"}
                   size="lg"
+                  tone="gold"
                 />
               </motion.div>
-              <p className="mt-8 text-xs font-black uppercase tracking-[0.3em] text-[#ff7a45]">Teacher prompt</p>
-              <p className="mt-3 max-w-md text-xl font-black leading-relaxed text-[#432414]">
+              <p className="mt-8 text-xs font-black uppercase tracking-[0.3em] text-amber-400">🐙 Captain's prompt</p>
+              <p className="mt-3 max-w-md text-xl font-black leading-relaxed text-cyan-100">
                 {isGroupMode
-                  ? '"Talk together first... then let one speaker share the clue."'
-                  : '"Think quietly first... then turn your idea into a clue."'}
+                  ? '"Huddle up, crew... then let one brave diver share the treasure clue!"'
+                  : '"Think quietly, diver... then turn your discovery into a clue!"'}
               </p>
             </div>
           </div>
@@ -126,40 +127,48 @@ export default function ThinkMode() {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-6 rounded-[2.4rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl"
+          className="space-y-6 sea-glass p-6"
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
-                  Secret Object Wall
+                <span className="sea-tag-gold px-4 py-2 flex items-center gap-2">
+                  ⚓ Treasure Wall
                 </span>
-                <span className="rounded-full border border-[#ffe7a1] bg-[#fff8db] px-4 py-2 text-sm font-bold text-[#8c5a1a]">
-                  {isGroupMode ? "Pick one and hide it from the other teams" : "Pick one and keep it hidden"}
+                <span className="sea-tag px-4 py-2">
+                  {isGroupMode ? "Pick one and hide it from other crews" : "Pick one and keep it hidden"}
                 </span>
               </div>
-              <h2 className="mt-4 text-4xl font-black uppercase tracking-tight text-[#432414] md:text-5xl">
-                What did you find?
+              <h2 className="mt-4 text-4xl font-black uppercase tracking-tight text-cyan-50 bio-glow md:text-5xl">
+                Pick a Treasure 🏴‍☠️
               </h2>
-              <p className="mt-2 max-w-2xl text-base leading-relaxed text-[#654331]">
-                {isGroupMode
-                  ? "Choose the object for this round. The next screen will help the group build the clue and let one speaker record it."
-                  : "Choose the object for this round. Once it is picked, the next screen will help the speaker build the clue and record it."}
+              <p className="mt-2 max-w-xl text-lg font-bold text-cyan-200/90">
+                {isGroupMode ? "Crew leader, pick a treasure in secret!" : "Diver, pick a secret treasure!"}
               </p>
             </div>
 
             <div className="flex flex-col items-end gap-3">
-              <MysteryToken
-                emoji="?"
-                title="Secret object"
-                subtitle="Keep it hidden"
-                size="sm"
-                tone="mint"
-              />
-              <div className="rounded-[1.6rem] border border-[#d7f4ef] bg-[#effffb] px-5 py-4 text-sm font-bold text-[#0f7c70]">
+              <div className="grid gap-2">
+                {[
+                  "Keep it a secret! 🤫",
+                  "Think about its colour and shape 🎨",
+                  "How do we use it? 🧭"
+                ].map((tip, index) => (
+                  <motion.div
+                    key={tip}
+                    initial={{ opacity: 0, x: -14 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.12 * index }}
+                    className="rounded-xl border border-cyan-500/15 bg-cyan-500/5 px-4 py-3 text-sm font-semibold text-cyan-200/80"
+                  >
+                    {tip}
+                  </motion.div>
+                ))}
+              </div>
+              <div className="rounded-[1.6rem] border border-teal-500/20 bg-teal-500/5 px-5 py-4 text-sm font-bold text-teal-300">
                 {isGroupMode
-                  ? "Tip: Let teammates whisper their ideas, but keep the object name hidden from the class."
-                  : "Tip: Remind students not to say the object name out loud."}
+                  ? "🐙 Let crewmates whisper ideas, but keep the treasure name hidden!"
+                  : "🐙 Remember, don't say the treasure name out loud!"}
               </div>
             </div>
           </div>
@@ -177,14 +186,18 @@ export default function ThinkMode() {
                 disabled={selected !== null}
                 className={`group relative aspect-square rounded-[2rem] border p-5 text-center transition-all ${
                   selected?.name === object.name
-                    ? "border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] text-white shadow-[0_18px_36px_rgba(249,115,22,0.2)]"
+                    ? "border-amber-400/50 bg-gradient-to-br from-amber-500/20 to-orange-500/15 text-amber-100 shadow-[0_0_40px_rgba(251,191,36,0.2)] animate-treasure-glow"
                     : selected !== null
-                    ? "border-[#f4e1d3] bg-white text-[#c2a894] opacity-50 grayscale"
-                    : "border-[#ffd8c2] bg-[#fffaf4] text-[#7d4522] shadow-[0_14px_28px_rgba(249,115,22,0.08)]"
+                    ? "border-cyan-500/10 bg-cyan-950/30 text-cyan-600 opacity-50 grayscale"
+                    : "border-cyan-500/15 bg-cyan-950/30 text-cyan-200 shadow-[0_12px_24px_rgba(0,0,0,0.2)] hover:border-cyan-400/30 hover:bg-cyan-500/10"
                 }`}
               >
                 <div className="flex h-full flex-col items-center justify-center">
-                  <span className="text-5xl transition-transform group-hover:scale-110">{object.emoji}</span>
+                  {object.image ? (
+                    <img src={object.image} alt={object.name} className="h-16 w-16 object-contain transition-transform group-hover:scale-110 drop-shadow-lg" />
+                  ) : (
+                    <span className="text-5xl transition-transform group-hover:scale-110">{object.emoji}</span>
+                  )}
                   <span className="mt-4 text-base font-black uppercase leading-tight tracking-[0.08em]">
                     {object.name}
                   </span>
@@ -194,7 +207,7 @@ export default function ThinkMode() {
                   <motion.div
                     initial={{ scale: 0.6, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="absolute inset-0 rounded-[2rem] border-4 border-white/60"
+                    className="absolute inset-0 rounded-[2rem] border-4 border-amber-400/40"
                   />
                 )}
               </motion.button>

@@ -56,7 +56,7 @@ function StarRating({ score, maxStars = 3 }) {
           transition={{ delay: 0.24 + index * 0.12, type: "spring", stiffness: 300 }}
           className={`text-xl ${index < score ? "" : "opacity-20 grayscale"}`}
         >
-          ⭐
+          🪙
         </motion.span>
       ))}
     </div>
@@ -65,10 +65,10 @@ function StarRating({ score, maxStars = 3 }) {
 
 function ScoreRow({ icon, label, score, detail, delay, tone }) {
   const tones = {
-    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
-    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
-    mint: "border-[#ccefe8] bg-[#ecfffb] text-[#11685d]",
-    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
+    cyan: "border-cyan-500/20 bg-cyan-500/8 text-cyan-200",
+    gold: "border-amber-500/20 bg-amber-500/8 text-amber-200",
+    teal: "border-teal-500/20 bg-teal-500/8 text-teal-200",
+    pink: "border-pink-500/20 bg-pink-500/8 text-pink-200",
   };
 
   return (
@@ -78,7 +78,7 @@ function ScoreRow({ icon, label, score, detail, delay, tone }) {
       transition={{ delay, duration: 0.4 }}
       className={`flex items-center gap-4 rounded-[1.5rem] border p-4 ${tones[tone]}`}
     >
-      <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+      <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-cyan-950/50 text-2xl shadow-sm border border-cyan-500/10">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
@@ -127,22 +127,22 @@ export default function SpeechReportCard({
       initial={{ opacity: 0, scale: 0.92, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, type: "spring", damping: 22 }}
-      className="mx-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/85 bg-white/86 p-6 shadow-[0_24px_80px_rgba(249,115,22,0.14)] backdrop-blur-2xl md:p-8"
+      className="mx-auto w-full max-w-5xl sea-glass overflow-hidden p-6 md:p-8"
     >
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="space-y-5">
-          <div className="rounded-[2rem] border border-[#ffd8c2] bg-[linear-gradient(180deg,rgba(255,245,236,0.96),rgba(255,234,224,0.96))] p-6">
+          <div className="rounded-[2rem] border border-cyan-500/15 bg-gradient-to-b from-cyan-950/40 to-blue-950/30 p-6">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-[#ff7a45] px-4 py-2 text-xs font-black uppercase tracking-[0.32em] text-white">
-                Speech Report
+              <span className="sea-tag-coral px-4 py-2">
+                🐙 Dive Report
               </span>
-              <span className="rounded-full border border-[#d7f4ef] bg-[#effffb] px-4 py-2 text-sm font-bold text-[#0f7c70]">
-                Bright feedback
+              <span className="sea-tag-mint px-4 py-2">
+                Treasure feedback
               </span>
             </div>
 
-            <div className="mt-5 rounded-[1.8rem] border border-[#ffe0cf] bg-white/90 p-6 text-center">
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a86132]">Overall score</p>
+            <div className="mt-5 rounded-[1.8rem] border border-cyan-500/15 bg-[rgba(10,22,40,0.5)] p-6 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-400">Overall pearls</p>
               <div className="mt-4 flex justify-center gap-2">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <motion.span
@@ -151,19 +151,19 @@ export default function SpeechReportCard({
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 0.48 + index * 0.12, type: "spring", stiffness: 300 }}
                     className={`text-4xl ${index < overallStars ? "" : "opacity-20 grayscale"}`}
-                    style={{ filter: index < overallStars ? "drop-shadow(0 6px 0 rgba(249,115,22,0.18))" : "none" }}
+                    style={{ filter: index < overallStars ? "drop-shadow(0 0 12px rgba(251,191,36,0.3))" : "none" }}
                   >
-                    ⭐
+                    🪙
                   </motion.span>
                 ))}
               </div>
-              <p className="mt-4 text-xl font-black uppercase tracking-[0.16em] text-[#432414]">
-                {overallStars >= 4 ? "Amazing speaker!" : overallStars >= 2 ? "Great job!" : "Keep practicing!"}
+              <p className="mt-4 text-xl font-black uppercase tracking-[0.16em] text-cyan-100">
+                {overallStars >= 4 ? "Amazing Diver! 🐙" : overallStars >= 2 ? "Great Dive! 🐠" : "Keep Exploring! 🐟"}
               </p>
-              <p className="mt-2 text-sm text-[#6b4633]">
+              <p className="mt-2 text-sm text-cyan-200/70">
                 {overallStars >= 4
-                  ? "Your clues sounded clear and confident."
-                  : "Each round helps the next clue sound even stronger."}
+                  ? "Your treasure clues sounded clear and confident."
+                  : "Each dive helps the next clue sound even stronger."}
               </p>
             </div>
           </div>
@@ -175,23 +175,23 @@ export default function SpeechReportCard({
               score={volumeScore}
               detail={metrics ? `Average volume ${metrics.avgVolume}%` : "No voice data yet"}
               delay={0.1}
-              tone="orange"
+              tone="cyan"
             />
             <ScoreRow
               icon="📝"
               label="Full clues"
               score={analysis.completenessScore}
-              detail={`${analysis.hasName ? "Name" : "Name missing"} · ${analysis.hasColour ? "Colour" : "Colour missing"} · ${analysis.hasUse ? "Use" : "Use missing"}`}
+              detail={`${analysis.hasName ? "Name ✓" : "Name ✗"} · ${analysis.hasColour ? "Colour ✓" : "Colour ✗"} · ${analysis.hasUse ? "Use ✓" : "Use ✗"}`}
               delay={0.18}
-              tone="yellow"
+              tone="gold"
             />
             <ScoreRow
               icon="🎨"
               label="Describing words"
               score={analysis.describingScore}
-              detail={analysis.describingWords.length > 0 ? analysis.describingWords.slice(0, 5).join(", ") : "Add more describing words next round"}
+              detail={analysis.describingWords.length > 0 ? analysis.describingWords.slice(0, 5).join(", ") : "Add more describing words next dive"}
               delay={0.26}
-              tone="mint"
+              tone="teal"
             />
             <ScoreRow
               icon="⏱️"
@@ -210,10 +210,10 @@ export default function SpeechReportCard({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-[1.8rem] border border-[#ffd8c2] bg-white p-5"
+              className="rounded-[1.8rem] border border-cyan-500/15 bg-[rgba(10,22,40,0.5)] p-5"
             >
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">What you said</p>
-              <p className="mt-3 text-base font-semibold italic leading-relaxed text-[#654331]">"{transcript}"</p>
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-400">📝 What you said</p>
+              <p className="mt-3 text-base font-semibold italic leading-relaxed text-cyan-200/80">"{transcript}"</p>
             </motion.div>
           )}
 
@@ -222,9 +222,9 @@ export default function SpeechReportCard({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="rounded-[1.8rem] border border-[#d7f4ef] bg-[#effffb] p-5"
+              className="rounded-[1.8rem] border border-teal-500/20 bg-teal-500/5 p-5"
             >
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#0f7c70]">Listen back</p>
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-teal-400">🎧 Listen back</p>
               <audio controls src={audioUrl} className="mt-4 h-10 w-full rounded-lg" />
             </motion.div>
           )}
@@ -233,33 +233,33 @@ export default function SpeechReportCard({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.48 }}
-            className="rounded-[1.8rem] border border-[#ffe0cf] bg-[#fffaf4] p-5"
+            className="rounded-[1.8rem] border border-amber-500/20 bg-amber-500/5 p-5"
           >
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff7a45]">AI teacher review</p>
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-amber-400">🐙 Captain's review</p>
 
             {isAnalyzing && (
-              <div className="mt-4 rounded-[1.5rem] border border-[#ffe7a1] bg-[#fff8db] p-6 text-center">
+              <div className="mt-4 rounded-[1.5rem] border border-cyan-500/15 bg-cyan-950/30 p-6 text-center">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
-                  className="mx-auto mb-3 h-12 w-12 rounded-full border-4 border-[#ffd6c2] border-t-[#ff7a45]"
+                  className="mx-auto mb-3 h-12 w-12 rounded-full border-4 border-cyan-900 border-t-cyan-400"
                 />
-                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8c5a1a]">
-                  Reading the clue...
+                <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">
+                  🐙 Reading the treasure clue...
                 </p>
               </div>
             )}
 
             {!isAnalyzing && aiReview && (
               <div className="mt-4 space-y-4">
-                <div className="rounded-[1.5rem] border border-[#ccefe8] bg-[#ecfffb] p-4">
-                  <p className="text-sm font-semibold leading-relaxed text-[#17685e]">{aiReview.feedback}</p>
+                <div className="rounded-[1.5rem] border border-teal-500/20 bg-teal-500/5 p-4">
+                  <p className="text-sm font-semibold leading-relaxed text-teal-200">{aiReview.feedback}</p>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
                   {[
-                    { label: "Clarity", score: aiReview.clarity, icon: "🗣️", tone: "orange" },
-                    { label: "Vocabulary", score: aiReview.vocabulary, icon: "📚", tone: "yellow" },
+                    { label: "Clarity", score: aiReview.clarity, icon: "🗣️", tone: "cyan" },
+                    { label: "Vocabulary", score: aiReview.vocabulary, icon: "📚", tone: "gold" },
                     { label: "Confidence", score: aiReview.confidence, icon: "💪", tone: "pink" },
                   ].map(({ label, score, icon, tone }) => (
                     <MiniStat key={label} label={label} score={score} icon={icon} tone={tone} />
@@ -267,20 +267,20 @@ export default function SpeechReportCard({
                 </div>
 
                 {aiReview.tip && (
-                  <div className="rounded-[1.5rem] border border-[#ffd2dc] bg-[#fff1f5] p-4">
-                    <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9b3b58]">Next time tip</p>
-                    <p className="mt-2 text-sm font-semibold leading-relaxed text-[#7d3650]">{aiReview.tip}</p>
+                  <div className="rounded-[1.5rem] border border-pink-500/20 bg-pink-500/5 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.28em] text-pink-400">🐠 Next dive tip</p>
+                    <p className="mt-2 text-sm font-semibold leading-relaxed text-pink-200/80">{aiReview.tip}</p>
                   </div>
                 )}
 
                 {aiReview.highlighted_words?.length > 0 && (
-                  <div className="rounded-[1.5rem] border border-[#ffd8c2] bg-[#fff4ec] p-4">
-                    <p className="text-xs font-black uppercase tracking-[0.28em] text-[#86401b]">Words you used well</p>
+                  <div className="rounded-[1.5rem] border border-cyan-500/15 bg-cyan-500/5 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-400">✨ Words you used well</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {aiReview.highlighted_words.map((word) => (
                         <span
                           key={word}
-                          className="rounded-full border border-[#ffd6c2] bg-white px-3 py-1 text-sm font-bold text-[#7d4522]"
+                          className="rounded-full border border-cyan-500/20 bg-cyan-950/50 px-3 py-1 text-sm font-bold text-cyan-200"
                         >
                           {word}
                         </span>
@@ -292,8 +292,8 @@ export default function SpeechReportCard({
             )}
 
             {!isAnalyzing && !aiReview && (
-              <div className="mt-4 rounded-[1.5rem] border border-[#f4e1d3] bg-white p-4 text-sm font-semibold text-[#8d6a57]">
-                AI review is not available right now. The class can still use the stars and transcript as feedback.
+              <div className="mt-4 rounded-[1.5rem] border border-cyan-500/10 bg-cyan-950/30 p-4 text-sm font-semibold text-cyan-300/70">
+                Captain's review is not available right now. The crew can still use the pearls and transcript as feedback. 🐙
               </div>
             )}
           </motion.div>
@@ -306,15 +306,15 @@ export default function SpeechReportCard({
           >
             <button
               onClick={onRetry}
-              className="flex-1 rounded-full border border-[#ffd8c2] bg-white px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-[#7d4522] shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(249,115,22,0.12)]"
+              className="flex-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-cyan-300 shadow-sm transition hover:-translate-y-0.5 hover:bg-cyan-500/15"
             >
-              Retry
+              🔄 Try again
             </button>
             <button
               onClick={() => onContinue(overallStars)}
-              className="flex-1 rounded-full border border-[#ffb087] bg-[linear-gradient(135deg,#fb923c,#fb7185)] px-6 py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_14px_34px_rgba(249,115,22,0.18)] transition hover:-translate-y-0.5"
+              className="coral-btn flex-1 px-6 py-4 text-sm"
             >
-              Next round
+              🐙 Next round
             </button>
           </motion.div>
         </div>
@@ -325,9 +325,9 @@ export default function SpeechReportCard({
 
 function MiniStat({ label, score, icon, tone }) {
   const tones = {
-    orange: "border-[#ffd6c2] bg-[#fff1e8] text-[#86401b]",
-    yellow: "border-[#ffe7a1] bg-[#fff8db] text-[#8c5a1a]",
-    pink: "border-[#ffd2dc] bg-[#fff1f5] text-[#9b3b58]",
+    cyan: "border-cyan-500/20 bg-cyan-500/8 text-cyan-200",
+    gold: "border-amber-500/20 bg-amber-500/8 text-amber-200",
+    pink: "border-pink-500/20 bg-pink-500/8 text-pink-200",
   };
 
   return (

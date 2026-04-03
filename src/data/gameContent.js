@@ -4,159 +4,136 @@
 export const IMAGE_PREFIX = "https://login.skillizee.io";
 
 export const gameContent = {
-  title: "Mystery Bag Challenge",
+  title: "Deep Sea Mystery Quest",
   subtitle: "SkilliZee Activity: Mystery Bag Talk",
   objective:
-    "To develop students' speaking confidence, vocabulary, and sentence formation skills through a fun and interactive guessing and speaking game.",
+    "Dive deep into the ocean and become a Treasure Speaker! Describe hidden treasures with clues so your crew can guess what you found on the ocean floor.",
 
   modules: [
     {
       id: "module-1",
-      title: "MODULE 1: ACTIVITY DISCOVERY",
+      title: "🌊 DIVE INTO THE ADVENTURE",
       chapters: [
         {
           id: "chapter-1-1",
-          title: "Introduction of the Activity",
+          title: "Welcome Aboard, Divers!",
           intro:
-            '"Have you ever picked something without looking and tried to guess what it is? Today, we are going to play a fun game where you will become Mystery Speakers!"',
+            '"Ahoy, young divers! 🐙 Today we\'re diving to the bottom of the ocean to find mysterious treasures! Your mission: describe what you find so your crew can guess it!"',
           images: [
-            "/s/articles/69c22d247fb44369a486f649/images/image-20260324115032-1.png",
-            "/s/articles/69c22d247fb44369a486f649/images/image-20260324115032-2.png",
-            "/s/articles/69c22d247fb44369a486f649/images/image-20260324115032-3.png",
+            "/images/sea/treasure_chest.png",
+            "/images/sea/pearl.png",
+            "/images/sea/starfish.png",
           ],
           questions: [
-            "Have you ever guessed something just by touching it?",
-            "Can you describe your favourite object in one sentence?",
-            "What clues help you identify an object?",
+            "Have you ever found something special at the beach?",
+            "Can you describe your favourite sea creature in one sentence?",
+            "What clues help you identify a treasure?",
           ],
           explain:
-            '"Good speakers don\'t just say what something is — they describe it clearly so others can imagine it. Today, you will learn how to speak like confident presenters!"',
+            '"Great treasure hunters don\'t just show what they found — they describe it so clearly that others can imagine it! Today, you\'ll speak like brave ocean explorers!"',
         },
         {
           id: "chapter-1-2",
-          title: "Watch & Learn (Optional Demo)",
+          title: "Watch the Demo Dive!",
           intro:
-            'Show a sample object (e.g., pencil) and model:\n"This is a pencil. It is yellow in colour. We use it to write."',
+            'Watch how a diver describes their treasure:\n"This is a golden key. It is shiny and old. We use it to open treasure chests!"',
           video: {
             url: "https://youtu.be/3UdR7G3IXWg?si=fSdsM4VRiw2RWdwi",
             title:
               "Fun Riddles for Kids | What's in the Mystery Box? | Guess the Objects",
           },
           questions: [
-            "What did they say first?",
-            "How did they describe the object?",
+            "What did the diver say first?",
+            "How did they describe the treasure?",
             "What made the sentence clear?",
           ],
           explain:
-            '"Speaking becomes easy when we follow a simple structure."',
+            '"Speaking becomes easy when we follow a simple treasure map of words!"',
         },
         {
           id: "chapter-1-3",
-          title: "Interactive Quick Practice",
-          intro: "Show an object and ask:",
+          title: "Quick Dive Practice!",
+          intro: "Look at this treasure and describe it:",
           images: [
-            "/s/articles/69c22d247fb44369a486f649/images/image-20260324115033-4.png",
+            "/images/sea/treasure_chest.png",
           ],
           questions: [
-            "What is it?",
-            "What colour is it / where we usually found it?",
-            "What do we use it for?",
+            "What is the treasure?",
+            "What colour is it / what does it look like?",
+            "What would a pirate use it for?",
           ],
           explain:
-            '"Now you\'re ready to try the Mystery Bag Challenge!"',
+            '"Now you\'re ready for the Deep Sea Mystery Quest! Dive in!"',
         },
       ],
     },
     {
       id: "module-2",
-      title: "MODULE 2: ACTIVITY EXECUTION",
+      title: "🏴‍☠️ THE TREASURE MISSION",
       chapters: [
         {
           id: "chapter-2-1",
-          title: "Problem Statement",
+          title: "Your Ocean Mission",
           intro:
-            '"You are Mystery Speakers. Your challenge is to pick an object from the bag, think carefully, and describe it clearly so others can understand and guess it."',
+            '"You are Deep Sea Treasure Speakers! Your mission is to pull a treasure from the mystery chest, think carefully, and describe it so your crew can guess what it is!"',
         },
       ],
     },
     {
       id: "module-3",
-      title: "MODULE 3: RULES & HOW TO PLAY",
+      title: "🗺️ TREASURE MAP RULES",
       chapters: [
         {
           id: "chapter-3-1",
-          title: "The 5 Steps of Mystery Bag",
-          intro: "Follow these simple rules when it's your turn:",
+          title: "The 5 Steps of Treasure Quest",
+          intro: "Follow these diver rules when it's your turn:",
           questions: [
-            "1️⃣ Pick an object without looking",
-            "2️⃣ Feel it carefully and think in your head",
-            "3️⃣ Speak in 2–3 clear sentences using the sentence starters",
-            "4️⃣ The class will guess what it is!",
-            "5️⃣ Show the object to everyone. Everyone claps! 👏",
+            "1️⃣ Reach into the treasure chest without peeking!",
+            "2️⃣ Feel the treasure and think about what it could be",
+            "3️⃣ Speak in 2–3 clear sentences using the clue starter",
+            "4️⃣ Your crew will guess the treasure! 🐠",
+            "5️⃣ Reveal it to everyone. The whole crew cheers! 🎉",
           ],
         },
         {
           id: "chapter-3-2",
-          title: "Star Speaker Qualities",
-          intro: "To earn the Star Speaker Badge, remember your brownie points:",
+          title: "Star Diver Qualities",
+          intro: "To earn the Golden Pearl Badge, remember your treasure points:",
           questions: [
-            "✨ Use a Clear, loud voice",
-            "🗣️ Speak in full, complete sentences",
-            "🎨 Use good describing words (colors, shapes)",
+            "🌟 Use a clear, brave diving voice!",
+            "🗣️ Speak in full treasure sentences!",
+            "🎨 Use great describing words (colours, shapes, feelings)!",
           ],
-          explain: "Today, you'll learn how to speak clearly, describe objects, and listen carefully. These are the skills of a great communicator!"
+          explain: "Today, you'll learn how to speak clearly, describe treasures, and listen to your crew. These are the skills of a true ocean explorer!"
         }
       ],
     },
   ],
 
   taskInstructions: [
-    "Pick an object without looking",
-    "Think about its features",
+    "Reach into the treasure chest",
+    "Think about the treasure's features",
     "Speak in 2–3 clear sentences",
-    "Help others guess the object",
+    "Help your crew guess the treasure",
   ],
 
   objects: {
     "2nd grade": [
-      { emoji: "🔑", name: "Key" },
-      { emoji: "🧽", name: "Duster" },
-      { emoji: "🪙", name: "Coin" },
-      { emoji: "🖊", name: "Whiteboard marker" },
-      { emoji: "🪪", name: "ID card" },
-      { emoji: "🕒", name: "Small clock" },
-      { emoji: "🪛", name: "Pencil sharpener" },
-      { emoji: "🥤", name: "Water bottle" },
-      { emoji: "✂", name: "Safe scissors" },
-      { emoji: "🍃", name: "Leaf" },
-      { emoji: "🪨", name: "Small stone" },
-      { emoji: "🌸", name: "Flower" },
+      { image: "/images/treasure_key_1775128388849.png", name: "Sunken Key", emoji: "🗝️" },
+      { image: "/images/flashlight_1775128407130.png", name: "Dive Light", emoji: "🔦" },
+      { image: "/images/magnifying_glass_1775128424472.png", name: "Sonar Glass", emoji: "🔍" },
+      { image: "/images/sea/pearl.png", name: "Giant Pearl", emoji: "🪸" },
     ],
     "3rd grade": [
-      { emoji: "🧲", name: "Magnet" },
-      { emoji: "🎡", name: "Game spinner" },
-      { emoji: "🔋", name: "Battery" },
-      { emoji: "📔", name: "Small diary" },
-      { emoji: "🔦", name: "Flashlight" },
-      { emoji: "🔖", name: "Bookmark" },
-      { emoji: "🔍", name: "Magnifying glass" },
-      { emoji: "🖌", name: "Paint Brush" },
-      { emoji: "🌡", name: "Thermometer" },
-      { emoji: "🧴", name: "Hand sanitizer" },
-      { emoji: "🌍", name: "Globe" },
-      { emoji: "🛞", name: "Simple pulley model" },
-      { emoji: "🗺", name: "Map" },
-      { emoji: "⏰", name: "Alarm clock" },
-      { emoji: "💵", name: "Currency note" },
-      { emoji: "📏", name: "Measuring tape" },
-      { emoji: "🚦", name: "Traffic signal model" },
-      { emoji: "🔐", name: "Lock & key" },
-      { emoji: "📅", name: "Calendar" },
+      { image: "/images/treasure_key_1775128388849.png", name: "Captain's Key", emoji: "🗝️" },
+      { image: "/images/flashlight_1775128407130.png", name: "Deep Sea Beacon", emoji: "🔦" },
+      { image: "/images/magnifying_glass_1775128424472.png", name: "Ocean Inspector", emoji: "🔍" },
+      { image: "/images/sea/starfish.png", name: "Glowing Starfish", emoji: "⭐" },
     ],
   },
 
   sentenceStarters: [
-    { template: "This is a ___.", placeholder: "name of the object" },
+    { template: "This is a ___.", placeholder: "name of the treasure" },
     { template: "It is ___ in colour.", placeholder: "colour" },
     { template: "We use it to ___.", placeholder: "what it's used for" },
   ],
@@ -164,22 +141,22 @@ export const gameContent = {
   steps: [
     {
       id: "step-1",
-      title: "Step 1: Prepare the Mystery Bag",
-      description: "Keep simple objects in a bag.",
+      title: "Step 1: Prepare the Treasure Chest",
+      description: "Keep simple treasures in the chest.",
     },
     {
       id: "step-2",
-      title: "Step 2: Pick & Feel",
-      description: "One student comes forward and:",
+      title: "Step 2: Reach & Feel",
+      description: "One diver comes forward and:",
       items: [
-        "Picks an object without looking",
-        "Feels it carefully",
+        "Reaches into the chest without peeking",
+        "Feels the treasure carefully",
         "Thinks before speaking",
       ],
     },
     {
       id: "step-3",
-      title: "Step 3: Speak Using Sentence Starters",
+      title: "Step 3: Speak Using Clue Starters",
       items: [
         '"This is a ___."',
         '"It is ___ in colour."',
@@ -188,63 +165,68 @@ export const gameContent = {
     },
     {
       id: "step-4",
-      title: "Step 4: Guessing Time",
-      description: "Before showing the object:",
+      title: "Step 4: Guessing Time!",
+      description: "Before revealing the treasure:",
       items: [
-        "Class guesses what it is",
-        "Students raise hands or call out answers",
+        "The crew guesses what it is",
+        "Divers raise hands or call out answers",
       ],
-      note: "This builds excitement and listening skills.",
+      note: "This builds excitement and listening skills!",
     },
     {
       id: "step-5",
-      title: "Step 5: Reveal & Applaud",
-      description: "The student shows the object.",
-      items: ["👏 Clap Rule – Everyone claps after each speaker"],
-      note: "This boosts confidence.",
+      title: "Step 5: Reveal & Celebrate!",
+      description: "The diver reveals the treasure.",
+      items: ["🎉 Cheer Rule – Everyone cheers after each diver!"],
+      note: "This boosts confidence! 🐙",
     },
   ],
 
   discussionQuestions: [
     "Which description helped you guess correctly?",
-    "What made a speaker sound confident?",
+    "What made a diver sound confident?",
     "Which words were interesting or new?",
   ],
 
   speakerQualities: ["Clear voice", "Complete sentences", "Good describing words"],
 
   browniePoints: [
-    { action: "Speaking clearly", points: 1 },
-    { action: "Using full sentences", points: 1 },
-    { action: "Helping others guess", points: 1 },
+    { action: "Speaking clearly", points: 1, emoji: "🔊" },
+    { action: "Using full sentences", points: 1, emoji: "📝" },
+    { action: "Helping crew guess", points: 1, emoji: "🐠" },
   ],
 
   rewardThreshold: 5,
-  rewardBadge: "Star Speaker Badge",
+  rewardBadge: "Golden Pearl Badge",
 
   keyTakeaways: {
     message:
-      '"Today, you learned how to speak clearly, describe objects, and listen carefully. These are the skills of a great communicator!"',
+      '"Today, you learned how to speak clearly, describe treasures, and listen to your crew. These are the skills of a true ocean explorer!"',
     skills: [
       {
         title: "Speaking Confidence",
-        description: "Expressing ideas in front of others.",
+        description: "Expressing ideas bravely in front of others.",
+        emoji: "🎤",
       },
       {
         title: "Vocabulary Building",
-        description: "Using describing words.",
+        description: "Using creative describing words.",
+        emoji: "📚",
       },
       {
         title: "Sentence Formation",
-        description: "Speaking in structured sentences.",
+        description: "Speaking in structured treasure sentences.",
+        emoji: "✍️",
       },
       {
         title: "Listening Skills",
-        description: "Understanding clues and guessing.",
+        description: "Understanding clues and guessing treasures.",
+        emoji: "👂",
       },
       {
         title: "Observation Skills",
-        description: "Identifying objects through touch and description.",
+        description: "Identifying treasures through touch and description.",
+        emoji: "👀",
       },
     ],
   },

@@ -13,18 +13,19 @@ export default function MediaRenderer({ type = "image", src, title, className = 
 
   // IMAGE rendering
   if (type === "image") {
-    const fullUrl = src.startsWith("http") ? src : `${IMAGE_PREFIX}${src}`;
+    const isLocalImage = src.startsWith("/images/");
+    const fullUrl = src.startsWith("http") || isLocalImage ? src : `${IMAGE_PREFIX}${src}`;
 
     if (imageError) {
       return (
         <div
-          className={`flex items-center justify-center rounded-xl border border-orange-200 bg-orange-50 p-8 ${className}`}
+          className={`flex items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-950/40 p-8 ${className}`}
         >
-          <div className="text-center text-orange-500/70">
+          <div className="text-center text-cyan-500/50">
             <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V5.25a1.5 1.5 0 00-1.5-1.5H3.75a1.5 1.5 0 00-1.5 1.5v14.25a1.5 1.5 0 001.5 1.5z" />
             </svg>
-            <p className="text-sm">Image unavailable</p>
+            <p className="text-sm">Treasure hidden</p>
           </div>
         </div>
       );
@@ -33,7 +34,7 @@ export default function MediaRenderer({ type = "image", src, title, className = 
     return (
       <div className={`relative overflow-hidden rounded-xl ${className}`}>
         {!imageLoaded && (
-          <div className="absolute inset-0 rounded-xl bg-orange-100/80 animate-pulse" />
+          <div className="absolute inset-0 rounded-xl bg-cyan-950/50 animate-pulse" />
         )}
         <img
           src={fullUrl}
@@ -73,7 +74,7 @@ export default function MediaRenderer({ type = "image", src, title, className = 
           />
         </div>
         {title && (
-          <p className="mt-3 text-center text-sm font-body text-[#8a451b]/70">
+          <p className="mt-3 text-center text-sm font-semibold text-cyan-200/70">
             {title}
           </p>
         )}

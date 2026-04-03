@@ -1,14 +1,11 @@
-import { lazy, Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import ParticleBackground from "./components/ui/ParticleBackground";
 import GameFlow from "./components/game/GameFlow";
 import FullscreenButton from "./components/ui/FullscreenButton";
 import ProgressBar from "./components/ui/ProgressBar";
 import Mascot from "./components/ui/Mascot";
-import TeacherToolsButton from "./components/ui/TeacherToolsButton";
 import useGameStore from "./store/useGameStore";
 import useTeacherMode from "./hooks/useTeacherMode";
-
-const TeacherDashboard = lazy(() => import("./components/game/TeacherDashboard"));
 
 function App() {
   const { setStep } = useGameStore();
@@ -21,15 +18,17 @@ function App() {
   }, [setStep]);
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#fff8ef] font-body text-[#3d2516] selection:bg-[#ffd089]/50">
+    <div className="relative min-h-screen w-full overflow-x-hidden font-body text-[#e0f2fe] selection:bg-cyan-500/30">
+      {/* Underwater Background Image */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
+        style={{ backgroundImage: "url('/images/sea/bg.png')" }}
+      />
+
       <ParticleBackground />
       <ProgressBar />
       <Mascot />
-      <TeacherToolsButton />
       <FullscreenButton />
-      <Suspense fallback={null}>
-        <TeacherDashboard />
-      </Suspense>
 
       <div className="relative z-10 w-full min-h-screen">
         <GameFlow />

@@ -5,43 +5,40 @@ import { gameContent } from "../../data/gameContent";
 const contentSlides = gameContent.modules.flatMap((module) => module.chapters);
 
 const STEP_TIPS = {
-  think: { emoji: "🕵️", text: "Pick one secret object and keep it hidden from the class." },
-  speaking: { emoji: "🎤", text: "Use short, clear clues so everyone can understand your idea." },
-  guessing: { emoji: "💭", text: "Listen for the best clue and make your smartest guess." },
-  reveal: { emoji: "🎊", text: "Big reveal time! Let the whole class celebrate the answer." },
-  reward: { emoji: "🏆", text: "Celebrate the effort, not just the perfect answer." },
+  think: { text: "Psst! Pick one treasure and keep it hidden from your crew!" },
+  speaking: { text: "Use your best pirate voice — loud, clear, and brave!" },
+  guessing: { text: "Listen to the clue and make your smartest guess, matey!" },
+  reveal: { text: "Woohoo! Time to open the treasure chest!" },
+  reward: { text: "You earned a golden pearl! What an amazing diver!" },
 };
 
 const GROUP_STEP_TIPS = {
-  think: { emoji: "👥", text: "Give each team a quick huddle before one speaker shares the clue." },
-  speaking: { emoji: "🎤", text: "Let one child speak for the group while teammates help build the clue first." },
-  guessing: { emoji: "💭", text: "Ask teams to whisper quickly, then choose one voice for the final guess." },
-  reveal: { emoji: "🎊", text: "Celebrate the answer and the teamwork that helped the class solve it." },
-  reward: { emoji: "🏆", text: "Praise strong teamwork, clear clues, and kind listening." },
+  think: { text: "Huddle up, crew! Whisper your treasure secrets together!" },
+  speaking: { text: "Pick one brave diver to share the clue for the whole team!" },
+  guessing: { text: "Teams, put your heads together and guess the treasure!" },
+  reveal: { text: "The treasure is revealed! Everyone celebrate!" },
+  reward: { text: "Your team earned golden pearls! Amazing teamwork!" },
 };
 
 function getContentTip(slide) {
   if (!slide) {
-    return { emoji: "🌟", text: "Swipe through the guide and collect the best clue ideas." };
+    return { text: "Swim through the guide and discover the hidden clues! 🐠" };
   }
 
   if (slide.video) {
     return {
-      emoji: "🎬",
-      text: "Pause after the demo and ask children to copy the sentence pattern together.",
+      text: "Watch the demo and copy the speaking pattern together with your crew!",
     };
   }
 
   if (slide.questions?.length) {
     return {
-      emoji: "🧩",
-      text: "Pick one prompt and let a child answer in a full sentence before moving on.",
+      text: "Dive into a question and answer in a full sentence!",
     };
   }
 
   return {
-    emoji: "💡",
-    text: "Keep the explanation short, playful, and easy to repeat aloud.",
+    text: "Keep the explanation short, fun, and easy to repeat!",
   };
 }
 
@@ -51,7 +48,7 @@ export default function Mascot() {
   const tip =
     currentStep === "content"
       ? getContentTip(contentSlides[contentSlideIndex])
-      : stepTips[currentStep] || { emoji: "🌟", text: "Keep the energy high and the instructions simple." };
+      : stepTips[currentStep] || { text: "Keep exploring the deep sea! 🌊" };
 
   return (
     <div className="fixed bottom-5 right-5 z-[90] hidden max-w-sm pointer-events-none lg:block">
@@ -64,24 +61,34 @@ export default function Mascot() {
           transition={{ type: "spring", damping: 18, stiffness: 200 }}
           className="flex items-end gap-3"
         >
+          {/* Mascot image */}
           <motion.div
-            animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
-            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-[1.6rem] border border-white/90 bg-[linear-gradient(135deg,#fb923c,#facc15)] text-3xl shadow-[0_14px_28px_rgba(249,115,22,0.18)]"
+            animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="relative flex-shrink-0"
           >
-            {tip.emoji}
+            <div className="h-20 w-20 rounded-[1.6rem] overflow-hidden border-2 border-cyan-400/30 shadow-[0_0_30px_rgba(103,232,249,0.2)]">
+              <img
+                src="/images/sea/mascot.png"
+                alt="Bubbles the Octopus"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            {/* Glow effect */}
+            <div className="absolute inset-[-4px] rounded-[1.8rem] border-2 border-cyan-400/20 animate-pulse pointer-events-none" />
           </motion.div>
 
+          {/* Speech bubble */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="relative rounded-[1.8rem] rounded-br-[0.6rem] border border-white/85 bg-white/88 px-5 py-4 shadow-[0_18px_40px_rgba(249,115,22,0.12)] backdrop-blur-xl"
+            className="sea-glass-light relative rounded-[1.8rem] rounded-br-[0.6rem] px-5 py-4"
           >
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#ff7a45]">
-              Buddy Tip
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-400">
+              🐙 Bubbles says
             </p>
-            <p className="mt-2 text-sm font-bold leading-relaxed text-[#654331]">{tip.text}</p>
+            <p className="mt-2 text-sm font-bold leading-relaxed text-cyan-100">{tip.text}</p>
           </motion.div>
         </motion.div>
       </AnimatePresence>

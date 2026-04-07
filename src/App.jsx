@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { courseData } from "./data/courseContent";
 import TabNavigation from "./components/layout/TabNavigation";
 import ContentArea from "./components/layout/ContentArea";
 import Header from "./components/layout/Header";
-import Sparkles from "./components/ui/Sparkles";
+
+// Lazy load the 3D background so it doesn't block the UI
+const ToyConveyor = lazy(() => import("./components/3d/ToyConveyor"));
 
 function App() {
   const [activeChapter, setActiveChapter] = useState("1-1");
@@ -35,14 +37,14 @@ function App() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Background */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-center opacity-15"
-        style={{ backgroundImage: "url('/images/scenes/toy-shop-bg.png')" }}
-      />
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e]/90 to-[#1a1a2e]" />
-
-      <Sparkles />
+      {/* 3D Toy Conveyor Belt Background */}
+      <Suspense fallback={
+        <div className="fixed inset-0 z-0" style={{
+          background: "linear-gradient(180deg, #0d0a1e 0%, #16213e 40%, #1a1a2e 100%)"
+        }} />
+      }>
+        <ToyConveyor />
+      </Suspense>
 
       {/* Main Layout */}
       <div className="relative z-10 min-h-screen flex flex-col">

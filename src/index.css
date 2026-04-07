@@ -103,9 +103,19 @@ h1, h2, h3, h4 {
 
 /* Glass card */
 .glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
+  background: rgba(13, 10, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 20px;
+}
+
+/* Stronger glass for text-heavy sections */
+.glass-card-strong {
+  background: rgba(13, 10, 30, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 215, 0, 0.12);
   border-radius: 20px;
 }
 

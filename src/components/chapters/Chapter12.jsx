@@ -65,7 +65,9 @@ export default function Chapter12({ chapter }) {
           <div
             className="relative rounded-2xl overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)",
+              background: "rgba(13, 10, 30, 0.8)",
+              backdropFilter: "blur(18px)",
+              WebkitBackdropFilter: "blur(18px)",
               border: "2px solid rgba(255, 215, 0, 0.2)",
               boxShadow: "0 8px 40px rgba(0, 0, 0, 0.3)",
             }}
@@ -150,7 +152,9 @@ export default function Chapter12({ chapter }) {
         transition={{ delay: 1.2 }}
         className="relative overflow-hidden rounded-2xl"
         style={{
-          background: "linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)",
+          background: "rgba(13, 10, 30, 0.8)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
           border: "2px solid rgba(255, 215, 0, 0.2)",
         }}
       >

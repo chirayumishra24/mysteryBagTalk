@@ -105,9 +105,11 @@ export default function Chapter23({ chapter }) {
             <div
               className="relative p-6 rounded-2xl overflow-hidden h-full"
               style={{
-                background: `linear-gradient(135deg, ${skillColors[i].border}12, ${skillColors[i].border}06)`,
+                background: `rgba(13, 10, 30, 0.8)`,
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
                 border: `2px solid ${skillColors[i].border}40`,
-                boxShadow: `0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px ${skillColors[i].border}10`,
+                boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${skillColors[i].border}10`,
               }}
             >
               {/* Background glow */}
@@ -159,7 +161,9 @@ export default function Chapter23({ chapter }) {
           <div
             className="relative max-w-md mx-auto rounded-3xl overflow-hidden p-8"
             style={{
-              background: "linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)",
+              background: "rgba(13, 10, 30, 0.85)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
               border: "2px solid rgba(255, 215, 0, 0.3)",
               boxShadow: "0 0 40px rgba(255, 215, 0, 0.15), 0 20px 60px rgba(0, 0, 0, 0.3)",
             }}

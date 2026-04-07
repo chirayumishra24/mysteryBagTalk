@@ -44,10 +44,11 @@ export default function StepTimeline({ steps }) {
             whileHover={{ scale: 1.01, x: 4 }}
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
+              background: "rgba(13, 10, 30, 0.8)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.35)",
             }}
           >
             <div className="p-5 md:p-6">

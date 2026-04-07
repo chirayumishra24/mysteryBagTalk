@@ -102,9 +102,11 @@ export default function Chapter21({ chapter }) {
                 whileHover={{ scale: 1.05, y: -6 }}
                 className="rounded-2xl p-5 text-center cursor-pointer"
                 style={{
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))",
+                  background: "rgba(13, 10, 30, 0.8)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                   border: "2px solid rgba(255, 215, 0, 0.15)",
-                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 <div
@@ -229,9 +231,11 @@ export default function Chapter21({ chapter }) {
                 whileHover={{ x: 6 }}
                 className="rounded-2xl overflow-hidden flex items-center gap-5"
                 style={{
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))",
+                  background: "rgba(13, 10, 30, 0.8)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                   border: "2px solid rgba(124, 58, 237, 0.2)",
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 <div

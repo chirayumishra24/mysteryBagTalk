@@ -120,9 +120,11 @@ export default function Chapter22({ chapter }) {
               whileHover={{ scale: 1.08, y: -3 }}
               className="rounded-2xl px-6 py-3 cursor-pointer"
               style={{
-                background: "linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(124, 58, 237, 0.1))",
+                background: "rgba(13, 10, 30, 0.75)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
                 border: "2px solid rgba(255, 215, 0, 0.2)",
-                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.25)",
               }}
             >
               <p className="font-bold text-sm" style={{ color: "var(--accent-gold)" }}>★ {q}</p>
@@ -138,7 +140,9 @@ export default function Chapter22({ chapter }) {
         transition={{ delay: 1.1 }}
         className="relative overflow-hidden rounded-2xl"
         style={{
-          background: "linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)",
+          background: "rgba(13, 10, 30, 0.8)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
           border: "2px solid rgba(255, 215, 0, 0.2)",
           boxShadow: "0 8px 40px rgba(0, 0, 0, 0.2)",
         }}
@@ -164,8 +168,10 @@ export default function Chapter22({ chapter }) {
                 whileHover={{ x: 4 }}
                 className="flex items-center justify-between px-5 py-4 rounded-xl"
                 style={{
-                  background: "rgba(255, 255, 255, 0.04)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  background: "rgba(13, 10, 30, 0.7)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
                 }}
               >
                 <span className="font-semibold text-gray-200">{bp.action}</span>
@@ -194,9 +200,11 @@ export default function Chapter22({ chapter }) {
               className="inline-flex gap-3 cursor-pointer p-5 rounded-2xl"
               onClick={handleStarClick}
               style={{
-                background: "rgba(255, 255, 255, 0.04)",
+                background: "rgba(13, 10, 30, 0.75)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
                 border: "2px solid rgba(255, 215, 0, 0.2)",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
               }}
             >
               {[1, 2, 3, 4, 5].map((n) => (
